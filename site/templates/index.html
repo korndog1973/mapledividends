@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block body %}
+<section class="hero">
+  <h1>Canadian dividends, checked against the source.</h1>
+  <p class="lead">Ex-dates, pay dates, raises and cuts for TSX dividend payers. Every number links back to the company's own filing.</p>
+  <form class="signup" action="#" method="post" onsubmit="return false" aria-label="Newsletter signup (coming soon)">
+    <!-- KIT FORM PLACEHOLDER: replace this form's action/fields with the Kit embed once the Kit account exists. -->
+    <label for="email">The weekly MapleDividends email: raises, cuts and upcoming ex-dates. Free.</label>
+    <div class="row"><input id="email" type="email" placeholder="you@example.com" disabled><button type="submit" disabled>Coming soon</button></div>
+  </form>
+</section>
+<section class="grid2">
+  <div class="card">
+    <h2>Upcoming ex-dividend dates</h2>
+    {% if upcoming %}<table class="t"><thead><tr><th>Ex-date</th><th>Company</th><th class="r">Amount</th></tr></thead><tbody>
+    {% for e in upcoming[:12] %}<tr><td>{{ e.ex_h }}</td><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td></tr>{% endfor %}
+    </tbody></table>{% else %}<p class="muted">No upcoming ex-dates in our verified data right now.</p>{% endif %}
+    <p><a href="/calendar/">Full calendar →</a></p>
+  </div>
+  <div class="card">
+    <h2>Latest raises &amp; cuts</h2>
+    {% if changes %}<ul class="chg">{% for c in changes[:10] %}<li><span class="badge {{ c.kind }}">{{ c.kind_h }} {{ c.pct_h }}</span> <a href="/dividends/{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span> <span class="muted">{{ c.prev_h }} → {{ c.amount_h }}</span></li>{% endfor %}</ul>
+    {% else %}<p class="muted">No verified raises or cuts in the last 12 weeks.</p>{% endif %}
+    <p><a href="/raises-and-cuts/">All raises &amp; cuts →</a></p>
+  </div>
+</section>
+<section class="card">
+  <h2>What's here</h2>
+  <p>{{ n_companies }} TSX-listed companies with a declaration we've checked against the source. We only publish dividends we could read straight from a company filing, with an amount, a record date and a pay date that agree with each other. <a href="/methodology/">How we get the data</a>.</p>
+</section>
+{% endblock %}

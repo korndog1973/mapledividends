@@ -1,0 +1,20 @@
+# build output & caches
+dist/
+pipeline/cache/
+shots/
+node_modules/
+__pycache__/
+*.pyc
+# copyrighted TMX/TSX data: internal use only, never commit
+pipeline/issuers_*.xlsx
+pipeline/*.xlsx
+*.xlsx
+pipeline/sec_tickers.json
+# secrets
+.env
+.env.*
+*.pem
+*.key
+.dev.vars
+.wrangler/
+*.log

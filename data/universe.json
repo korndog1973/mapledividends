@@ -1,0 +1,1382 @@
+[
+ {
+  "ticker": "ABXX",
+  "name": "Abaxx Technologies Inc.",
+  "cik": 1971975,
+  "composite": false
+ },
+ {
+  "ticker": "ACT",
+  "name": "Aduro Clean Technologies Inc.",
+  "cik": 1863934,
+  "composite": false
+ },
+ {
+  "ticker": "ARE",
+  "name": "Aecon Group Inc.",
+  "cik": 1309167,
+  "composite": true
+ },
+ {
+  "ticker": "AEM",
+  "name": "Agnico Eagle Mines Limited",
+  "cik": 2809,
+  "composite": true
+ },
+ {
+  "ticker": "AGI",
+  "name": "Alamos Gold Inc.",
+  "cik": 1178819,
+  "composite": true
+ },
+ {
+  "ticker": "ASTL",
+  "name": "Algoma Steel Group Inc.",
+  "cik": 1860805,
+  "composite": false
+ },
+ {
+  "ticker": "AQN",
+  "name": "Algonquin Power & Utilities Corp.",
+  "cik": 1174169,
+  "composite": true
+ },
+ {
+  "ticker": "ALYA",
+  "name": "Alithya Group Inc.",
+  "cik": 1734520,
+  "composite": false
+ },
+ {
+  "ticker": "AAUC",
+  "name": "Allied Gold Corporation",
+  "cik": 1993344,
+  "composite": true
+ },
+ {
+  "ticker": "USA",
+  "name": "Americas Gold and Silver Corporation",
+  "cik": 1286973,
+  "composite": true
+ },
+ {
+  "ticker": "ARIS",
+  "name": "Aris Mining Corporation",
+  "cik": 1964504,
+  "composite": true
+ },
+ {
+  "ticker": "ATS",
+  "name": "ATS Corporation",
+  "cik": 1394832,
+  "composite": true
+ },
+ {
+  "ticker": "ACB",
+  "name": "Aurora Cannabis Inc.",
+  "cik": 1683541,
+  "composite": false
+ },
+ {
+  "ticker": "AVL",
+  "name": "Avalon Advanced Materials Inc.",
+  "cik": 1362898,
+  "composite": false
+ },
+ {
+  "ticker": "ASM",
+  "name": "Avino Silver & Gold Mines Ltd.",
+  "cik": 316888,
+  "composite": true
+ },
+ {
+  "ticker": "AYA",
+  "name": "Aya Gold & Silver Inc.",
+  "cik": 1826836,
+  "composite": true
+ },
+ {
+  "ticker": "BTO",
+  "name": "B2Gold Corp.",
+  "cik": 1429937,
+  "composite": true
+ },
+ {
+  "ticker": "BLDP",
+  "name": "Ballard Power Systems Inc.",
+  "cik": 1453015,
+  "composite": false
+ },
+ {
+  "ticker": "BMO",
+  "name": "Bank of Montreal",
+  "cik": 927971,
+  "composite": true
+ },
+ {
+  "ticker": "BNS",
+  "name": "Bank of Nova Scotia (The)",
+  "cik": 9631,
+  "composite": true
+ },
+ {
+  "ticker": "ABX",
+  "name": "Barrick Mining Corporation",
+  "cik": 756894,
+  "composite": true
+ },
+ {
+  "ticker": "BLCO",
+  "name": "Bausch + Lomb Corporation",
+  "cik": 1860742,
+  "composite": false
+ },
+ {
+  "ticker": "BHC",
+  "name": "Bausch Health Companies Inc.",
+  "cik": 885590,
+  "composite": true
+ },
+ {
+  "ticker": "BTE",
+  "name": "Baytex Energy Corp.",
+  "cik": 1279495,
+  "composite": true
+ },
+ {
+  "ticker": "BCE",
+  "name": "BCE Inc.",
+  "cik": 718940,
+  "composite": true
+ },
+ {
+  "ticker": "BCHT",
+  "name": "Birchtech Corp.",
+  "cik": 728385,
+  "composite": false
+ },
+ {
+  "ticker": "BB",
+  "name": "BlackBerry Limited",
+  "cik": 1070235,
+  "composite": true
+ },
+ {
+  "ticker": "BYD",
+  "name": "Boyd Group Services inc.",
+  "cik": 2091467,
+  "composite": true
+ },
+ {
+  "ticker": "BRAG",
+  "name": "Bragg Gaming Group Inc.",
+  "cik": 1867834,
+  "composite": false
+ },
+ {
+  "ticker": "BCT",
+  "name": "BriaCell Therapeutics Corp.",
+  "cik": 1610820,
+  "composite": false
+ },
+ {
+  "ticker": "BAM",
+  "name": "Brookfield Asset Management Ltd.",
+  "cik": 1937926,
+  "composite": true
+ },
+ {
+  "ticker": "BBUC",
+  "name": "Brookfield Business Corporation",
+  "cik": 1654795,
+  "composite": true
+ },
+ {
+  "ticker": "BN",
+  "name": "Brookfield Corporation",
+  "cik": 1001085,
+  "composite": true
+ },
+ {
+  "ticker": "BIPC",
+  "name": "Brookfield Infrastructure Corporation",
+  "cik": 1788348,
+  "composite": false
+ },
+ {
+  "ticker": "BILP",
+  "name": "Brookfield Infrastructure L.P.",
+  "cik": 1788348,
+  "composite": false
+ },
+ {
+  "ticker": "BIP",
+  "name": "Brookfield Infrastructure Partners L.P.",
+  "cik": 1406234,
+  "composite": true
+ },
+ {
+  "ticker": "BEPC",
+  "name": "Brookfield Renewable Corporation",
+  "cik": 1791863,
+  "composite": false
+ },
+ {
+  "ticker": "BEP",
+  "name": "Brookfield Renewable Partners L.P.",
+  "cik": 1533232,
+  "composite": true
+ },
+ {
+  "ticker": "BNT",
+  "name": "Brookfield Wealth Solutions Ltd.",
+  "cik": 1837429,
+  "composite": false
+ },
+ {
+  "ticker": "DOO",
+  "name": "BRP Inc.",
+  "cik": 1748797,
+  "composite": true
+ },
+ {
+  "ticker": "HOM",
+  "name": "BSR Real Estate Investment Trust",
+  "cik": 1777917,
+  "composite": false
+ },
+ {
+  "ticker": "BNKR",
+  "name": "Bunker Hill Mining Corp.",
+  "cik": 1407583,
+  "composite": false
+ },
+ {
+  "ticker": "BU",
+  "name": "Burcon NutraScience Corporation",
+  "cik": 1158399,
+  "composite": false
+ },
+ {
+  "ticker": "CAE",
+  "name": "CAE Inc.",
+  "cik": 1173382,
+  "composite": true
+ },
+ {
+  "ticker": "CCO",
+  "name": "Cameco Corporation",
+  "cik": 1009001,
+  "composite": true
+ },
+ {
+  "ticker": "GOOS",
+  "name": "Canada Goose Holdings Inc.",
+  "cik": 1690511,
+  "composite": false
+ },
+ {
+  "ticker": "CM",
+  "name": "Canadian Imperial Bank Of Commerce",
+  "cik": 1045520,
+  "composite": true
+ },
+ {
+  "ticker": "CNR",
+  "name": "Canadian National Railway Company",
+  "cik": 16868,
+  "composite": true
+ },
+ {
+  "ticker": "CNQ",
+  "name": "Canadian Natural Resources Limited",
+  "cik": 1017413,
+  "composite": true
+ },
+ {
+  "ticker": "CP",
+  "name": "Canadian Pacific Kansas City Limited",
+  "cik": 16875,
+  "composite": true
+ },
+ {
+  "ticker": "CCM",
+  "name": "Canagold Resources Ltd.",
+  "cik": 868822,
+  "composite": false
+ },
+ {
+  "ticker": "WEED",
+  "name": "Canopy Growth Corporation",
+  "cik": 1737927,
+  "composite": false
+ },
+ {
+  "ticker": "CRDL",
+  "name": "Cardiol Therapeutics Inc.",
+  "cik": 1702123,
+  "composite": false
+ },
+ {
+  "ticker": "CLS",
+  "name": "Celestica Inc.",
+  "cik": 1030894,
+  "composite": true
+ },
+ {
+  "ticker": "CVE",
+  "name": "Cenovus Energy Inc.",
+  "cik": 1475260,
+  "composite": true
+ },
+ {
+  "ticker": "CG",
+  "name": "Centerra Gold Inc.",
+  "cik": 1854640,
+  "composite": true
+ },
+ {
+  "ticker": "GIB",
+  "name": "CGI Inc.",
+  "cik": 1061574,
+  "composite": true
+ },
+ {
+  "ticker": "CWEB",
+  "name": "Charlotte's Web Holdings, Inc.",
+  "cik": 1750155,
+  "composite": false
+ },
+ {
+  "ticker": "CLCH",
+  "name": "Clinch Resources Ltd.",
+  "cik": 2125750,
+  "composite": false
+ },
+ {
+  "ticker": "CDE",
+  "name": "Coeur Mining, Inc.",
+  "cik": 215466,
+  "composite": false
+ },
+ {
+  "ticker": "CNL",
+  "name": "Collective Mining Ltd.",
+  "cik": 1953575,
+  "composite": false
+ },
+ {
+  "ticker": "CIGI",
+  "name": "Colliers International Group Inc.",
+  "cik": 913353,
+  "composite": true
+ },
+ {
+  "ticker": "CTGO",
+  "name": "Contango Silver & Gold Inc.",
+  "cik": 1502377,
+  "composite": false
+ },
+ {
+  "ticker": "CSCI",
+  "name": "COSCIENS Biopharma Inc.",
+  "cik": 1113423,
+  "composite": false
+ },
+ {
+  "ticker": "CRON",
+  "name": "Cronos Group Inc.",
+  "cik": 1656472,
+  "composite": false
+ },
+ {
+  "ticker": "CURA",
+  "name": "Curaleaf Holdings, Inc.",
+  "cik": 1756770,
+  "composite": true
+ },
+ {
+  "ticker": "DML",
+  "name": "Denison Mines Corp.",
+  "cik": 1063259,
+  "composite": true
+ },
+ {
+  "ticker": "DSG",
+  "name": "Descartes Systems Group Inc. (The)",
+  "cik": 1050140,
+  "composite": true
+ },
+ {
+  "ticker": "DRT",
+  "name": "DIRTT Environmental Solutions Ltd.",
+  "cik": 1340476,
+  "composite": false
+ },
+ {
+  "ticker": "DCBO",
+  "name": "Docebo Inc.",
+  "cik": 1829959,
+  "composite": false
+ },
+ {
+  "ticker": "EDCU",
+  "name": "Edge Copper Corporation",
+  "cik": 1570505,
+  "composite": false
+ },
+ {
+  "ticker": "ELF",
+  "name": "E-L Financial Corporation Limited",
+  "cik": 1600033,
+  "composite": false
+ },
+ {
+  "ticker": "ELVA",
+  "name": "Electrovaya Inc.",
+  "cik": 1844450,
+  "composite": false
+ },
+ {
+  "ticker": "ELE",
+  "name": "Elemental Royalty Corporation",
+  "cik": 2086771,
+  "composite": false
+ },
+ {
+  "ticker": "EMA",
+  "name": "Emera Incorporated",
+  "cik": 1127248,
+  "composite": true
+ },
+ {
+  "ticker": "ENB",
+  "name": "Enbridge Inc.",
+  "cik": 895728,
+  "composite": true
+ },
+ {
+  "ticker": "EDR",
+  "name": "Endeavour Silver Corp.",
+  "cik": 1277866,
+  "composite": true
+ },
+ {
+  "ticker": "EFX",
+  "name": "Enerflex Ltd.",
+  "cik": 1904856,
+  "composite": true
+ },
+ {
+  "ticker": "EFR",
+  "name": "Energy Fuels Inc.",
+  "cik": 1385849,
+  "composite": true
+ },
+ {
+  "ticker": "ETG",
+  "name": "Entree Resources Ltd.",
+  "cik": 1271554,
+  "composite": false
+ },
+ {
+  "ticker": "EQX",
+  "name": "Equinox Gold Corp.",
+  "cik": 1756607,
+  "composite": true
+ },
+ {
+  "ticker": "ERO",
+  "name": "Ero Copper Corp.",
+  "cik": 1853860,
+  "composite": true
+ },
+ {
+  "ticker": "EPRX",
+  "name": "Eupraxia Pharmaceuticals Inc.",
+  "cik": 1581178,
+  "composite": false
+ },
+ {
+  "ticker": "FDY",
+  "name": "Faraday Copper Corp.",
+  "cik": 1691710,
+  "composite": false
+ },
+ {
+  "ticker": "FRX",
+  "name": "Fennec Pharmaceuticals Inc.",
+  "cik": 1211583,
+  "composite": false
+ },
+ {
+  "ticker": "AG",
+  "name": "First Majestic Silver Corp.",
+  "cik": 1308648,
+  "composite": true
+ },
+ {
+  "ticker": "FF",
+  "name": "First Mining Gold Corp.",
+  "cik": 1641229,
+  "composite": false
+ },
+ {
+  "ticker": "FSV",
+  "name": "FirstService Corporation",
+  "cik": 1637810,
+  "composite": true
+ },
+ {
+  "ticker": "FTS",
+  "name": "Fortis Inc.",
+  "cik": 1666175,
+  "composite": true
+ },
+ {
+  "ticker": "FVI",
+  "name": "Fortuna Mining Corp.",
+  "cik": 1341335,
+  "composite": true
+ },
+ {
+  "ticker": "FNV",
+  "name": "Franco-Nevada Corporation",
+  "cik": 1456346,
+  "composite": true
+ },
+ {
+  "ticker": "FURY",
+  "name": "Fury Gold Mines Limited",
+  "cik": 1514597,
+  "composite": false
+ },
+ {
+  "ticker": "GAU",
+  "name": "Galiano Gold Inc.",
+  "cik": 1377757,
+  "composite": false
+ },
+ {
+  "ticker": "GFL",
+  "name": "GFL Environmental Inc.",
+  "cik": 1780232,
+  "composite": true
+ },
+ {
+  "ticker": "GIL",
+  "name": "Gildan Activewear Inc.",
+  "cik": 1061894,
+  "composite": true
+ },
+ {
+  "ticker": "GLO",
+  "name": "Global Atomic Corporation",
+  "cik": 1716410,
+  "composite": false
+ },
+ {
+  "ticker": "GO",
+  "name": "GO Residential Real Estate Investment Trust",
+  "cik": 2081438,
+  "composite": false
+ },
+ {
+  "ticker": "AUMN",
+  "name": "Golden Minerals Company",
+  "cik": 1011509,
+  "composite": false
+ },
+ {
+  "ticker": "GOLD",
+  "name": "GoldMining Inc.",
+  "cik": 1538847,
+  "composite": false
+ },
+ {
+  "ticker": "GTE",
+  "name": "Gran Tierra Energy Inc.",
+  "cik": 1273441,
+  "composite": false
+ },
+ {
+  "ticker": "GRT",
+  "name": "Granite Real Estate Investment Trust",
+  "cik": 1564538,
+  "composite": true
+ },
+ {
+  "ticker": "GWO",
+  "name": "Great-West Lifeco Inc.",
+  "cik": 850918,
+  "composite": true
+ },
+ {
+  "ticker": "GFR",
+  "name": "Greenfire Resources Ltd.",
+  "cik": 1966287,
+  "composite": false
+ },
+ {
+  "ticker": "GCU",
+  "name": "Gunnison Copper Corp.",
+  "cik": 1514860,
+  "composite": false
+ },
+ {
+  "ticker": "AIDX",
+  "name": "HealWELL AI Inc.",
+  "cik": 1999124,
+  "composite": false
+ },
+ {
+  "ticker": "HSLV",
+  "name": "Highlander Silver Corp.",
+  "cik": 2013223,
+  "composite": false
+ },
+ {
+  "ticker": "HIVE",
+  "name": "HIVE Digital Technologies Ltd.",
+  "cik": 1720424,
+  "composite": false
+ },
+ {
+  "ticker": "HBM",
+  "name": "HudBay Minerals Inc.",
+  "cik": 1322422,
+  "composite": true
+ },
+ {
+  "ticker": "HUT",
+  "name": "Hut 8 Corp.",
+  "cik": 1964789,
+  "composite": false
+ },
+ {
+  "ticker": "H",
+  "name": "Hydro One Limited",
+  "cik": 1712356,
+  "composite": true
+ },
+ {
+  "ticker": "IAU",
+  "name": "i-80 Gold Corp.",
+  "cik": 1853962,
+  "composite": true
+ },
+ {
+  "ticker": "IMG",
+  "name": "IAMGold Corporation",
+  "cik": 1203464,
+  "composite": true
+ },
+ {
+  "ticker": "ILLM",
+  "name": "illumin Holdings Inc.",
+  "cik": 1861233,
+  "composite": false
+ },
+ {
+  "ticker": "IMO",
+  "name": "Imperial Oil Limited",
+  "cik": 49938,
+  "composite": true
+ },
+ {
+  "ticker": "IMP",
+  "name": "Intermap Technologies Corporation",
+  "cik": 1285170,
+  "composite": false
+ },
+ {
+  "ticker": "ITH",
+  "name": "International Tower Hill Mines Ltd.",
+  "cik": 1134115,
+  "composite": false
+ },
+ {
+  "ticker": "ISO",
+  "name": "IsoEnergy Ltd.",
+  "cik": 1997377,
+  "composite": false
+ },
+ {
+  "ticker": "IE",
+  "name": "Ivanhoe Electric Inc.",
+  "cik": 1879016,
+  "composite": false
+ },
+ {
+  "ticker": "KEEL",
+  "name": "Keel Infrastructure Corp.",
+  "cik": 1812477,
+  "composite": false
+ },
+ {
+  "ticker": "KLS",
+  "name": "Kelso Technologies Inc.",
+  "cik": 1161814,
+  "composite": false
+ },
+ {
+  "ticker": "K",
+  "name": "Kinross Gold Corporation",
+  "cik": 701818,
+  "composite": true
+ },
+ {
+  "ticker": "KEI",
+  "name": "Kolibri Global Energy Inc.",
+  "cik": 1477081,
+  "composite": false
+ },
+ {
+  "ticker": "LAM",
+  "name": "Laramide Resources Ltd.",
+  "cik": 1001500,
+  "composite": false
+ },
+ {
+  "ticker": "LGO",
+  "name": "Largo Inc.",
+  "cik": 1400438,
+  "composite": false
+ },
+ {
+  "ticker": "LSPD",
+  "name": "Lightspeed Commerce Inc.",
+  "cik": 1823306,
+  "composite": true
+ },
+ {
+  "ticker": "LAC",
+  "name": "Lithium Americas Corp.",
+  "cik": 1966983,
+  "composite": true
+ },
+ {
+  "ticker": "LAR",
+  "name": "Lithium Argentina AG",
+  "cik": 1440972,
+  "composite": false
+ },
+ {
+  "ticker": "MG",
+  "name": "Magna International Inc.",
+  "cik": 749098,
+  "composite": true
+ },
+ {
+  "ticker": "NICU",
+  "name": "Magna Mining Inc.",
+  "cik": 1965615,
+  "composite": false
+ },
+ {
+  "ticker": "MFC",
+  "name": "Manulife Financial Corporation",
+  "cik": 1086888,
+  "composite": true
+ },
+ {
+  "ticker": "MUX",
+  "name": "McEwen Inc.",
+  "cik": 314203,
+  "composite": false
+ },
+ {
+  "ticker": "MDA",
+  "name": "MDA Space Ltd.",
+  "cik": 1857047,
+  "composite": true
+ },
+ {
+  "ticker": "MDNA",
+  "name": "Medicenna Therapeutics Corp.",
+  "cik": 1807983,
+  "composite": false
+ },
+ {
+  "ticker": "MX",
+  "name": "Methanex Corporation",
+  "cik": 886977,
+  "composite": true
+ },
+ {
+  "ticker": "AIAI",
+  "name": "NetraMark Holdings Inc.",
+  "cik": 2096362,
+  "composite": false
+ },
+ {
+  "ticker": "NFGC",
+  "name": "New Found Gold Corp.",
+  "cik": 1840616,
+  "composite": false
+ },
+ {
+  "ticker": "NUAG",
+  "name": "New Pacific Metals Corp.",
+  "cik": 1369085,
+  "composite": false
+ },
+ {
+  "ticker": "NXE",
+  "name": "NexGen Energy Ltd.",
+  "cik": 1698535,
+  "composite": true
+ },
+ {
+  "ticker": "NGEX",
+  "name": "NGEx Minerals Ltd.",
+  "cik": 2044153,
+  "composite": true
+ },
+ {
+  "ticker": "NOA",
+  "name": "North American Construction Group Ltd.",
+  "cik": 1368519,
+  "composite": false
+ },
+ {
+  "ticker": "NDM",
+  "name": "Northern Dynasty Minerals Ltd.",
+  "cik": 1164771,
+  "composite": false
+ },
+ {
+  "ticker": "NOU",
+  "name": "Nouveau Monde Graphite Inc.",
+  "cik": 1649752,
+  "composite": false
+ },
+ {
+  "ticker": "NG",
+  "name": "Novagold Resources Inc.",
+  "cik": 1173420,
+  "composite": true
+ },
+ {
+  "ticker": "NVO",
+  "name": "Novo Resources Corp.",
+  "cik": 353278,
+  "composite": false
+ },
+ {
+  "ticker": "NTR",
+  "name": "Nutrien Ltd.",
+  "cik": 1725964,
+  "composite": true
+ },
+ {
+  "ticker": "SFD",
+  "name": "NXT Energy Solutions Inc.",
+  "cik": 1009922,
+  "composite": false
+ },
+ {
+  "ticker": "OBE",
+  "name": "Obsidian Energy Ltd.",
+  "cik": 1334388,
+  "composite": false
+ },
+ {
+  "ticker": "OGC",
+  "name": "OceanaGold Corporation",
+  "cik": 1487326,
+  "composite": true
+ },
+ {
+  "ticker": "OTEX",
+  "name": "Open Text Corporation",
+  "cik": 1002638,
+  "composite": true
+ },
+ {
+  "ticker": "OR",
+  "name": "OR Royalties Inc.",
+  "cik": 1627272,
+  "composite": true
+ },
+ {
+  "ticker": "OGI",
+  "name": "Organigram Global Inc.",
+  "cik": 1620737,
+  "composite": false
+ },
+ {
+  "ticker": "ORIO",
+  "name": "Orion Digital Corp.",
+  "cik": 1602842,
+  "composite": false
+ },
+ {
+  "ticker": "OCG",
+  "name": "Outcrop Silver & Gold Corporation",
+  "cik": 942149,
+  "composite": false
+ },
+ {
+  "ticker": "OVV",
+  "name": "Ovintiv Inc.",
+  "cik": 1792580,
+  "composite": false
+ },
+ {
+  "ticker": "PAAS",
+  "name": "Pan American Silver Corp.",
+  "cik": 771992,
+  "composite": true
+ },
+ {
+  "ticker": "PPL",
+  "name": "Pembina Pipeline Corporation",
+  "cik": 1546066,
+  "composite": true
+ },
+ {
+  "ticker": "PPTA",
+  "name": "Perpetua Resources Corp.",
+  "cik": 1526243,
+  "composite": true
+ },
+ {
+  "ticker": "PCA",
+  "name": "Phoenix Metals Corp.",
+  "cik": 2145424,
+  "composite": false
+ },
+ {
+  "ticker": "PTM",
+  "name": "Platinum Group Metals Ltd.",
+  "cik": 1095052,
+  "composite": false
+ },
+ {
+  "ticker": "PD",
+  "name": "Precision Drilling Corporation",
+  "cik": 1013605,
+  "composite": false
+ },
+ {
+  "ticker": "PBH",
+  "name": "Premium Brands Holdings Corporation",
+  "cik": 1503812,
+  "composite": true
+ },
+ {
+  "ticker": "PRN",
+  "name": "Profound Medical Corp.",
+  "cik": 1628808,
+  "composite": false
+ },
+ {
+  "ticker": "QTRH",
+  "name": "Quarterhill Inc.",
+  "cik": 1518419,
+  "composite": false
+ },
+ {
+  "ticker": "RBA",
+  "name": "RB Global, Inc.",
+  "cik": 1046102,
+  "composite": true
+ },
+ {
+  "ticker": "QSR",
+  "name": "Restaurant Brands International Inc.",
+  "cik": 1618756,
+  "composite": true
+ },
+ {
+  "ticker": "QSP",
+  "name": "Restaurant Brands International Limited Partnership",
+  "cik": 1618755,
+  "composite": false
+ },
+ {
+  "ticker": "RIO",
+  "name": "Rio2 Limited",
+  "cik": 1743235,
+  "composite": false
+ },
+ {
+  "ticker": "RCI",
+  "name": "Rogers Communications Inc.",
+  "cik": 733099,
+  "composite": true
+ },
+ {
+  "ticker": "RM",
+  "name": "Roxmore Resources Inc.",
+  "cik": 1725569,
+  "composite": false
+ },
+ {
+  "ticker": "RY",
+  "name": "Royal Bank of Canada",
+  "cik": 1000275,
+  "composite": true
+ },
+ {
+  "ticker": "RUA",
+  "name": "Rua Gold Inc.",
+  "cik": 1925511,
+  "composite": false
+ },
+ {
+  "ticker": "STC",
+  "name": "Sangoma Technologies Corporation",
+  "cik": 1753368,
+  "composite": false
+ },
+ {
+  "ticker": "MSCL",
+  "name": "Satellos Bioscience Inc.",
+  "cik": 1421642,
+  "composite": false
+ },
+ {
+  "ticker": "SEA",
+  "name": "Seabridge Gold Inc.",
+  "cik": 1231346,
+  "composite": true
+ },
+ {
+  "ticker": "SHOP",
+  "name": "Shopify Inc.",
+  "cik": 1594805,
+  "composite": true
+ },
+ {
+  "ticker": "SVB",
+  "name": "Silver Bull Resources, Inc.",
+  "cik": 1031093,
+  "composite": false
+ },
+ {
+  "ticker": "ELEF",
+  "name": "Silver Elephant Mining Corp.",
+  "cik": 1545224,
+  "composite": false
+ },
+ {
+  "ticker": "AGMR",
+  "name": "Silver Mountain Resources Inc.",
+  "cik": 2022059,
+  "composite": false
+ },
+ {
+  "ticker": "SVM",
+  "name": "Silvercorp Metals Inc.",
+  "cik": 1340677,
+  "composite": true
+ },
+ {
+  "ticker": "SKE",
+  "name": "Skeena Resources Limited",
+  "cik": 1713748,
+  "composite": true
+ },
+ {
+  "ticker": "SLS",
+  "name": "Solaris Resources Inc.",
+  "cik": 2019103,
+  "composite": false
+ },
+ {
+  "ticker": "SLR",
+  "name": "Solitario Resources Corp.",
+  "cik": 917225,
+  "composite": false
+ },
+ {
+  "ticker": "SOBO",
+  "name": "South Bow Corporation",
+  "cik": 2019061,
+  "composite": true
+ },
+ {
+  "ticker": "SXGC",
+  "name": "Southern Cross Gold Consolidated Ltd.",
+  "cik": 1622629,
+  "composite": true
+ },
+ {
+  "ticker": "SII",
+  "name": "Sprott Inc.",
+  "cik": 1512920,
+  "composite": true
+ },
+ {
+  "ticker": "SSRM",
+  "name": "SSR Mining Inc.",
+  "cik": 921638,
+  "composite": true
+ },
+ {
+  "ticker": "STN",
+  "name": "Stantec Inc.",
+  "cik": 1131383,
+  "composite": true
+ },
+ {
+  "ticker": "STLR",
+  "name": "STLLR Gold Inc.",
+  "cik": 1979408,
+  "composite": false
+ },
+ {
+  "ticker": "SCR",
+  "name": "Strathcona Resources Ltd.",
+  "cik": 2068441,
+  "composite": true
+ },
+ {
+  "ticker": "SLF",
+  "name": "Sun Life Financial Inc.",
+  "cik": 1097362,
+  "composite": true
+ },
+ {
+  "ticker": "SU",
+  "name": "Suncor Energy Inc.",
+  "cik": 311337,
+  "composite": true
+ },
+ {
+  "ticker": "TSK",
+  "name": "Talisker Resources Ltd.",
+  "cik": 1803800,
+  "composite": false
+ },
+ {
+  "ticker": "GRID",
+  "name": "Tantalus Systems Holding Inc.",
+  "cik": 2025947,
+  "composite": false
+ },
+ {
+  "ticker": "TRP",
+  "name": "TC Energy Corporation",
+  "cik": 1232384,
+  "composite": true
+ },
+ {
+  "ticker": "TECK",
+  "name": "Teck Resources Limited",
+  "cik": 886986,
+  "composite": true
+ },
+ {
+  "ticker": "TSAT",
+  "name": "Telesat Corporation",
+  "cik": 1845840,
+  "composite": false
+ },
+ {
+  "ticker": "T",
+  "name": "TELUS Corporation",
+  "cik": 868675,
+  "composite": true
+ },
+ {
+  "ticker": "TELY",
+  "name": "TelyRx Holdings Inc.",
+  "cik": 2113853,
+  "composite": false
+ },
+ {
+  "ticker": "TSND",
+  "name": "TerrAscend Corp.",
+  "cik": 1778129,
+  "composite": false
+ },
+ {
+  "ticker": "TFII",
+  "name": "TFI International Inc.",
+  "cik": 1588823,
+  "composite": true
+ },
+ {
+  "ticker": "TRI",
+  "name": "Thomson Reuters Corporation",
+  "cik": 1075124,
+  "composite": true
+ },
+ {
+  "ticker": "TLRY",
+  "name": "Tilray Brands, Inc.",
+  "cik": 1731348,
+  "composite": false
+ },
+ {
+  "ticker": "TINY",
+  "name": "Tiny Ltd.",
+  "cik": 1836775,
+  "composite": false
+ },
+ {
+  "ticker": "TI",
+  "name": "Titan Mining Corporation",
+  "cik": 1791703,
+  "composite": false
+ },
+ {
+  "ticker": "TD",
+  "name": "Toronto-Dominion Bank (The)",
+  "cik": 947263,
+  "composite": true
+ },
+ {
+  "ticker": "TA",
+  "name": "TransAlta Corporation",
+  "cik": 1144800,
+  "composite": true
+ },
+ {
+  "ticker": "TKO",
+  "name": "Trekor Metals Limited",
+  "cik": 878518,
+  "composite": true
+ },
+ {
+  "ticker": "TMQ",
+  "name": "Trilogy Metals Inc.",
+  "cik": 1543418,
+  "composite": false
+ },
+ {
+  "ticker": "TFPM",
+  "name": "Triple Flag Precious Metals Corp.",
+  "cik": 1829726,
+  "composite": true
+ },
+ {
+  "ticker": "TRX",
+  "name": "TRX Gold Corporation",
+  "cik": 1173643,
+  "composite": false
+ },
+ {
+  "ticker": "TC",
+  "name": "Tucows Inc.",
+  "cik": 909494,
+  "composite": false
+ },
+ {
+  "ticker": "URE",
+  "name": "Ur-Energy Inc.",
+  "cik": 1375205,
+  "composite": false
+ },
+ {
+  "ticker": "VET",
+  "name": "Vermilion Energy Inc.",
+  "cik": 1293135,
+  "composite": true
+ },
+ {
+  "ticker": "VBNK",
+  "name": "VersaBank",
+  "cik": 1690639,
+  "composite": false
+ },
+ {
+  "ticker": "VMET",
+  "name": "Versamet Royalties Corporation",
+  "cik": 2080073,
+  "composite": false
+ },
+ {
+  "ticker": "VRTS",
+  "name": "Vertiqal Studios Corp.",
+  "cik": 1178526,
+  "composite": false
+ },
+ {
+  "ticker": "VGZ",
+  "name": "Vista Gold Corp.",
+  "cik": 783324,
+  "composite": false
+ },
+ {
+  "ticker": "VITL",
+  "name": "Vital Infrastructure Property Trust",
+  "cik": 1579733,
+  "composite": false
+ },
+ {
+  "ticker": "VZLA",
+  "name": "Vizsla Silver Corp.",
+  "cik": 1796073,
+  "composite": true
+ },
+ {
+  "ticker": "FLT",
+  "name": "Volatus Aerospace Inc.",
+  "cik": 1547452,
+  "composite": false
+ },
+ {
+  "ticker": "VOXR",
+  "name": "Vox Royalty Corp.",
+  "cik": 1907909,
+  "composite": false
+ },
+ {
+  "ticker": "WCN",
+  "name": "Waste Connections, Inc.",
+  "cik": 1318220,
+  "composite": true
+ },
+ {
+  "ticker": "WFG",
+  "name": "West Fraser Timber Co. Ltd.",
+  "cik": 1402388,
+  "composite": true
+ },
+ {
+  "ticker": "WRN",
+  "name": "Western Copper and Gold Corporation",
+  "cik": 1364125,
+  "composite": false
+ },
+ {
+  "ticker": "WPRT",
+  "name": "Westport Fuel Systems Inc.",
+  "cik": 1370416,
+  "composite": false
+ },
+ {
+  "ticker": "WPM",
+  "name": "Wheaton Precious Metals Corp.",
+  "cik": 1323404,
+  "composite": true
+ },
+ {
+  "ticker": "WCP",
+  "name": "Whitecap Resources Inc.",
+  "cik": 1472879,
+  "composite": true
+ },
+ {
+  "ticker": "XNDU",
+  "name": "Xanadu Quantum Technologies Limited",
+  "cik": 2097163,
+  "composite": false
+ },
+ {
+  "ticker": "XTRA",
+  "name": "Xtract One Technologies Inc.",
+  "cik": 1684505,
+  "composite": false
+ },
+ {
+  "ticker": "XTG",
+  "name": "Xtra-Gold Resources Corp.",
+  "cik": 1288770,
+  "composite": false
+ }
+]

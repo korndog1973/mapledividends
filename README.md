@@ -1,0 +1,23 @@
+# MapleDividends: static site + data pipeline
+
+Free stack: Python, Jinja2, SEC EDGAR (public domain), Cloudflare Pages (static).
+
+## Commands
+- Full build (fetch EDGAR, parse, generate dist/): `./build.sh`
+- Rebuild from cached data: `SKIP_FETCH=1 ./build.sh`
+- Pin the "today" date: `BUILD_DATE=2026-10-16 SKIP_FETCH=1 ./build.sh`
+- Local preview: `cd dist && python3 -m http.server 8787` then open http://127.0.0.1:8787
+
+## Data rules
+- Sources: SEC EDGAR 6-K/8-K exhibits only. No CNW, GlobeNewswire, TMX, RBC or TSX Trust scraping.
+- Publishing: a declaration is published only if it has an amount, a record date and a pay date, and passes these checks: amount 0–25; record date within -10/+150 days of filing; pay date after record date and within 120 days; not preferred shares or debentures; not a comparison amount.
+- Conflicts: where one record date has conflicting amounts, the majority wins only if it has at least 2x the support. Otherwise it's dropped.
+- Manual exclusions: `pipeline/exclusions.json`.
+- Ex-date = record date (Canada T+1). Currency is shown only if the filing states it.
+- `pipeline/issuers_*.xlsx` (TSX issuer list) is copyrighted. It's for internal use only and is gitignored. `data/universe.json` (ticker, name, CIK) is what gets committed.
+- Set `SEC_UA` to a real, monitored contact email. SEC fair-access policy requires it.
+
+## Deploy (later)
+Cloudflare Pages project "mapledividends"; output dir `dist`; custom domain mapledividends.com.
+Option A (recommended): GitHub repo + `.github/workflows/build.yml`. It refreshes twice a day and deploys with wrangler. Needs secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, plus variable SEC_UA.
+Option B (no GitHub): run `./build.sh` here, then `npx wrangler pages deploy dist --project-name=mapledividends` (needs a Cloudflare login/token). Data only refreshes when someone runs it.

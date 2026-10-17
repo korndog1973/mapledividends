@@ -1,0 +1,125 @@
+"""Static site generator: data/parsed.json -> dist/ . Pure Python + Jinja2."""
+import json, os, re, shutil, datetime, statistics, collections
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DIST=os.path.join(ROOT,'dist'); SITE_URL=os.environ.get('SITE_URL','https://mapledividends.com')
+TODAY=datetime.date.fromisoformat(os.environ['BUILD_DATE']) if os.environ.get('BUILD_DATE') else datetime.date.today()
+START=os.environ.get("START","2025-07-01")
+env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
+D=datetime.date.fromisoformat
+def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
+def money(a,cur):
+    s=f"{a:.6f}".rstrip('0'); s=s if len(s.split('.')[1])>=2 else f"{a:.2f}"
+    return (f"US${s}" if cur=='USD' else f"C${s}" if cur=='CAD' else f"${s}")
+def slug(t): return re.sub(r'[^a-z0-9]+','-',t.lower()).strip('-')
+def unit_of(sn):
+    s=sn.lower(); return 'unit' if re.search(r'per (?:trust |class [a-z] )?unit',s) else 'share'
+def freq(c):
+    regs=c['regular']; kw=regs[0].get('frequency_kw') if regs else None
+    if kw: return kw
+    ds=sorted(D(r['record']) for r in regs)
+    if len(ds)>=3:
+        g=statistics.median([(b-a).days for a,b in zip(ds,ds[1:])])
+        for lo,hi,lab in [(25,35,'Monthly'),(80,100,'Quarterly'),(170,200,'Semi-annual'),(350,380,'Annual')]:
+            if lo<=g<=hi: return lab
+    return 'Not stated'
+def change(regs):
+    if len(regs)<2: return dict(kind='none',label='No earlier dividend in our data',pct=None)
+    a,b=regs[0],regs[1]
+    if a['currency']!=b['currency']: return dict(kind='none',label='Not comparable (currency)',pct=None)
+    if b['amount']==0: return dict(kind='none',label='n/a',pct=None)
+    p=(a['amount']-b['amount'])/b['amount']*100
+    if abs(p)<0.05: return dict(kind='same',label='Unchanged',pct=0)
+    if abs(p)>50:
+        sn=a.get('snippet','').lower()
+        ok=re.search(r'reset|reduc|\bcut\b|decreas',sn) if p<0 else re.search(r'increas|\brais',sn)
+        if not ok: return dict(kind='verify',label='Large change, being checked',pct=p)
+    return dict(kind='raise' if p>0 else 'cut',label=f"{'Raised' if p>0 else 'Cut'} {abs(p):.1f}%",pct=p)
+def write(path,html):
+    p=os.path.join(DIST,path.strip('/'),'index.html') if not path.endswith('.html') else os.path.join(DIST,path.strip('/'))
+    os.makedirs(os.path.dirname(p),exist_ok=True); open(p,'w').write(html)
+def main():
+    data=json.load(open(os.path.join(ROOT,'data','parsed.json')))
+    if os.path.exists(DIST): shutil.rmtree(DIST)
+    os.makedirs(DIST); shutil.copy(os.path.join(ROOT,'site','static','style.css'),DIST)
+    common=dict(site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]
+    for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
+        regs=c['regular']
+        if not regs: continue
+        s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs)
+        Lh=dict(amount_h=money(L['amount'],L['currency']),currency=L['currency'],unit=unit_of(L['snippet']),ex_h=dh(L['record']),record_h=dh(L['record']),pay_h=dh(L['pay']),
+                freq=fq,change=ch,filed_h=dh(L['file_date']),form=L['form'],source=L['source'])
+        hist=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Regular',source=r['source'],rec=r['record']) for r in regs]
+        hist+=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Special',source=r['source'],rec=r['record']) for r in c['special']]
+        hist.sort(key=lambda h:h['rec'],reverse=True)
+        drip=None
+        for r in regs:
+            if r.get('drip_kw'):
+                drip=dict(text=("The company's filing mentions a dividend reinvestment plan"+(f" with a {r['drip_disc']}% discount" if r.get('drip_disc') else "")+f" (filing dated {dh(r['file_date'])})."),source=r['source']); break
+        name=c['name']
+        title=f"{name} ({t}) dividend: ex-date, history, DRIP | MapleDividends"
+        desc=f"{name} (TSX: {t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}, paid {Lh['pay_h']}. {fq} payer. Dividend history, raises/cuts and DRIP info, with links to the source filings."
+        write(f"/dividends/{s}/",env.get_template('company.html').render(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**common))
+        urls.append((f"/dividends/{s}/",L['file_date']))
+        companies.append(dict(slug=s,ticker=t,name=name,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h']))
+        for r in regs+c['special']:
+            if TODAY-datetime.timedelta(days=30)<=D(r['record'])<TODAY: recent.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
+            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
+        if ch['kind'] in ('raise','cut') and D(L['file_date'])>=TODAY-datetime.timedelta(weeks=12):
+            fd=D(L['file_date']); wk=fd-datetime.timedelta(days=fd.weekday())
+            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Raise' if ch['kind']=='raise' else 'Cut',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(regs[1]['amount'],regs[1]['currency']),amount_h=Lh['amount_h'],ex_h=Lh['ex_h'],week=wk,filed=L['file_date']))
+    upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
+    recent.sort(key=lambda e:(e['ex'],e['name']),reverse=True)
+    rgroups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(recent,key=lambda e:e['ex'])]
+    groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
+    weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
+    write('/',env.get_template('index.html').render(title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
+    write('/calendar/',env.get_template('calendar.html').render(title="TSX ex-dividend calendar: upcoming Canadian ex-dates | MapleDividends",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
+    write('/raises-and-cuts/',env.get_template('raises.html').render(title="Canadian dividend raises and cuts this week | MapleDividends",description="Weekly list of TSX dividend increases and cuts, checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
+    write('/companies/',env.get_template('companies.html').render(title="TSX dividend stocks: list of Canadian dividend payers | MapleDividends",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
+    for p,(tt,dd,content) in PAGES.items():
+        write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
+    write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
+    static=['/','/calendar/','/raises-and-cuts/','/companies/']+list(PAGES)
+    sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
+    sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]
+    sm.append('</urlset>'); open(os.path.join(DIST,'sitemap.xml'),'w').write('\n'.join(sm))
+    open(os.path.join(DIST,'robots.txt'),'w').write(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
+    open(os.path.join(DIST,'_headers'),'w').write("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n/style.css\n  Cache-Control: public, max-age=31536000, immutable\n")
+    n=sum(1 for _ in __import__('glob').glob(os.path.join(DIST,'**','*.html'),recursive=True))
+    stats=dict(build_date=TODAY.isoformat(),html_pages=n,company_pages=len(companies),upcoming_exdates=len(upcoming),raises_cuts_12w=len(changes))
+    json.dump(stats,open(os.path.join(ROOT,'data','build_stats.json'),'w'),indent=1); print(stats)
+CONTACT="hello@mapledividends.com"
+PAGES={
+ '/about/':("About MapleDividends","About MapleDividends, a free Canadian dividend tracker.",f"""<h1>About MapleDividends</h1>
+<p>MapleDividends is a free tracker of dividends paid by TSX-listed Canadian companies: upcoming ex-dividend dates, pay dates, raises, cuts and DRIP details.</p>
+<p>It's built and run in Vancouver, B.C. We care about accuracy more than coverage. Every dividend we show links to the company filing it came from, and we leave out anything we couldn't check.</p>
+<p>Coverage is limited for now. We start with TSX companies that also file with the U.S. SEC, then add others as we find reliable sources we're allowed to use. See <a href="/methodology/">how we get the data</a>.</p>
+<p>Spotted an error? Email <a href="mailto:{CONTACT}">{CONTACT}</a> and include the company and a link to its announcement.</p>"""),
+ '/methodology/':("How we get the data","Where MapleDividends dividend data comes from and how it's checked.","""<h1>How we get the data</h1>
+<ol><li><strong>Source.</strong> We read company filings (press-release exhibits on forms 6-K and 8-K) published on the U.S. SEC's public EDGAR system. Many TSX companies also list in the U.S. and file their dividend announcements there.</li>
+<li><strong>Parsing.</strong> Our software pulls out the dividend amount, record date and pay date as the company wrote them. We don't estimate or forecast dividends.</li>
+<li><strong>Checks.</strong> We only publish a declaration when the amount is in a sensible range, the record date is close to the filing date, and the pay date falls on or after the record date (within 120 days). Declarations about preferred shares, debentures and similar securities are excluded. If a filing lists several amounts for the same date (for example, different share classes), we leave them out until a person checks them.</li>
+<li><strong>Ex-dates.</strong> Since Canada moved to T+1 settlement on May 27, 2024, the ex-dividend date for regular cash dividends is generally the same as the record date. Special or very large dividends can be different.</li>
+<li><strong>Currency.</strong> We show US$ or C$ only when the filing says which. Otherwise we show the amount exactly as written.</li>
+<li><strong>DRIP.</strong> We only show DRIP details the company itself states in a filing. Otherwise the page says "check plan".</li></ol>
+<p>Limits: the history only goes back to the filings we've processed (since July 2025), and companies that don't file with the SEC aren't covered yet.</p>"""),
+ '/disclaimer/':("Disclaimer: not financial advice","MapleDividends disclaimer.",f"""<h1>Disclaimer</h1>
+<p><strong>Not financial advice.</strong> Everything on MapleDividends is general information for educational purposes. It isn't investment, tax or legal advice, and it isn't a recommendation to buy or sell any security. We're not a registered dealer or adviser.</p>
+<p>Our data comes from public company filings and is processed automatically. It may contain errors, leave things out, or be out of date. Companies can change or cancel dividends at any time. Before you make any decision, check the company's own announcement, your broker, and if needed a qualified professional.</p>
+<p>We aren't liable for any loss that comes from using this site. Past dividends don't guarantee future dividends.</p>
+<p>Questions or corrections: <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
+ '/privacy/':("Privacy policy","MapleDividends privacy policy.",f"""<h1>Privacy policy</h1>
+<p>Last updated: {dh(TODAY)}.</p>
+<p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>
+<p><strong>Newsletter.</strong> If you sign up for our email newsletter (coming soon), we'll collect your email address to send it. It will be stored with our email provider. You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
+<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>
+<p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
+ '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.","""<h1>Affiliate disclosure</h1>
+<p>MapleDividends is free to use. To pay for it, we may include affiliate or referral links to Canadian financial services, such as online brokerages. If you open an account through one of these links, we may get paid a fee by that company, at no cost to you.</p>
+<p>Affiliate relationships never change the dividend data we publish, which comes only from company filings. We'll label affiliate links clearly where they appear.</p>
+<p>As of today, this site has no affiliate links.</p>"""),
+}
+if __name__=='__main__': main()

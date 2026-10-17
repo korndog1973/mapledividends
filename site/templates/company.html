@@ -1,0 +1,33 @@
+{% extends "base.html" %}{% block body %}
+<nav class="crumbs"><a href="/">Home</a> › <a href="/companies/">Companies</a> › {{ c.ticker }}</nav>
+<h1>{{ c.name }} (TSX: {{ c.ticker }}) dividend</h1>
+<p class="lead">{% if L %}Latest declared {{ L.freq|lower if L.freq != 'Not stated' else '' }} dividend: <strong>{{ L.amount_h }}</strong>{% if L.unit %} per {{ L.unit }}{% endif %}, ex-dividend {{ L.ex_h }}, paid {{ L.pay_h }}.{% endif %}</p>
+{% if L %}
+<section class="card latest">
+  <h2>Latest declaration</h2>
+  <dl class="kv">
+    <dt>Amount</dt><dd>{{ L.amount_h }}{% if not L.currency %} <span class="muted">(currency not stated in the filing excerpt)</span>{% endif %}</dd>
+    <dt>Ex-dividend date</dt><dd>{{ L.ex_h }} <span class="muted">(same as record date under T+1; see note)</span></dd>
+    <dt>Record date</dt><dd>{{ L.record_h }}</dd>
+    <dt>Pay date</dt><dd>{{ L.pay_h }}</dd>
+    <dt>Frequency</dt><dd>{{ L.freq }}</dd>
+    <dt>Change vs previous</dt><dd><span class="badge {{ L.change.kind }}">{{ L.change.label }}</span></dd>
+    <dt>Filed</dt><dd>{{ L.filed_h }} ({{ L.form }})</dd>
+    <dt>Source</dt><dd><a href="{{ L.source }}" rel="nofollow noopener" target="_blank">Company filing on SEC EDGAR</a></dd>
+  </dl>
+</section>
+{% endif %}
+<section class="card">
+  <h2>DRIP (dividend reinvestment plan)</h2>
+  {% if drip %}<p>{{ drip.text }} <a href="{{ drip.source }}" rel="nofollow noopener" target="_blank">Source</a>. Plan terms change, so check the plan before you enrol.</p>
+  {% else %}<p><strong>Check plan.</strong> We haven't verified whether {{ c.name }} has a DRIP or a DRIP discount. Look on the company's investor relations site or ask your broker. Note that a broker's "synthetic" DRIP usually doesn't include a company's discount.</p>{% endif %}
+</section>
+<section class="card">
+  <h2>Dividend history (verified)</h2>
+  <table class="t"><thead><tr><th>Ex / record date</th><th>Pay date</th><th class="r">Amount</th><th>Type</th><th>Source</th></tr></thead><tbody>
+  {% for h in history %}<tr><td>{{ h.record_h }}</td><td>{{ h.pay_h }}</td><td class="r">{{ h.amount_h }}</td><td>{{ h.type }}</td><td><a href="{{ h.source }}" rel="nofollow noopener" target="_blank">filing</a></td></tr>{% endfor %}
+  </tbody></table>
+  <p class="muted small">History only includes declarations in the filings we've checked since {{ start_h }}, so it may be incomplete. {% if c.ambiguous %}Some filings listed several amounts for the same date (for example, different share classes), so we left those out.{% endif %}</p>
+</section>
+<p class="muted small">Ex-date note: since Canada moved to T+1 settlement on May 27, 2024, the ex-dividend date for regular cash dividends is generally the same as the record date. Special or very large dividends can have a different ex-date set by the exchange. Always confirm with the company or your broker.</p>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block body %}
+<h1>Canadian dividend raises and cuts, week by week</h1>
+<p class="lead">Each regular dividend compared with the company's previous regular dividend. Both must be verified against the filings. Last 12 weeks.</p>
+{% if weeks %}{% for w in weeks %}
+<section class="card"><h2>Week of {{ w.week_h }}</h2>
+<table class="t"><thead><tr><th>Company</th><th>Change</th><th class="r">Previous</th><th class="r">New</th><th>Ex-date</th></tr></thead><tbody>
+{% for c in w.rows %}<tr><td><a href="/dividends/{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span></td><td><span class="badge {{ c.kind }}">{{ c.kind_h }} {{ c.pct_h }}</span></td><td class="r">{{ c.prev_h }}</td><td class="r">{{ c.amount_h }}</td><td>{{ c.ex_h }}</td></tr>{% endfor %}
+</tbody></table></section>
+{% endfor %}{% else %}<p class="muted">No verified raises or cuts in the last 12 weeks.</p>{% endif %}
+<p class="muted small">Weeks are grouped by the filing date. Changes bigger than 50% are left out until a person checks them.</p>
+{% endblock %}

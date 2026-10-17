@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ site_url }}{{ path }}">
+<meta property="og:title" content="{{ title }}">
+<meta property="og:description" content="{{ description }}">
+<meta property="og:url" content="{{ site_url }}{{ path }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MapleDividends">
+<meta name="theme-color" content="#b91c1c">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍁</text></svg>">
+<link rel="stylesheet" href="/style.css?v={{ build_id }}">
+{% block head %}{% endblock %}
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/">🍁 Maple<span>Dividends</span></a>
+    <nav>
+      <a href="/calendar/">Ex-dividend calendar</a>
+      <a href="/raises-and-cuts/">Raises &amp; cuts</a>
+      <a href="/companies/">Companies</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap">
+{% block body %}{% endblock %}
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><strong>Not financial advice.</strong> MapleDividends is general information built from public company filings. It may contain errors or be out of date. Always check the company's own announcement before you act. <a href="/disclaimer/">Full disclaimer</a>.</p>
+    <p class="links"><a href="/about/">About</a> · <a href="/methodology/">How we get the data</a> · <a href="/disclaimer/">Disclaimer</a> · <a href="/privacy/">Privacy</a> · <a href="/affiliate-disclosure/">Affiliate disclosure</a></p>
+    <p class="muted">Data last updated {{ build_date_human }}. Source: company filings on SEC EDGAR.</p>
+  </div>
+</footer>
+</body>
+</html>
