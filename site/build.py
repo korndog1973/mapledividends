@@ -8,6 +8,7 @@ START=os.environ.get("START","2025-07-01")
 env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
 D=datetime.date.fromisoformat
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
+CUR_NOTE={'filing':"currency per the filing's general statement",'company':"currency per the company's other filings",'override':"currency from our company notes; this filing doesn't state it"}
 def money(a,cur):
     s=f"{a:.6f}".rstrip('0'); s=s if len(s.split('.')[1])>=2 else f"{a:.2f}"
     return (f"US${s}" if cur=='USD' else f"C${s}" if cur=='CAD' else f"${s}")
@@ -23,18 +24,37 @@ def freq(c):
         for lo,hi,lab in [(25,35,'Monthly'),(80,100,'Quarterly'),(170,200,'Semi-annual'),(350,380,'Annual')]:
             if lo<=g<=hi: return lab
     return 'Not stated'
-def change(regs):
+GAP={'Monthly':31,'Quarterly':91,'Semi-annual':182,'Annual':365}
+def change(regs,fq=None):
+    """Most recent change in the regular dividend: the FIRST declaration at the current rate vs the declaration before it.
+    If the two are further apart than the payment frequency allows, a declaration is missing from our data, so we
+    don't know when the change was announced (gap=True) and it is kept off the dated raises/cuts list."""
     if len(regs)<2: return dict(kind='none',label='No earlier dividend in our data',pct=None)
-    a,b=regs[0],regs[1]
-    if a['currency']!=b['currency']: return dict(kind='none',label='Not comparable (currency)',pct=None)
+    last=[r['amount'] for r in regs[:4]]
+    steps=[b-a for a,b in zip(last[1:],last)]  # newer minus older
+    if len(last)>=3 and len(set(last))==len(last) and any(x>0 for x in steps) and any(x<0 for x in steps):
+        return dict(kind='none',label='Amount changes every period (variable dividend), so we don\'t count it as a raise or cut',pct=None)
+    i=1
+    while i<len(regs) and abs(regs[i]['amount']-regs[0]['amount'])<1e-9: i+=1
+    if i==len(regs): return dict(kind='same',label=f"Unchanged since {dh(regs[-1]['record'])} (start of our data)",pct=0)
+    a,b=regs[i-1],regs[i]
+    if a['currency'] and b['currency'] and a['currency']!=b['currency']: return dict(kind='none',label='Not comparable (currency)',pct=None)
     if b['amount']==0: return dict(kind='none',label='n/a',pct=None)
     p=(a['amount']-b['amount'])/b['amount']*100
-    if abs(p)<0.05: return dict(kind='same',label='Unchanged',pct=0)
+    spacing=[(D(x['record'])-D(y['record'])).days for x,y in zip(regs,regs[1:])]
+    g=GAP.get(fq) or (min(spacing) if len(spacing)>=2 else None)  # frequency not stated: use the tightest spacing we've seen
+    days=(D(a['record'])-D(b['record'])).days
+    gap=bool(g and days>1.6*g)
+    first=a.get('first_filed') or a['file_date']
+    base=dict(pct=p,decl=a,prev=b,first_filed=first,gap=gap)
     if abs(p)>50:
         sn=a.get('snippet','').lower()
-        ok=re.search(r'reset|reduc|\bcut\b|decreas',sn) if p<0 else re.search(r'increas|\brais',sn)
-        if not ok: return dict(kind='verify',label='Large change, being checked',pct=p)
-    return dict(kind='raise' if p>0 else 'cut',label=f"{'Raised' if p>0 else 'Cut'} {abs(p):.1f}%",pct=p)
+        ok=(a.get('decrease_kw') or re.search(r'reset|reduc|\bcut\b|decreas',sn)) if p<0 else (a.get('increase_kw') or re.search(r'increas|\brais',sn))
+        if not ok: return dict(base,kind='verify',label='Large change, being checked')
+    verb='Raised' if p>0 else 'Cut'
+    if gap: label=f"{verb} {abs(p):.1f}% (from {money(b['amount'],b['currency'])}) sometime between {dh(b['record'])} and {dh(a['record'])} record dates; a declaration in between is missing from our data"
+    else: label=f"{verb} {abs(p):.1f}% (from {money(b['amount'],b['currency'])}), announced {dh(first)}"
+    return dict(base,kind='raise' if p>0 else 'cut',label=label)
 def write(path,html):
     p=os.path.join(DIST,path.strip('/'),'index.html') if not path.endswith('.html') else os.path.join(DIST,path.strip('/'))
     os.makedirs(os.path.dirname(p),exist_ok=True); open(p,'w').write(html)
@@ -47,8 +67,8 @@ def main():
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']
         if not regs: continue
-        s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs)
-        Lh=dict(amount_h=money(L['amount'],L['currency']),currency=L['currency'],unit=unit_of(L['snippet']),ex_h=dh(L['record']),record_h=dh(L['record']),pay_h=dh(L['pay']),
+        s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs,fq)
+        Lh=dict(amount_h=money(L['amount'],L['currency']),currency=L['currency'],currency_note=CUR_NOTE.get(L.get('currency_basis')) if L['currency'] else None,unit=unit_of(L['snippet']),ex_h=dh(L['record']),record_h=dh(L['record']),pay_h=dh(L['pay']),
                 freq=fq,change=ch,filed_h=dh(L['file_date']),form=L['form'],source=L['source'])
         hist=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Regular',source=r['source'],rec=r['record']) for r in regs]
         hist+=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Special',source=r['source'],rec=r['record']) for r in c['special']]
@@ -66,9 +86,10 @@ def main():
         for r in regs+c['special']:
             if TODAY-datetime.timedelta(days=30)<=D(r['record'])<TODAY: recent.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
             if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
-        if ch['kind'] in ('raise','cut') and D(L['file_date'])>=TODAY-datetime.timedelta(weeks=12):
-            fd=D(L['file_date']); wk=fd-datetime.timedelta(days=fd.weekday())
-            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Raise' if ch['kind']=='raise' else 'Cut',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(regs[1]['amount'],regs[1]['currency']),amount_h=Lh['amount_h'],ex_h=Lh['ex_h'],week=wk,filed=L['file_date']))
+        # dated by the filing that FIRST announced the new rate; changes whose timing we can't pin down (missing declaration) are left off
+        if ch['kind'] in ('raise','cut') and not ch['gap'] and D(ch['first_filed'])>=TODAY-datetime.timedelta(weeks=12):
+            fd=D(ch['first_filed']); wk=fd-datetime.timedelta(days=fd.weekday()); a,b=ch['decl'],ch['prev']
+            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Raise' if ch['kind']=='raise' else 'Cut',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),week=wk,filed=ch['first_filed']))
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
     recent.sort(key=lambda e:(e['ex'],e['name']),reverse=True)
     rgroups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(recent,key=lambda e:e['ex'])]
@@ -103,7 +124,7 @@ PAGES={
 <li><strong>Parsing.</strong> Our software pulls out the dividend amount, record date and pay date as the company wrote them. We don't estimate or forecast dividends.</li>
 <li><strong>Checks.</strong> We only publish a declaration when the amount is in a sensible range, the record date is close to the filing date, and the pay date falls on or after the record date (within 120 days). Declarations about preferred shares, debentures and similar securities are excluded. If a filing lists several amounts for the same date (for example, different share classes), we leave them out until a person checks them.</li>
 <li><strong>Ex-dates.</strong> Since Canada moved to T+1 settlement on May 27, 2024, the ex-dividend date for regular cash dividends is generally the same as the record date. Special or very large dividends can be different.</li>
-<li><strong>Currency.</strong> We show US$ or C$ only when the filing says which. Otherwise we show the amount exactly as written.</li>
+<li><strong>Currency.</strong> Many Canadian companies pay dividends in U.S. dollars. We show US$ or C$ when the filing says which (next to the amount, or in a general statement such as "all amounts are in U.S. dollars"), or when we've confirmed it by hand for that company. If we can't tell, we show a plain $ amount exactly as written.</li>
 <li><strong>DRIP.</strong> We only show DRIP details the company itself states in a filing. Otherwise the page says "check plan".</li></ol>
 <p>Limits: the history only goes back to the filings we've processed (since July 2025), and companies that don't file with the SEC aren't covered yet.</p>"""),
  '/disclaimer/':("Disclaimer: not financial advice","MapleDividends disclaimer.",f"""<h1>Disclaimer</h1>

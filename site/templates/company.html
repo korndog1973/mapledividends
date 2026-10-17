@@ -6,12 +6,12 @@
 <section class="card latest">
   <h2>Latest declaration</h2>
   <dl class="kv">
-    <dt>Amount</dt><dd>{{ L.amount_h }}{% if not L.currency %} <span class="muted">(currency not stated in the filing excerpt)</span>{% endif %}</dd>
+    <dt>Amount</dt><dd>{{ L.amount_h }}{% if not L.currency %} <span class="muted">(currency not stated in the filing excerpt)</span>{% elif L.currency_note %} <span class="muted">({{ L.currency_note }})</span>{% endif %}</dd>
     <dt>Ex-dividend date</dt><dd>{{ L.ex_h }} <span class="muted">(same as record date under T+1; see note)</span></dd>
     <dt>Record date</dt><dd>{{ L.record_h }}</dd>
     <dt>Pay date</dt><dd>{{ L.pay_h }}</dd>
     <dt>Frequency</dt><dd>{{ L.freq }}</dd>
-    <dt>Change vs previous</dt><dd><span class="badge {{ L.change.kind }}">{{ L.change.label }}</span></dd>
+    <dt>Last change</dt><dd><span class="badge {{ L.change.kind }}">{{ L.change.label }}</span></dd>
     <dt>Filed</dt><dd>{{ L.filed_h }} ({{ L.form }})</dd>
     <dt>Source</dt><dd><a href="{{ L.source }}" rel="nofollow noopener" target="_blank">Company filing on SEC EDGAR</a></dd>
   </dl>

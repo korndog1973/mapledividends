@@ -7,5 +7,5 @@
 {% for c in w.rows %}<tr><td><a href="/dividends/{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span></td><td><span class="badge {{ c.kind }}">{{ c.kind_h }} {{ c.pct_h }}</span></td><td class="r">{{ c.prev_h }}</td><td class="r">{{ c.amount_h }}</td><td>{{ c.ex_h }}</td></tr>{% endfor %}
 </tbody></table></section>
 {% endfor %}{% else %}<p class="muted">No verified raises or cuts in the last 12 weeks.</p>{% endif %}
-<p class="muted small">Weeks are grouped by the filing date. Changes bigger than 50% are left out until a person checks them.</p>
+<p class="muted small">Each change is dated by the filing that first announced the new rate, and grouped by that week. If a declaration between the old and new rate is missing from our data, we leave the change off this list because we can't say when it was announced. Changes bigger than 50% are listed only when the filing itself describes the increase or cut; otherwise they wait for a person to check them. Variable dividends that change every period aren't counted.</p>
 {% endblock %}

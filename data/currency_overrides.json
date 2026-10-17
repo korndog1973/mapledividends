@@ -1,0 +1,79 @@
+{
+ "_comment": "Manual dividend-currency overrides for companies whose declaration filings don't state the currency next to the amount. Used only when the filing itself doesn't say (an explicit US$/C$ in the filing always wins). Add a note for every entry.",
+ "AG": {
+  "currency": "USD",
+  "note": "First Majestic declares dividends in US dollars"
+ },
+ "AQN": {
+  "currency": "USD",
+  "note": "Algonquin declares in US$; filings give the Canadian dollar equivalent separately"
+ },
+ "BAM": {
+  "currency": "USD",
+  "note": "Brookfield Asset Management declares dividends in US dollars"
+ },
+ "BIP": {
+  "currency": "USD",
+  "note": "Brookfield Infrastructure declares distributions in US dollars"
+ },
+ "BN": {
+  "currency": "USD",
+  "note": "Brookfield Corporation declares dividends in US dollars"
+ },
+ "BNT": {
+  "currency": "USD",
+  "note": "Brookfield Wealth Solutions declares in US dollars"
+ },
+ "CDE": {
+  "currency": "USD",
+  "note": "Coeur Mining is a US company; dividends in US dollars"
+ },
+ "CM": {
+  "currency": "CAD",
+  "note": "CIBC common dividends are in Canadian dollars"
+ },
+ "CP": {
+  "currency": "CAD",
+  "note": "CPKC common dividends are in Canadian dollars"
+ },
+ "H": {
+  "currency": "CAD",
+  "note": "Hydro One dividends are in Canadian dollars"
+ },
+ "IMO": {
+  "currency": "CAD",
+  "note": "Imperial Oil declares dividends in Canadian cents"
+ },
+ "MFC": {
+  "currency": "CAD",
+  "note": "Manulife common dividends are in Canadian dollars"
+ },
+ "OTEX": {
+  "currency": "USD",
+  "note": "Open Text declares dividends in US dollars"
+ },
+ "OVV": {
+  "currency": "USD",
+  "note": "Ovintiv is US-domiciled; dividends in US dollars"
+ },
+ "QSP": {
+  "currency": "USD",
+  "note": "Restaurant Brands International LP exchangeable units: distributions match QSR, in US dollars"
+ },
+ "QSR": {
+  "currency": "USD",
+  "note": "Restaurant Brands International declares dividends in US dollars"
+ },
+ "RBA": {
+  "currency": "USD",
+  "note": "RB Global declares dividends in US dollars"
+ },
+ "SSRM": {
+  "currency": "USD",
+  "note": "SSR Mining declares dividends in US dollars"
+ },
+ "TRI": {
+  "currency": "USD",
+  "note": "Thomson Reuters declares dividends in US dollars"
+ }
+}
