@@ -114,7 +114,7 @@ PAGES={
  '/privacy/':("Privacy policy","MapleDividends privacy policy.",f"""<h1>Privacy policy</h1>
 <p>Last updated: {dh(TODAY)}.</p>
 <p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>
-<p><strong>Newsletter.</strong> If you sign up for our email newsletter (coming soon), we'll collect your email address to send it. It will be stored with our email provider. You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
+<p><strong>Newsletter.</strong> If you sign up for our email newsletter, we'll collect your email address to send it. It is stored with our email provider, Kit (kit.com). You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
 <p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>
 <p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
  '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.","""<h1>Affiliate disclosure</h1>

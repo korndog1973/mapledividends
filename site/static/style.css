@@ -15,6 +15,12 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 .signup input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:1rem;min-width:0}
 .signup button{padding:10px 16px;border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:700}
 .signup button:disabled,.signup input:disabled{opacity:.6}
+.signup button{cursor:pointer}.signup button:hover{filter:brightness(1.08)}
+.signup-h{font-weight:700;font-size:1.1rem;margin:0 0 2px}.signup-sub{color:var(--mut);font-size:.92rem;margin:0 0 10px}
+.signup-msg{margin:8px 0 0;font-size:.92rem}.signup-msg:empty{display:none}.signup.done .row{display:none}.signup.done .signup-msg{color:var(--up);font-weight:600}
+.signup-compact{margin:24px 0 8px;max-width:none}.signup-compact .signup-h{font-size:1rem}
+.vh{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+@media(max-width:480px){.signup .row{flex-direction:column}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:16px 0;overflow-x:auto}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid2 .card{margin:0}
 @media(max-width:760px){.grid2{grid-template-columns:1fr}nav a{margin:0 12px 0 0}.nav{padding:8px 0}}

@@ -1,0 +1,21 @@
+{# Newsletter signup (Kit form 10060949). Works without JS: a plain POST to Kit, which shows its own confirmation page. With JS, it submits in place. #}
+{% macro signup(compact=false) -%}
+<form class="signup{% if compact %} signup-compact{% endif %}" action="https://app.kit.com/forms/10060949/subscriptions" method="post" data-kit-form="10060949" aria-label="Newsletter signup">
+  <p class="signup-h">Get the weekly Canadian dividend raises &amp; cuts</p>
+  {% if not compact %}<p class="signup-sub">Free, every week, unsubscribe anytime.</p>{% else %}<p class="signup-sub">Free and weekly. Unsubscribe anytime.</p>{% endif %}
+  <div class="row">
+    <label class="vh" for="email-{{ 'c' if compact else 'h' }}">Email address</label>
+    <input id="email-{{ 'c' if compact else 'h' }}" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required>
+    <button type="submit">Subscribe</button>
+  </div>
+  <p class="signup-msg" role="status" aria-live="polite"></p>
+</form>
+<script>
+(function(){var f=document.currentScript.previousElementSibling;if(!f||!window.fetch||!window.FormData)return;
+f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('button'),m=f.querySelector('.signup-msg');b.disabled=true;m.textContent='Subscribing…';
+fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}}).then(function(r){return r.json().catch(function(){return null}).then(function(j){return {ok:r.ok,j:j}})}).then(function(x){
+if(x.ok&&!(x.j&&x.j.status==='failed')){f.classList.add('done');m.textContent='Almost done! Check your email to confirm your subscription.';}
+else{b.disabled=false;m.textContent=(x.j&&x.j.errors&&x.j.errors.messages&&x.j.errors.messages.join(' '))||'Something went wrong. Please check your email address and try again.';}
+}).catch(function(){f.submit();});});})();
+</script>
+{%- endmacro %}

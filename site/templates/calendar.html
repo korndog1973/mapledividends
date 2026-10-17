@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% block body %}
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% block body %}
 <h1>Upcoming ex-dividend calendar for TSX stocks</h1>
 <p class="lead">Declared dividends with an ex-date on or after {{ today_h }}. To get the dividend, you generally need to buy <em>before</em> the ex-date.</p>
 {% if groups %}{% for g in groups %}
@@ -13,4 +13,5 @@
 {% for e in g.rows %}<tr><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h }}</td><td>{{ e.freq }}</td></tr>{% endfor %}
 </tbody></table></section>{% endfor %}{% endif %}
 <p class="muted small">Ex-date = record date for regular cash dividends under T+1 settlement (since May 27, 2024). This list only covers companies in our verified data, so it's not every TSX dividend.</p>
+{{ signup(compact=true) }}
 {% endblock %}
