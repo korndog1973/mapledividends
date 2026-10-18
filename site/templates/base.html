@@ -17,6 +17,38 @@
 {% block head %}{% endblock %}
 </head>
 <body>
+<div class="ticker" aria-label="Market ticker (delayed prices from TradingView)">
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+  {
+  "symbols": [
+    {"proName": "TSX:XIU", "title": "TSX 60"},
+    {"proName": "TSX:RY", "title": "RY"},
+    {"proName": "TSX:TD", "title": "TD"},
+    {"proName": "TSX:ENB", "title": "ENB"},
+    {"proName": "TSX:BMO", "title": "BMO"},
+    {"proName": "TSX:T", "title": "T"},
+    {"proName": "TSX:CNQ", "title": "CNQ"},
+    {"proName": "TSX:BCE", "title": "BCE"},
+    {"proName": "BITSTAMP:BTCUSD", "title": "Bitcoin"},
+    {"proName": "BITSTAMP:ETHUSD", "title": "Ethereum"},
+    {"proName": "COINBASE:SOLUSD", "title": "Solana"},
+    {"proName": "COINBASE:DOGEUSD", "title": "Dogecoin"},
+    {"proName": "FX_IDC:USDCAD", "title": "USD/CAD"}
+  ],
+  "showSymbolLogo": true,
+  "isTransparent": true,
+  "displayMode": "regular",
+  "colorTheme": "light",
+  "locale": "en"
+  }
+  </script>
+</div>
+<!-- TradingView Widget END -->
+</div>
 <header class="top">
   <div class="wrap nav">
     <a class="brand" href="/">🍁 Maple<span>Dividends</span></a>

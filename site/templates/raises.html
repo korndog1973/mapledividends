@@ -1,5 +1,6 @@
 {% extends "base.html" %}{% block body %}
-<h1>Canadian dividend raises and cuts, week by week</h1>
+<h1>Deadly / Not Deadly: Canadian dividend raises &amp; cuts</h1>
+<p class="legend"><strong>Deadly</strong> 💀 = dividend raise. <strong>Not Deadly</strong> 👎 = dividend cut.</p>
 <p class="lead">Each regular dividend compared with the company's previous regular dividend. Both must be verified against the filings. Last 12 weeks.</p>
 {% if weeks %}{% for w in weeks %}
 <section class="card"><h2>Week of {{ w.week_h }}</h2>

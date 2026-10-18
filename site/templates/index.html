@@ -13,7 +13,8 @@
     <p><a href="/calendar/">Full calendar →</a></p>
   </div>
   <div class="card">
-    <h2>Latest raises &amp; cuts</h2>
+    <h2>Deadly / Not Deadly: latest raises &amp; cuts</h2>
+    <p class="legend"><strong>Deadly</strong> 💀 = dividend raise. <strong>Not Deadly</strong> 👎 = dividend cut.</p>
     {% if changes %}<ul class="chg">{% for c in changes[:10] %}<li><span class="badge {{ c.kind }}">{{ c.kind_h }} {{ c.pct_h }}</span> <a href="/dividends/{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span> <span class="muted">{{ c.prev_h }} → {{ c.amount_h }}</span></li>{% endfor %}</ul>
     {% else %}<p class="muted">No verified raises or cuts in the last 12 weeks.</p>{% endif %}
     <p><a href="/raises-and-cuts/">All raises &amp; cuts →</a></p>
