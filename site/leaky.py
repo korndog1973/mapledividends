@@ -3,6 +3,7 @@ dividend raise (syrup pouring onto pancakes). Built only from the raises/cuts we
 so there's no new data source, key or licence. The live price movers under the art are TradingView's free embeddable
 Stock Market (hotlists) widget, which loads in the visitor's browser straight from TradingView."""
 import os, datetime
+import roast  # daily Roast / Syrup Bath blurbs (site/roast.py)
 PATH='/leaky-maple/'
 OG='og.png'
 WEEKS=12  # same window as the raises & cuts page
@@ -86,6 +87,8 @@ def og_png(path,ca):
 def build(B,common,ca_chg,us_chg):
     """Writes /leaky-maple/ (+ og.png); returns (context for the home page teaser, [static paths])."""
     ca=side(ca_chg,B.TODAY); us=side(us_chg,B.TODAY) if us_chg is not None else None
+    ca['fun']=roast.blurbs(ca,B.TODAY,'TSX')
+    if us: us['fun']=roast.blurbs(us,B.TODAY,'U.S.')
     os.makedirs(os.path.join(B.DIST,PATH.strip('/')),exist_ok=True)
     og=PATH+OG+'?v='+B.TODAY.strftime('%Y%m%d') if og_png(os.path.join(B.DIST,PATH.strip('/'),OG),ca) else None
     c,r=ca['cut'],ca['raise_']

@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_leaky.html" import duel %}{% from "_refer.html" import refer_box %}{% block body %}
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_leaky.html" import duel, joke_box %}{% from "_refer.html" import refer_box %}{% block body %}
 <section class="hero">
   <h1>Canadian dividends, checked against the source.</h1>
   <p class="lead">Ex-dates, pay dates, raises and cuts for TSX dividend payers. Every number links back to the company's own filing.</p>
@@ -6,7 +6,7 @@
 </section>
 {% if leaky %}<section class="card lm-teaser">
   <div class="lm-teaser-h"><h2>Leaky Maple vs Golden Pour 🍁🥞</h2><a href="/leaky-maple/">See the full showdown →</a></div>
-  <p class="legend">Worst dividend cut vs biggest dividend raise, last 12 weeks. For fun, not advice.</p>
+  <p class="legend">Worst dividend cut vs biggest dividend raise, last 12 weeks. Updated before the opening bell. For fun, not advice.</p>
   {{ duel(leaky.ca, 'home', '/dividends/', compact=true) }}
 </section>{% endif %}
 <section class="grid2">
@@ -29,5 +29,6 @@
   <h2>What's here</h2>
   <p>{{ n_companies }} TSX-listed companies with a declaration we've checked against the source. We only publish dividends we could read straight from a company filing, with an amount, a record date and a pay date that agree with each other. <a href="/methodology/">How we get the data</a>.</p>
 </section>
+{{ joke_box(joke) }}
 {{ refer_box(referrals) }}
 {% endblock %}

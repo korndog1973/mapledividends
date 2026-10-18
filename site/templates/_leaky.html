@@ -97,6 +97,8 @@
 {% else %}<p class="duel-cap">{{ 'No dividend cuts in our data. The bucket is dry 🎉' if kind == 'cut' else 'No dividend raises in our data yet.' }}</p>{% endif %}
 {% endmacro %}
 
+{# Daily Roast 🍁 / Syrup Bath 🥞 blurb (site/roast.py), only filed facts. #}
+{% macro fun_blurb(fun, kind) %}{% if fun %}<div class="fun {{ 'roast' if kind == 'cut' else 'bath' }}"><p class="fun-h">{{ "Today's roast 🔥🍁" if kind == 'cut' else "Today's syrup bath 🛁🥞" }}</p><p class="fun-t">{{ fun.roast if kind == 'cut' else fun.praise }}</p></div>{% endif %}{% endmacro %}
 {% macro exchange_name(x) %}{{ 'TSX' if x == 'TSX' else 'U.S.' }}{% endmacro %}
 {# Placeholder with reserved height; the TradingView hotlists widget is injected when it scrolls into view (see leaky.html). #}
 {% macro tv_slot(x) %}<div class="tv-slot" data-exchange="{{ x }}"><noscript><p class="muted small">Turn on JavaScript to see TradingView's live movers.</p></noscript></div>{% endmacro %}
@@ -107,13 +109,22 @@
   <h{{ 3 if compact else 2 }} class="duel-h">The Leaky Maple 🍁</h{{ 3 if compact else 2 }}>
   {{ leaky_svg(d.cut, uid ~ 'l') }}
   {{ caption(d.cut, 'cut', base) }}
+  {% if not compact %}{{ fun_blurb(d.fun, 'cut') }}{% endif %}
   {% if exchange %}<p class="tv-h">📉 Today's {{ exchange_name(exchange) }} price movers. Tap <strong>Losers</strong> for the drips.</p>{{ tv_slot(exchange) }}{% endif %}
  </div>
  <div class="duel-side good">
   <h{{ 3 if compact else 2 }} class="duel-h">The Golden Pour 🥞</h{{ 3 if compact else 2 }}>
   {{ golden_svg(d.raise_, uid ~ 'g') }}
   {{ caption(d.raise_, 'raise', base) }}
+  {% if not compact %}{{ fun_blurb(d.fun, 'raise') }}{% endif %}
   {% if exchange %}<p class="tv-h">📈 Today's {{ exchange_name(exchange) }} price movers. Tap <strong>Gainers</strong> for the sweet stuff.</p>{{ tv_slot(exchange) }}{% endif %}
  </div>
 </div>
+{% if compact and d.fun %}<ul class="fun-lines">
+ <li><span class="fun-tag roast">🔥 Roast</span> {{ d.fun.roast_short }}</li>
+ <li><span class="fun-tag bath">🛁 Syrup bath</span> {{ d.fun.praise_short }}</li>
+</ul>{% endif %}
 {% endmacro %}
+
+{# Joke of the Day 🥞: picked at build time by date, so no JavaScript needed. #}
+{% macro joke_box(joke) %}{% if joke %}<aside class="joke" aria-label="Joke of the day"><p class="joke-h">Joke of the Day 🥞</p><p class="joke-t">{{ joke.text }}</p><p class="joke-n">New one every morning. #{{ joke.n }} of {{ joke.of }}.</p></aside>{% endif %}{% endmacro %}

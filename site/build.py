@@ -77,7 +77,8 @@ def main():
     if os.path.exists(DIST): shutil.rmtree(DIST)
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
-    common=dict(beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    import roast  # Joke of the Day 🥞 (data/jokes.json), one per build date
+    common=dict(joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']

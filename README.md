@@ -32,6 +32,12 @@ Free stack: Python, Jinja2, SEC EDGAR (public domain), Cloudflare Pages (static)
 - **Share image:** `dist/leaky-maple/og.png` (1200x630, both tickers) is drawn at build time with Pillow (`requirements.txt`). If Pillow is missing the page just has no og:image.
 - Animations are CSS and stop under `prefers-reduced-motion`.
 
+## Daily Roast / Syrup Bath + Joke of the Day
+- `site/roast.py`: under each Leaky Maple / Golden Pour panel, a template-written **roast** 🔥 (worst cut) and **syrup bath** 🛁 (biggest raise), on both tabs, plus one-liners on the home teaser. Funny lines for the dry-bucket / no-raise states.
+- Facts only, from the verified raise/cut row: company, ticker, % change, old and new amounts with currency, first-filed date. Templates tease the number and the dividend, never people or management, and make no predictions. "For fun, not advice."
+- **Daily rotation without JavaScript:** variants and the joke are picked from the build date (`TODAY`, PT because the workflow sets `TZ: America/Vancouver`). The 4:17am PT build runs before the 6:30am PT open, so the page says "Updated before the opening bell". No new cron.
+- `data/jokes.json`: about 60 original, clean maple-syrup and finance jokes. The Joke of the Day 🥞 walks through the list one a day (home page and `/leaky-maple/`, below the data). Keep them clean and never about a specific company.
+
 ## Deploy (later)
 Cloudflare Pages project "mapledividends"; output dir `dist`; custom domain mapledividends.com.
 Option A (recommended): GitHub repo + `.github/workflows/build.yml`. It refreshes twice a day and deploys with wrangler. Needs secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, plus variable SEC_UA.
