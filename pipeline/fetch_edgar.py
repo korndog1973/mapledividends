@@ -9,6 +9,9 @@ UA=os.environ.get("SEC_UA","MapleDividends admin@mapledividends.com")
 CACHE=os.path.join(ROOT,'pipeline','cache'); os.makedirs(CACHE,exist_ok=True)
 START=os.environ.get("START","2025-07-01"); END=datetime.date.today().isoformat()
 MAXDOCS=int(os.environ.get("MAXDOCS","14"))
+# DATASET=us: the Stars & Syrup U.S. set (data/us_universe.json -> data/us_manifest.json, 8-K/10-Q/10-K). Default: TSX set.
+DATASET=os.environ.get("DATASET",""); PFX=DATASET+'_' if DATASET else ''
+FORMS='8-K,10-Q,10-K' if DATASET=='us' else '6-K,8-K'  # many U.S. issuers only state record/pay dates in 10-Q/10-K
 last=[0.0]
 def get(url,binary=False,ttl=None):
     k=os.path.join(CACHE,hashlib.sha1(url.encode()).hexdigest())
@@ -26,28 +29,30 @@ def get(url,binary=False,ttl=None):
             time.sleep(2*(i+1))
     open(k,'wb').write(b); return b
 def search(cik,q):
-    u="https://efts.sec.gov/LATEST/search-index?"+urllib.parse.urlencode(dict(q=q,ciks=str(cik).zfill(10),dateRange='custom',startdt=START,enddt=END,forms='6-K,8-K'))
+    u="https://efts.sec.gov/LATEST/search-index?"+urllib.parse.urlencode(dict(q=q,ciks=str(cik).zfill(10),dateRange='custom',startdt=START,enddt=END,forms=FORMS))
     return json.loads(get(u,ttl=6*3600)).get('hits',{}).get('hits',[])
 def main():
-    uni=json.load(open(os.path.join(ROOT,'data','universe.json')))
+    uni=json.load(open(os.path.join(ROOT,'data',PFX+'universe.json')))
     manifest=[]
     def one(arg):
         n,c=arg
         hits={}
         for q in ['dividend "of record"','distribution "of record"','dividend payable record','"per common share" dividend payable']:
-            try:
-                for h in search(c['cik'],q): hits[h['_id']]=h['_source']
-            except Exception as e: print("search fail",c['ticker'],e,file=sys.stderr)
+            for cik in c.get('ciks') or [c['cik']]:  # a company can have several CIKs (e.g. a new holding company)
+              try:
+                for h in search(cik,q): hits[h['_id']]=h['_source']
+              except Exception as e: print("search fail",c['ticker'],e,file=sys.stderr)
         docs=sorted(hits.items(),key=lambda kv:kv[1].get('file_date',''),reverse=True)[:MAXDOCS]
         for _id,s in docs:
             adsh,fn=_id.split(':',1)
-            url=f"https://www.sec.gov/Archives/edgar/data/{c['cik']}/{adsh.replace('-','')}/{fn}"
+            fc=[int(x) for x in s.get('ciks') or []]; cik=next((x for x in (c.get('ciks') or [c['cik']]) if x in fc),c['cik'])
+            url=f"https://www.sec.gov/Archives/edgar/data/{cik}/{adsh.replace('-','')}/{fn}"
             try:
                 get(url)
-                manifest.append(dict(ticker=c['ticker'],cik=c['cik'],url=url,file_date=s.get('file_date'),form=s.get('form') or (s.get('root_forms') or [''])[0],cache=hashlib.sha1(url.encode()).hexdigest()))
+                manifest.append(dict(ticker=c['ticker'],cik=cik,url=url,file_date=s.get('file_date'),form=s.get('form') or (s.get('root_forms') or [''])[0],cache=hashlib.sha1(url.encode()).hexdigest()))
             except Exception as e: print("doc fail",url,e,file=sys.stderr)
         if n%20==0: print(n,c['ticker'],len(docs),flush=True)
     with ThreadPoolExecutor(int(os.environ.get("WORKERS","12"))) as ex: list(ex.map(one,enumerate(uni)))
-    json.dump(manifest,open(os.path.join(ROOT,'data','manifest.json'),'w'),indent=1)
+    json.dump(manifest,open(os.path.join(ROOT,'data',PFX+'manifest.json'),'w'),indent=1)
     print("docs:",len(manifest))
 if __name__=='__main__': main()

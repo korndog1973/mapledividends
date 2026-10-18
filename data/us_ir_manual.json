@@ -1,0 +1,530 @@
+{
+ "_note": "Stars & Syrup: declarations a person copied from the company's own investor-relations announcement because the SEC filings we read don't have them yet (the company doesn't file each dividend announcement with the SEC, or we haven't parsed it). Entries without 'announced' come from the company's dividend-history table, which doesn't list a declaration date. Each entry must quote its IR source URL. Remove an entry once the pipeline picks it up from EDGAR.",
+ "MSFT": [
+  {
+   "amount": 0.98,
+   "record": "2026-11-19",
+   "pay": "2026-12-10",
+   "announced": "2026-09-15",
+   "source": "https://news.microsoft.com/source/2026/09/15/microsoft-announces-quarterly-dividend-increase-7/",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $0.98 per share ... payable Dec. 10, 2026, to shareholders of record on Nov. 19, 2026"
+  }
+ ],
+ "JNJ": [
+  {
+   "amount": 1.34,
+   "record": "2026-11-24",
+   "pay": "2026-12-08",
+   "announced": "2026-10-13",
+   "source": "https://investor.jnj.com/investor-news/news-details/2026/Johnson--Johnson-Announces-Quarterly-Dividend-for-Fourth-Quarter-2026/default.aspx",
+   "checked": "2026-10-18",
+   "quote": "cash dividend for the fourth quarter of 2026 of $1.34 per share ... payable on December 8, 2026 to shareholders of record at the close of business on November 24, 2026"
+  }
+ ],
+ "PEP": [
+  {
+   "amount": 1.48,
+   "record": "2026-09-04",
+   "pay": "2026-09-30",
+   "announced": "2026-07-17",
+   "source": "https://www.pepsico.com/newsroom/press-releases/2026/pepsico-declares-quarterly-dividend-0726",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $1.48 per share of PepsiCo common stock ... payable on September 30, 2026 to shareholders of record at the close of business on September 4, 2026"
+  },
+  {
+   "amount": 1.48,
+   "record": "2026-06-05",
+   "pay": "2026-06-30",
+   "announced": "2026-05-06",
+   "source": "https://www.pepsico.com/newsroom/press-releases/2026/pepsico-declares-quarterly-dividend-0526",
+   "checked": "2026-10-18",
+   "quote": "increase in its annualized dividend to $5.92 per share from $5.69 per share, which is expected to begin with the June 2026 payment. This dividend is payable on June 30, 2026 to shareholders of record at the close of business on June 5, 2026"
+  },
+  {
+   "amount": 1.4225,
+   "record": "2026-03-06",
+   "pay": "2026-03-31",
+   "announced": "2026-02-04",
+   "source": "https://www.pepsico.com/investors/dividend-information",
+   "checked": "2026-10-18",
+   "quote": "Declared 02/04/26, record 03/06/26, payable 03/31/26, $1.4225"
+  },
+  {
+   "amount": 1.4225,
+   "record": "2025-12-05",
+   "pay": "2026-01-06",
+   "announced": "2025-11-19",
+   "source": "https://www.pepsico.com/investors/dividend-information",
+   "checked": "2026-10-18",
+   "quote": "Declared 11/19/25, record 12/05/25, payable 1/06/26, $1.4225"
+  },
+  {
+   "amount": 1.4225,
+   "record": "2025-09-05",
+   "pay": "2025-09-30",
+   "announced": "2025-07-24",
+   "source": "https://www.pepsico.com/investors/dividend-information",
+   "checked": "2026-10-18",
+   "quote": "Declared 07/24/25, record 09/05/25, payable 09/30/25, $1.4225"
+  }
+ ],
+ "JPM": [
+  {
+   "amount": 1.65,
+   "record": "2026-10-06",
+   "pay": "2026-10-31",
+   "announced": "2026-09-15",
+   "source": "https://www.jpmorganchase.com/ir/news/2026/jpmc-declares-increased-common-stock-dividend-9-15",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $1.65 per share on the outstanding shares of the common stock of JPMorganChase, an increase from the prior quarterly dividend of $1.50 per share. The dividend is payable on October 31, 2026, to stockholders of record at the close of business on October 6, 2026"
+  },
+  {
+   "amount": 1.5,
+   "record": "2026-07-06",
+   "pay": "2026-07-31",
+   "announced": "2026-05-18",
+   "source": "https://www.jpmorganchase.com/ir/news/2026/jpmc-declares-common-stock-dividend-5-18",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $1.50 per share on the outstanding shares of the common stock of JPMorganChase. The dividend is payable on July 31, 2026, to stockholders of record at the close of business on July 6, 2026"
+  },
+  {
+   "amount": 1.5,
+   "record": "2026-04-06",
+   "pay": "2026-04-30",
+   "announced": "2026-03-17",
+   "source": "https://www.jpmorganchase.com/ir/news/2026/jpmc-declares-common-stock-dividend-3-17",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $1.50 per share on the outstanding shares of the common stock of JPMorganChase. The dividend is payable on April 30, 2026, to stockholders of record at the close of business on April 6, 2026"
+  }
+ ],
+ "O": [
+  {
+   "amount": 0.2715,
+   "record": "2026-10-30",
+   "pay": "2026-11-13",
+   "announced": "2026-10-13",
+   "source": "https://www.realtyincome.com/investors/press-releases/realty-income-announces-676th-consecutive-common-stock-monthly-dividend",
+   "checked": "2026-10-18",
+   "quote": "today declared its 676th consecutive common stock monthly dividend. The dividend amount of $0.2715 per share, representing an annualized amount of $3.258 per share, is payable on November 13, 2026 to stockholders of record as of October 30, 2026",
+   "frequency": "Monthly"
+  },
+  {
+   "amount": 0.2715,
+   "record": "2026-09-30",
+   "pay": "2026-10-15",
+   "announced": "2026-09-08",
+   "source": "https://www.realtyincome.com/investors/press-releases/136th-common-stock-monthly-dividend-increase-declared-realty-income",
+   "checked": "2026-10-18",
+   "quote": "increase in its common stock monthly cash dividend to $0.2715 per share from $0.2710 per share. The dividend is payable on October 15, 2026, to stockholders of record as of September 30, 2026",
+   "frequency": "Monthly"
+  }
+ ],
+ "CVX": [
+  {
+   "amount": 1.78,
+   "record": "2026-08-19",
+   "pay": "2026-09-10",
+   "announced": "2026-07-31",
+   "source": "https://chevroncorp.gcs-web.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 7/31/26, record 8/19/26, payable 9/10/26, $1.78"
+  },
+  {
+   "amount": 1.78,
+   "record": "2026-05-19",
+   "pay": "2026-06-10",
+   "announced": "2026-05-01",
+   "source": "https://chevroncorp.gcs-web.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 5/1/26, record 5/19/26, payable 6/10/26, $1.78"
+  },
+  {
+   "amount": 1.78,
+   "record": "2026-02-17",
+   "pay": "2026-03-10",
+   "announced": "2026-01-30",
+   "source": "https://chevroncorp.gcs-web.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 1/30/26, record 2/17/26, payable 3/10/26, $1.78"
+  },
+  {
+   "amount": 1.71,
+   "record": "2025-11-18",
+   "pay": "2025-12-10",
+   "announced": "2025-10-31",
+   "source": "https://chevroncorp.gcs-web.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 10/31/25, record 11/18/25, payable 12/10/25, $1.71"
+  }
+ ],
+ "T": [
+  {
+   "amount": 0.2775,
+   "record": "2026-10-12",
+   "pay": "2026-11-02",
+   "announced": "2026-09-24",
+   "source": "https://investors.att.com/stock-information/historical-stock-information/historical-common-dividends/att-inc",
+   "checked": "2026-10-18",
+   "quote": "2026: record 10-12-26, payable 11-02-26, $0.2775 (declared Sept. 24, 2026 per AT&T investor news)"
+  },
+  {
+   "amount": 0.2775,
+   "record": "2026-07-10",
+   "pay": "2026-08-03",
+   "source": "https://investors.att.com/stock-information/historical-stock-information/historical-common-dividends/att-inc",
+   "checked": "2026-10-18",
+   "quote": "2026: record 07-10-26, payable 08-03-26, $0.2775"
+  },
+  {
+   "amount": 0.2775,
+   "record": "2026-04-10",
+   "pay": "2026-05-01",
+   "source": "https://investors.att.com/stock-information/historical-stock-information/historical-common-dividends/att-inc",
+   "checked": "2026-10-18",
+   "quote": "2026: record 04-10-26, payable 05-01-26, $0.2775"
+  },
+  {
+   "amount": 0.2775,
+   "record": "2026-01-12",
+   "pay": "2026-02-02",
+   "source": "https://investors.att.com/stock-information/historical-stock-information/historical-common-dividends/att-inc",
+   "checked": "2026-10-18",
+   "quote": "2026: record 01-12-26, payable 02-02-26, $0.2775"
+  }
+ ],
+ "MO": [
+  {
+   "amount": 1.11,
+   "record": "2026-09-15",
+   "pay": "2026-10-09",
+   "announced": "2026-08-27",
+   "source": "https://investor.altria.com/press-releases/news-details/2026/Altria-Increases-Quarterly-Dividend-to-1-11-Per-Share/default.aspx",
+   "checked": "2026-10-18",
+   "quote": "increase our regular quarterly dividend by 4.7% to $1.11 per share versus the previous rate of $1.06 per share. The quarterly dividend is payable on October 9, 2026 to shareholders of record as of September 15, 2026"
+  },
+  {
+   "amount": 1.06,
+   "record": "2026-06-15",
+   "pay": "2026-07-10",
+   "announced": "2026-05-14",
+   "source": "https://investor.altria.com/press-releases/news-details/2026/Altria-Holds-2026-Annual-Meeting-of-Shareholders-Declares-Regular-Quarterly-Dividend-of-1-06-Per-Share/default.aspx",
+   "checked": "2026-10-18",
+   "quote": "declared a regular quarterly dividend of $1.06 per share, payable on July 10, 2026, to shareholders of record as of June 15, 2026"
+  },
+  {
+   "amount": 1.06,
+   "record": "2026-03-25",
+   "pay": "2026-04-30",
+   "announced": "2026-02-26",
+   "source": "https://investor.altria.com/press-releases/news-details/2026/Altria-Declares-Regular-Quarterly-Dividend-of-1-06-Per-Share/default.aspx",
+   "checked": "2026-10-18",
+   "quote": "declared a regular quarterly dividend of $1.06 per share, payable on April 30, 2026 to shareholders of record as of March 25, 2026"
+  }
+ ],
+ "MRK": [
+  {
+   "amount": 0.85,
+   "record": "2026-09-15",
+   "pay": "2026-10-07",
+   "announced": "2026-07-29",
+   "source": "https://www.merck.com/news/merck-announces-fourth-quarter-2026-dividend/",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $0.85 per share of the company’s common stock for the fourth quarter of 2026. Payment will be made on October 7, 2026, to shareholders of record at the close of business on September 15, 2026",
+   "frequency": "Quarterly"
+  },
+  {
+   "amount": 0.85,
+   "record": "2026-06-15",
+   "pay": "2026-07-08",
+   "announced": "2026-05-26",
+   "source": "https://www.merck.com/news/merck-announces-third-quarter-2026-dividend/",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly dividend of $0.85 per share of the company’s common stock for the third quarter of 2026. Payment will be made on July 8, 2026, to shareholders of record at the close of business on June 15, 2026",
+   "frequency": "Quarterly"
+  }
+ ],
+ "MCD": [
+  {
+   "amount": 1.93,
+   "record": "2026-12-01",
+   "pay": "2026-12-15",
+   "announced": "2026-09-17",
+   "source": "https://mcdonalds.mediaroom.com/2026-09-17-McDONALDS-MARKS-50-CONSECUTIVE-YEARS-OF-DIVIDEND-INCREASES,-JOINING-THE-RANKS-OF-DIVIDEND-KINGS",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly cash dividend of $1.93 per share of common stock, a 4% increase over the Company's previous quarterly dividend. The dividend is payable on December 15, 2026 to shareholders of record at the close of business on December 1, 2026",
+   "frequency": "Quarterly"
+  },
+  {
+   "amount": 1.86,
+   "record": "2026-09-01",
+   "pay": "2026-09-16",
+   "announced": "2026-07-23",
+   "source": "https://mcdonalds.mediaroom.com/2026-07-23-McDONALDS-ANNOUNCES-QUARTERLY-CASH-DIVIDEND",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly cash dividend of $1.86 per share of common stock payable on September 16, 2026 to shareholders of record at the close of business on September 1, 2026",
+   "frequency": "Quarterly"
+  }
+ ],
+ "TXN": [
+  {
+   "amount": 1.52,
+   "record": "2026-10-30",
+   "pay": "2026-11-10",
+   "announced": "2026-10-15",
+   "source": "https://www.ti.com/about-ti/newsroom/news-releases/2026/2026-10-15-texas-instruments-board-declares-fourth-quarter-2026-quarterly-dividend.html",
+   "checked": "2026-10-18",
+   "quote": "declared a quarterly cash dividend of $1.52 per share of common stock, payable Nov. 10, 2026, to stockholders of record on Oct. 30, 2026"
+  },
+  {
+   "amount": 1.42,
+   "record": "2026-07-31",
+   "pay": "2026-08-11",
+   "announced": "2026-07-16",
+   "source": "https://investor.ti.com/stock-information/dividends-stock-splits",
+   "checked": "2026-10-18",
+   "quote": "Declared Jul 16, 2026, record Jul 31, 2026, payable Aug 11, 2026, $1.42"
+  },
+  {
+   "amount": 1.42,
+   "record": "2026-05-05",
+   "pay": "2026-05-19",
+   "announced": "2026-04-16",
+   "source": "https://investor.ti.com/stock-information/dividends-stock-splits",
+   "checked": "2026-10-18",
+   "quote": "Declared Apr 16, 2026, record May 05, 2026, payable May 19, 2026, $1.42"
+  },
+  {
+   "amount": 1.42,
+   "record": "2026-01-30",
+   "pay": "2026-02-10",
+   "announced": "2026-01-15",
+   "source": "https://investor.ti.com/stock-information/dividends-stock-splits",
+   "checked": "2026-10-18",
+   "quote": "Declared Jan 15, 2026, record Jan 30, 2026, payable Feb 10, 2026, $1.42"
+  }
+ ],
+ "LMT": [
+  {
+   "amount": 3.6,
+   "record": "2026-12-01",
+   "pay": "2026-12-31",
+   "announced": "2026-10-09",
+   "source": "https://lockheedmartin.gcs-web.com/news-releases/news-release-details/lockheed-martin-declares-fourth-quarter-2026-dividend/",
+   "checked": "2026-10-18",
+   "quote": "authorized a fourth quarter 2026 dividend of $3.60 per share, an increase of $0.15 per share over the last quarter. The dividend is payable on December 31, 2026, to holders of record as of the close of business on December 1, 2026"
+  },
+  {
+   "amount": 3.45,
+   "record": "2026-09-01",
+   "pay": "2026-09-25",
+   "announced": "2026-07-22",
+   "source": "https://investors.lockheedmartin.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 7/22/2026, record 9/1/2026, payable 9/25/2026, $3.45"
+  },
+  {
+   "amount": 3.45,
+   "record": "2026-06-01",
+   "pay": "2026-06-26",
+   "announced": "2026-05-12",
+   "source": "https://investors.lockheedmartin.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 5/12/2026, record 6/1/2026, payable 6/26/2026, $3.45"
+  },
+  {
+   "amount": 3.45,
+   "record": "2026-03-02",
+   "pay": "2026-03-27",
+   "announced": "2026-02-06",
+   "source": "https://investors.lockheedmartin.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 2/6/2026, record 3/2/2026, payable 3/27/2026, $3.45"
+  }
+ ],
+ "MMM": [
+  {
+   "amount": 0.78,
+   "record": "2026-08-24",
+   "pay": "2026-09-11",
+   "announced": "2026-08-14",
+   "source": "https://investors.3m.com/news-events/press-releases/detail/1939/3m-board-declares-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "declared a dividend on the company's common stock of $0.78 per share for the third quarter of 2026. The dividend is payable Sept. 11, 2026, to shareholders of record at the close of business on Aug. 24, 2026"
+  },
+  {
+   "amount": 0.78,
+   "record": "2026-05-22",
+   "pay": "2026-06-12",
+   "announced": "2026-05-12",
+   "source": "https://investors.3m.com/news-events/press-releases/detail/1927/3m-board-declares-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "declared a dividend on the company's common stock of $0.78 per share for the second quarter of 2026. The dividend is payable June 12, 2026, to shareholders of record at the close of business on May 22, 2026"
+  },
+  {
+   "amount": 0.78,
+   "record": "2026-02-13",
+   "pay": "2026-03-12",
+   "announced": "2026-02-03",
+   "source": "https://investors.3m.com/news-events/press-releases/detail/1916/3m-board-declares-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "declared a dividend on the company's common stock of $0.78 per share for the first quarter of 2026. The dividend is payable March 12, 2026, to shareholders of record at the close of business on Feb. 13, 2026"
+  }
+ ],
+ "NEE": [
+  {
+   "amount": 0.6232,
+   "record": "2026-08-28",
+   "pay": "2026-09-15",
+   "announced": "2026-07-30",
+   "source": "https://newsroom.nexteraenergy.com/2026-07-30-NextEra-Energy-board-declares-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "regular quarterly common stock dividend of $0.6232 per share. The dividend is payable on Sept. 15, 2026, to shareholders of record on Aug. 28, 2026"
+  },
+  {
+   "amount": 0.6232,
+   "record": "2026-06-05",
+   "pay": "2026-06-15",
+   "announced": "2026-05-21",
+   "source": "https://www.investor.nexteraenergy.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 05/21/26, record 06/05/26, payable 06/15/26, $0.6232"
+  },
+  {
+   "amount": 0.6232,
+   "record": "2026-02-27",
+   "pay": "2026-03-16",
+   "announced": "2026-02-13",
+   "source": "https://www.investor.nexteraenergy.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 02/13/26, record 02/27/26, payable 03/16/26, $0.6232"
+  },
+  {
+   "amount": 0.5665,
+   "record": "2025-11-21",
+   "pay": "2025-12-15",
+   "announced": "2025-10-23",
+   "source": "https://www.investor.nexteraenergy.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 10/23/25, record 11/21/25, payable 12/15/25, $0.5665"
+  }
+ ],
+ "BLK": [
+  {
+   "amount": 5.73,
+   "record": "2026-09-08",
+   "pay": "2026-09-22",
+   "announced": "2026-07-22",
+   "source": "https://ir.blackrock.com/news-and-events/press-releases/press-releases-details/2026/BlackRock-Declares-Quarterly-Dividend-of-5-73-on-Common-Stock-5cb0e6776/default.aspx",
+   "checked": "2026-10-18",
+   "quote": "quarterly cash dividend of $5.73 per share of common stock, payable September 22, 2026 to shareholders of record at the close of business on September 8, 2026"
+  },
+  {
+   "amount": 5.73,
+   "record": "2026-06-05",
+   "pay": "2026-06-23",
+   "announced": "2026-05-20",
+   "source": "https://ir.blackrock.com/stock-information/dividend-history/",
+   "checked": "2026-10-18",
+   "quote": "Record 6/5/2026, announced 5/20/2026, payable 6/23/2026, 5.7300 quarterly"
+  },
+  {
+   "amount": 5.21,
+   "record": "2025-12-05",
+   "pay": "2025-12-23",
+   "announced": "2025-11-19",
+   "source": "https://ir.blackrock.com/stock-information/dividend-history/",
+   "checked": "2026-10-18",
+   "quote": "Record 12/5/2025, announced 11/19/2025, payable 12/23/2025, 5.2100 quarterly"
+  }
+ ],
+ "HD": [
+  {
+   "amount": 2.33,
+   "record": "2026-09-03",
+   "pay": "2026-09-17",
+   "announced": "2026-08-20",
+   "source": "https://ir.homedepot.com/news-releases/2026/08-20-2026-211013830",
+   "checked": "2026-10-18",
+   "quote": "quarterly cash dividend of $2.33 per share. The dividend is payable on September 17, 2026, to shareholders of record at the close of business on September 3, 2026"
+  },
+  {
+   "amount": 2.33,
+   "record": "2026-06-04",
+   "pay": "2026-06-18",
+   "announced": "2026-05-21",
+   "source": "https://ir.homedepot.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 05/21/26, record 06/04/26, payable 06/18/26, $2.33"
+  },
+  {
+   "amount": 2.3,
+   "record": "2025-12-04",
+   "pay": "2025-12-18",
+   "announced": "2025-11-20",
+   "source": "https://ir.homedepot.com/stock-information/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 11/20/25, record 12/04/25, payable 12/18/25, $2.30"
+  }
+ ],
+ "UPS": [
+  {
+   "amount": 1.64,
+   "record": "2026-08-17",
+   "pay": "2026-09-03",
+   "announced": "2026-08-05",
+   "source": "https://investors.ups.com/news-events/press-releases/detail/2166/ups-announces-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "regular quarterly dividend of $1.64 per share on all outstanding Class A and Class B shares. The dividend is payable September 3, 2026, to shareowners of record on August 17, 2026"
+  },
+  {
+   "amount": 1.64,
+   "record": "2026-05-18",
+   "pay": "2026-06-04",
+   "announced": "2026-05-06",
+   "source": "https://investors.ups.com/news-events/press-releases/detail/2159/ups-announces-quarterly-dividend",
+   "checked": "2026-10-18",
+   "quote": "regular quarterly dividend of $1.64 per share on all outstanding Class A and Class B shares. The dividend is payable June 4, 2026, to shareowners of record on May 18, 2026"
+  }
+ ],
+ "VZ": [
+  {
+   "amount": 0.7075,
+   "record": "2026-10-09",
+   "pay": "2026-11-02",
+   "announced": "2026-09-09",
+   "source": "https://www.verizon.com/about/news/verizon-declares-quarterly-dividend-september-2026",
+   "checked": "2026-10-18",
+   "quote": "quarterly dividend of 70.75 cents per outstanding share, consistent with the prior quarter's dividend rate. The quarterly dividend is payable on November 2, 2026 to Verizon shareholders of record at the close of business on October 9, 2026"
+  },
+  {
+   "amount": 0.7075,
+   "record": "2026-07-10",
+   "pay": "2026-08-03",
+   "announced": "2026-06-04",
+   "source": "https://www.verizon.com/about/investors/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 06/04/2026, record 07/10/2026, payable 08/03/2026, $0.7075"
+  },
+  {
+   "amount": 0.69,
+   "record": "2026-01-12",
+   "pay": "2026-02-02",
+   "announced": "2025-12-04",
+   "source": "https://www.verizon.com/about/investors/dividend-history",
+   "checked": "2026-10-18",
+   "quote": "Declared 12/04/2025, record 01/12/2026, payable 02/02/2026, $0.69"
+  }
+ ],
+ "PM": [
+  {
+   "amount": 1.6,
+   "record": "2026-10-02",
+   "pay": "2026-10-26",
+   "announced": "2026-09-18",
+   "source": "https://www.pmi.com/media-center/press-releases/press-details?newsId=30411",
+   "checked": "2026-10-18",
+   "quote": "The new quarterly dividend of $1.60 per share, up from $1.47 per share, is payable on October 26, 2026, to shareholders of record as of October 2, 2026"
+  }
+ ]
+}

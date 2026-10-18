@@ -17,6 +17,13 @@ Free stack: Python, Jinja2, SEC EDGAR (public domain), Cloudflare Pages (static)
 - `pipeline/issuers_*.xlsx` (TSX issuer list) is copyrighted. It's for internal use only and is gitignored. `data/universe.json` (ticker, name, CIK) is what gets committed.
 - Set `SEC_UA` to a real, monitored contact email. SEC fair-access policy requires it.
 
+## Stars & Syrup (U.S. section)
+- Universe: `data/us_universe.json` (ticker, name, CIK list, exchange). Pages: `/stars-and-syrup/` and `/us/<ticker>/` (`site/syrup.py`, `site/templates/syrup.html`).
+- Data: same pipeline with `DATASET=us` (`data/us_manifest.json` -> `data/us_parsed.json`). Reads 8-K, 10-Q and 10-K, because many U.S. issuers only state record and pay dates in quarterly reports. U.S.-only parser rules are gated on `DATASET=us`, so the TSX output is unchanged.
+- Amounts are shown in US$ (U.S. issuers write a plain "$"). Ex-date = record date (U.S. T+1 since May 28, 2024).
+- `data/us_ir_manual.json`: declarations a person copied from a company's own IR announcement because EDGAR doesn't have them yet. Each needs its IR URL. Remove once EDGAR has it. `IR_MANUAL_NOTES.md` lists every entry and the filing that should replace it.
+- Companies with no verified declaration are listed as "not covered yet" on the index instead of guessed.
+
 ## Deploy (later)
 Cloudflare Pages project "mapledividends"; output dir `dist`; custom domain mapledividends.com.
 Option A (recommended): GitHub repo + `.github/workflows/build.yml`. It refreshes twice a day and deploys with wrangler. Needs secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, plus variable SEC_UA.

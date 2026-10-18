@@ -3,6 +3,8 @@ Only declarations that pass every check are marked verified=True. Never guesses 
 import json, os, re, html, datetime, collections, subprocess
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE=os.path.join(ROOT,'pipeline','cache')
+# DATASET=us: Stars & Syrup U.S. set (data/us_manifest.json -> data/us_parsed.json). Default: TSX set.
+DATASET=os.environ.get('DATASET',''); PFX=DATASET+'_' if DATASET else ''
 MON='(?:January|February|March|April|May|June|July|August|September|October|November|December|(?:Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\\.)'
 DATE=rf'({MON}\s+\d{{1,2}}(?:st|nd|rd|th)?,?\s+\d{{4}})'
 def pdate(s):
@@ -55,6 +57,41 @@ def doc_currency(text):
     for m in DOC_CUR.finditer(text[:60000]):
         g=m.group(1).lower(); found.add('CAD' if 'canad' in g or g.startswith('cad') else 'USD')
     return found.pop() if len(found)==1 else None
+# --- U.S. set only (DATASET=us): wording U.S. issuers use that the TSX rules don't cover. Never applied to the TSX set.
+US=DATASET=='us'
+US_PAY=[re.compile(rf'payment\s+of\s+the\s+{DATE}\s+dividend',re.I)]  # IBM: "With payment of the September 10, 2026 dividend"
+US_NEWRATE=re.compile(r'from\s+\$\s?\d+(?:\.\d+)?(?:\s+per\s+(?:common\s+)?share)?\s+to\s*$',re.I)  # "from $1.30 per share to [$1.34 per share]"
+US_ANNUAL=re.compile(r'\bannual\s+(?:dividend|rate)\s+(?:rate\s+)?(?:of\s+)?$|equates\s+to\s+(?:an?\s+)?annual',re.I)  # "equates to an annual dividend of [$9.32]"
+US_COMMON_AFTER=re.compile(r'^\s*on\s+(?:the\s+|its\s+|each\s+)?(?:outstanding\s+)?(?:shares?\s+of\s+)?(?:the\s+company.s\s+)?common',re.I)  # "$1.0885 per share on the Common Stock and on the ... Preferred"
+def us_normalize(text,file_date):
+    """'5:00 p.m.' -> '5:00 pm' (the dot ends the date window); add the year to year-less dates ('payable Dec. 15'),
+    choosing the year that puts the date closest after the filing (from 30 days before to 335 days after)."""
+    text=re.sub(r'(\d)\s*([ap])\.m\.',r'\1 \2m',text,flags=re.I)
+    def addyear(m):
+        for y in (file_date.year-1,file_date.year,file_date.year+1):
+            d=pdate(f"{m.group(0)} {y}")
+            if d and file_date-datetime.timedelta(days=30)<=d<=file_date+datetime.timedelta(days=335): return f"{m.group(0)}, {y}"
+        return m.group(0)
+    return re.sub(rf'{MON}\s+\d{{1,2}}(?:st|nd|rd|th)?\b(?!\s*,?\s*\d{{4}})(?!\s*,?\s*\d)',addyear,text)
+def _row(amt,rec,pay,sn,kw='Quarterly'):
+    return dict(amount=round(amt,6),currency=None,currency_basis=None,record=rec,pay=pay,tight=True,frequency_kw=kw,special=False,special_strong=False,
+                increase_kw=False,decrease_kw=False,drip_kw=False,drip_disc=None,snippet=sn[:500])
+US_TBL_MSFT=re.compile(r'Declaration\s+Date\s+Record\s+Date\s+Payment\s+Date\s+Dividend\s+Per\s+Share\s+Amount(.{0,6000}?)(?=\bTotal\b|We\s+returned|Refer\s+to|$)',re.I|re.S)
+US_TBL_ROW=re.compile(rf'{DATE}\s+{DATE}\s+{DATE}\s+(?:\$\s*)?(\d{{1,2}}\.\d{{2,4}})\s+(?:\$\s*)?[\d,]+')
+US_TBL_WMT=re.compile(rf'installments\s+of\s+\$\s?(\d{{1,2}}\.\d{{2,4}})\s+per\s+share,?\s+according\s+to\s+the\s+following\s+record\s+and\s+payable\s+dates:?\s+Record\s+Date\s+Payable\s+Date\s+((?:{DATE}\s+{DATE}\s*){{1,6}})',re.I)
+def us_tables(text):
+    """Dividend tables some U.S. issuers use instead of sentences (U.S. set only):
+    Microsoft 10-Q/10-K 'Declaration Date | Record Date | Payment Date | Dividend Per Share | Amount';
+    Walmart 'installments of $X per share, according to the following record and payable dates: Record Date Payable Date ...'."""
+    out=[]
+    for t in US_TBL_MSFT.finditer(text):
+        for r in US_TBL_ROW.finditer(re.sub(r'\s+',' ',t.group(1))):
+            out.append(_row(float(r.group(4)),pdate(r.group(2)),pdate(r.group(3)),'Declaration Date / Record Date / Payment Date / Dividend Per Share: '+' | '.join(r.groups())))
+    for t in US_TBL_WMT.finditer(text):
+        ds=[pdate(x) for x in re.findall(DATE,t.group(2))]
+        for rec,pay in zip(ds[0::2],ds[1::2]):
+            out.append(_row(float(t.group(1)),rec,pay,f"Quarterly installment of ${t.group(1)} per share: record date {rec}, payable {pay} (from the filing's record and payable dates table)"))
+    return out
 SENT_END=re.compile(r'(?<!\b[A-Z])(?<!\bInc)(?<!\bNo)(?<!\bCo)\.\s*(?=[A-Z(])|\n|\$\s?\d|\d\s*cents')
 def parse_doc(text,file_date):
     out=[]
@@ -66,9 +103,10 @@ def parse_doc(text,file_date):
         if not DECL.search(near): continue
         # other securities (preferred shares, notes...): an explicit "per common share" wins over a mention nearby
         if BAD.search(m.group(0)): continue
-        if not re.search(r'\bcommon\b|\bclass\s+[a-z]\b(?!\s+preferred)',m.group(0),re.I) and BAD.search(near): continue
+        if not re.search(r'\bcommon\b|\bclass\s+[a-z]\b(?!\s+preferred)',m.group(0),re.I) and BAD.search(near) and not (US and US_COMMON_AFTER.search(text[m.end():m.end()+60])): continue
         pre=text[max(0,m.start()-70):m.start()].lower()
-        if REF.search(pre): continue
+        if US and US_ANNUAL.search(pre): continue
+        if REF.search(pre) and not (US and US_NEWRATE.search(pre)): continue
         if POST_REF.search(text[m.end():m.end()+40]): continue  # e.g. "$0.24 per share annualized increase", "$0.08 per share on an annualized basis"
         cur_basis=None
         if m.re is CENTS:
@@ -91,7 +129,7 @@ def parse_doc(text,file_date):
                 x=r.search(tail) or r.search(w)
                 if x: return pdate(x.group(x.lastindex)),False
             return None,False
-        rec,tight_r=find(REC); pay,tight_p=find(PAY)
+        rec,tight_r=find(REC); pay,tight_p=find(PAY+US_PAY if US else PAY)
         SPEC=r'special|extra|one-time|supplemental|variable|performance\s+(?:dividend|top-up)|in\s+respect\s+of\s+performance|top-up|return of capital distribution'
         special=bool(re.search(SPEC,near,re.I))
         special_strong=bool(re.search(SPEC,text[max(0,m.start()-30):m.start()]+' '+clause,re.I))  # tied to this amount, not just nearby
@@ -103,17 +141,19 @@ def parse_doc(text,file_date):
                         drip_disc=(lambda d: d.group(1) if d else None)(re.search(r'(\d(?:\.\d+)?)\s?%\s+discount',w,re.I)),
                         snippet=sent[:500]))
     return out
-def checks(d,file_date):
+def checks(d,file_date,form=''):
     errs=[]
+    # periodic reports (U.S. set) describe declarations made during the quarter, so the record date can precede the filing by months
+    back=200 if US and form in ('10-Q','10-K') else 10
     if not (0.0001<=d['amount']<=25): errs.append('amount out of range')
     if not d['record']: errs.append('no record date')
     if not d['pay']: errs.append('no pay date')
-    if d['record'] and not (file_date-datetime.timedelta(days=10)<=d['record']<=file_date+datetime.timedelta(days=150)): errs.append('record date far from filing date')
+    if d['record'] and not (file_date-datetime.timedelta(days=back)<=d['record']<=file_date+datetime.timedelta(days=150)): errs.append('record date far from filing date')
     if d['record'] and d['pay'] and not (d['record']<d['pay']<=d['record']+datetime.timedelta(days=120)): errs.append('pay date inconsistent with record date')
     return errs
 def main():
-    man=json.load(open(os.path.join(ROOT,'data','manifest.json')))
-    uni={u['ticker']:u for u in json.load(open(os.path.join(ROOT,'data','universe.json')))}
+    man=json.load(open(os.path.join(ROOT,'data',PFX+'manifest.json')))
+    uni={u['ticker']:u for u in json.load(open(os.path.join(ROOT,'data',PFX+'universe.json')))}
     allrows=[]
     for m in man:
         p=os.path.join(CACHE,m['cache'])
@@ -123,10 +163,11 @@ def main():
             try: txt=subprocess.run(['pdftotext',p,'-'],capture_output=True,timeout=60).stdout.decode('utf-8','ignore'); txt=re.sub(r'\s+',' ',txt)
             except Exception: continue
         else: txt=to_text(open(p,'rb').read())
+        if US: txt=us_normalize(txt,fd)
         dcur=doc_currency(txt)
-        for d in parse_doc(txt,fd):
+        for d in parse_doc(txt,fd)+(us_tables(txt) if US else []):
             if not d['currency'] and dcur: d['currency'],d['currency_basis']=dcur,'filing'
-            d['errors']=checks(d,fd); d['verified']=not d['errors']
+            d['errors']=checks(d,fd,m['form']); d['verified']=not d['errors']
             d.update(ticker=m['ticker'],source=m['url'],file_date=m['file_date'],form=m['form'])
             allrows.append(d)
     # if a filing explicitly calls an amount special/performance, every mention of that amount in that filing is special
@@ -187,13 +228,13 @@ def main():
             if d['currency']: continue
             if len(known)==1 and d.get('currency_basis')!='conflict': d['currency'],d['currency_basis']=next(iter(known)),'company'
         clean.sort(key=lambda d:(d['record'],d['file_date']),reverse=True)
-        companies[t]=dict(ticker=t,name=uni[t]['name'],composite=uni[t]['composite'],
+        companies[t]=dict(ticker=t,name=uni[t]['name'],composite=uni[t].get('composite',False),
                           regular=clean,special=[d for d in ver if d['special']],ambiguous=sorted(str(a) for a in ambiguous),
                           unverified_count=len(unv),unverified_errors=collections.Counter(e for d in unv for e in d['errors']).most_common(3))
     def ser(o):
         if isinstance(o,datetime.date): return o.isoformat()
         raise TypeError
-    json.dump(companies,open(os.path.join(ROOT,'data','parsed.json'),'w'),indent=1,default=ser)
+    json.dump(companies,open(os.path.join(ROOT,'data',PFX+'parsed.json'),'w'),indent=1,default=ser)
     n=sum(1 for c in companies.values() if c['regular'])
     print("companies with docs:",len(companies),"| with >=1 verified regular declaration:",n)
 if __name__=='__main__': main()

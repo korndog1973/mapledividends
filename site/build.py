@@ -1,5 +1,5 @@
 """Static site generator: data/parsed.json -> dist/ . Pure Python + Jinja2."""
-import json, os, re, shutil, datetime, statistics, collections
+import json, os, re, shutil, datetime, statistics, collections, sys
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST=os.path.join(ROOT,'dist'); SITE_URL=os.environ.get('SITE_URL','https://mapledividends.com')
@@ -116,7 +116,8 @@ def main():
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/']+list(PAGES)
+    import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
+    static=['/','/calendar/','/raises-and-cuts/','/companies/']+us_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]

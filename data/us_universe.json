@@ -1,0 +1,304 @@
+[
+ {
+  "ticker": "JNJ",
+  "name": "Johnson & Johnson",
+  "cik": 200406,
+  "ciks": [
+   200406
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "KO",
+  "name": "The Coca-Cola Company",
+  "cik": 21344,
+  "ciks": [
+   21344
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "PEP",
+  "name": "PepsiCo, Inc.",
+  "cik": 77476,
+  "ciks": [
+   77476
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "PG",
+  "name": "The Procter & Gamble Company",
+  "cik": 80424,
+  "ciks": [
+   80424
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "MSFT",
+  "name": "Microsoft Corporation",
+  "cik": 789019,
+  "ciks": [
+   789019
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "AAPL",
+  "name": "Apple Inc.",
+  "cik": 320193,
+  "ciks": [
+   320193
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "JPM",
+  "name": "JPMorgan Chase & Co.",
+  "cik": 19617,
+  "ciks": [
+   19617
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "XOM",
+  "name": "Exxon Mobil Corporation",
+  "cik": 2115436,
+  "ciks": [
+   2115436,
+   34088
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "CVX",
+  "name": "Chevron Corporation",
+  "cik": 93410,
+  "ciks": [
+   93410
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "VZ",
+  "name": "Verizon Communications Inc.",
+  "cik": 732712,
+  "ciks": [
+   732712
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "T",
+  "name": "AT&T Inc.",
+  "cik": 732717,
+  "ciks": [
+   732717
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "O",
+  "name": "Realty Income Corporation",
+  "cik": 726728,
+  "ciks": [
+   726728
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "MO",
+  "name": "Altria Group, Inc.",
+  "cik": 764180,
+  "ciks": [
+   764180
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "PM",
+  "name": "Philip Morris International Inc.",
+  "cik": 1413329,
+  "ciks": [
+   1413329
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "ABBV",
+  "name": "AbbVie Inc.",
+  "cik": 1551152,
+  "ciks": [
+   1551152
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "MRK",
+  "name": "Merck & Co., Inc.",
+  "cik": 310158,
+  "ciks": [
+   310158
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "PFE",
+  "name": "Pfizer Inc.",
+  "cik": 78003,
+  "ciks": [
+   78003
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "HD",
+  "name": "The Home Depot, Inc.",
+  "cik": 354950,
+  "ciks": [
+   354950
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "MCD",
+  "name": "McDonald's Corporation",
+  "cik": 63908,
+  "ciks": [
+   63908
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "WMT",
+  "name": "Walmart Inc.",
+  "cik": 104169,
+  "ciks": [
+   104169
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "COST",
+  "name": "Costco Wholesale Corporation",
+  "cik": 909832,
+  "ciks": [
+   909832
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "AVGO",
+  "name": "Broadcom Inc.",
+  "cik": 1730168,
+  "ciks": [
+   1730168
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "TXN",
+  "name": "Texas Instruments Incorporated",
+  "cik": 97476,
+  "ciks": [
+   97476
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "LMT",
+  "name": "Lockheed Martin Corporation",
+  "cik": 936468,
+  "ciks": [
+   936468
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "UPS",
+  "name": "United Parcel Service, Inc.",
+  "cik": 1090727,
+  "ciks": [
+   1090727
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "MMM",
+  "name": "3M Company",
+  "cik": 66740,
+  "ciks": [
+   66740
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "IBM",
+  "name": "International Business Machines Corporation",
+  "cik": 51143,
+  "ciks": [
+   51143
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "CSCO",
+  "name": "Cisco Systems, Inc.",
+  "cik": 858877,
+  "ciks": [
+   858877
+  ],
+  "exchange": "Nasdaq",
+  "composite": false
+ },
+ {
+  "ticker": "NEE",
+  "name": "NextEra Energy, Inc.",
+  "cik": 753308,
+  "ciks": [
+   753308
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ },
+ {
+  "ticker": "BLK",
+  "name": "BlackRock, Inc.",
+  "cik": 2012383,
+  "ciks": [
+   2012383,
+   1364742
+  ],
+  "exchange": "NYSE",
+  "composite": false
+ }
+]

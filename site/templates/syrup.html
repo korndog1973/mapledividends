@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_refer.html" import refer_box %}{% block body %}
+<h1>Stars &amp; Syrup 🇺🇸🍁</h1>
+<p class="lead">U.S. dividends, Canadian sweet tooth. {{ rows|length }} U.S. dividend stocks Canadians love to hold, with ex-dates, raises and cuts in US$. Every number links to its source: the company's SEC filing, or its own announcement where it doesn't file one.</p>
+<p class="small"><strong>Tax note:</strong> U.S. dividends paid to Canadians generally have 15% U.S. withholding tax taken off under the Canada–U.S. tax treaty. RRSPs are generally exempt; TFSAs are not. This is general information, not tax advice.</p>
+<section class="card">
+  <h2>Upcoming ex-dividend dates</h2>
+  {% if upcoming %}<table class="t"><thead><tr><th>Ex-date</th><th>Company</th><th class="r">Amount</th><th>Pay date</th></tr></thead><tbody>
+  {% for e in upcoming %}<tr><td>{{ e.ex_h }}</td><td><a href="/us/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h }}</td></tr>{% endfor %}
+  </tbody></table>{% else %}<p class="muted">No upcoming ex-dates in our verified data right now.</p>{% endif %}
+  <p class="muted small">Ex-date = record date for regular cash dividends under U.S. T+1 settlement (since May 28, 2024). To get the dividend, buy before the ex-date.</p>
+</section>
+<section class="card">
+  <h2>Deadly / Not Deadly: latest raises &amp; cuts</h2>
+  <p class="legend"><strong>Deadly</strong> 💀 = dividend raise. <strong>Not Deadly</strong> 👎 = dividend cut.</p>
+  {% if changes %}<ul class="chg">{% for c in changes %}<li><span class="badge {{ c.kind }}">{{ c.kind_h }} {{ c.pct_h }}</span> <a href="/us/{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span> <span class="muted">{{ c.prev_h }} → {{ c.amount_h }}, first reported {{ c.filed_h }}</span></li>{% endfor %}</ul>
+  {% else %}<p class="muted">No verified raises or cuts in our data yet.</p>{% endif %}
+</section>
+<section class="card">
+  <h2>U.S. dividend stocks we track</h2>
+  <table class="t"><thead><tr><th>Company</th><th class="r">Latest</th><th class="hide-sm">Frequency</th><th>Last ex-date</th><th class="hide-sm">Last change</th></tr></thead><tbody>
+  {% for r in rows %}<tr><td><a href="/us/{{ r.slug }}/">{{ r.name }}</a> <span class="tk">{{ r.ticker }}</span></td><td class="r">{{ r.amount_h }}</td><td class="hide-sm">{{ r.freq }}</td><td>{{ r.ex_h }}{% if r.stale %} <span class="muted small" title="A newer declaration probably exists">(may be out of date)</span>{% elif r.lag %} <span class="muted small" title="From a quarterly or annual report; a newer declaration may exist">(from quarterly report)</span>{% endif %}</td><td class="hide-sm">{% if r.ch.kind in ('raise','cut') %}<span class="badge {{ r.ch.kind }}">{{ 'Deadly 💀' if r.ch.kind == 'raise' else 'Not Deadly 👎' }} {{ '%+.1f'|format(r.ch.pct) }}%</span>{% elif r.ch.kind == 'same' %}<span class="muted small">Unchanged</span>{% else %}<span class="muted small">n/a</span>{% endif %}</td></tr>{% endfor %}
+  </tbody></table>
+  {% if gaps %}<p class="muted small">Not covered yet: {% for g in gaps %}{{ g.name }} ({{ g.ticker }}){{ ', ' if not loop.last else '' }}{% endfor %}. Their SEC filings don't state the record and pay dates in a way we can check, so we left them out rather than guess.</p>{% endif %}
+</section>
+{{ signup(compact=true) }}
+{{ refer_box(referrals) }}
+{% endblock %}

@@ -8,6 +8,8 @@ python3 -m pip install -q -r requirements.txt 2>/dev/null || python3 -m pip inst
 if [ -z "${SKIP_FETCH:-}" ]; then
   if ls pipeline/issuers_*.xlsx >/dev/null 2>&1; then python3 pipeline/universe.py; else echo "No TSX issuer list (internal file); using committed data/universe.json"; fi
   python3 pipeline/fetch_edgar.py
+  DATASET=us MAXDOCS=24 python3 pipeline/fetch_edgar.py   # Stars & Syrup (U.S. section)
 fi
 python3 pipeline/parse.py
+DATASET=us python3 pipeline/parse.py
 python3 site/build.py
