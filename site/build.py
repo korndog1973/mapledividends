@@ -10,6 +10,14 @@ START=os.environ.get("START","2025-07-01")
 BEACON_TOKEN=os.environ.get('CF_BEACON_TOKEN') or ''
 # IndexNow key (Bing/Yandex/etc.). The key file site/static/<key>.txt is published at /<key>.txt.
 INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
+# Broker referral links shown in the "Start investing" box (home + company pages). Empty string = that broker isn't shown;
+# if both are empty the box and the referral wording on the disclosure pages disappear.
+MOOMOO_REF_URL='https://j.moomoo.com/0KnjKO'   # Moomoo Canada referral (code J8U8DMTM)
+WEALTHSIMPLE_REF_URL = 'https://wealthsimple.com/invite/4CAYHA'                        # paste Wealthsimple referral link here to show it
+REFERRALS=[r for r in (
+    dict(name='Moomoo',url=MOOMOO_REF_URL,blurb='Trading app for Canadian and U.S. stocks, with TFSA and RRSP accounts.'),
+    dict(name='Wealthsimple',url=WEALTHSIMPLE_REF_URL,blurb='Canadian investing app with TFSA, RRSP and FHSA accounts.'),
+) if r['url']]
 env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
 D=datetime.date.fromisoformat
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
@@ -68,7 +76,7 @@ def main():
     if os.path.exists(DIST): shutil.rmtree(DIST)
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
-    common=dict(beacon_token=BEACON_TOKEN,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    common=dict(beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']
@@ -124,7 +132,8 @@ PAGES={
 <p>MapleDividends is a free tracker of dividends paid by TSX-listed Canadian companies: upcoming ex-dividend dates, pay dates, raises, cuts and DRIP details.</p>
 <p>It's built and run in Vancouver, B.C. We care about accuracy more than coverage. Every dividend we show links to the company filing it came from, and we leave out anything we couldn't check.</p>
 <p>Coverage is limited for now. We start with TSX companies that also file with the U.S. SEC, then add others as we find reliable sources we're allowed to use. See <a href="/methodology/">how we get the data</a>.</p>
-<p>Spotted an error? Email <a href="mailto:{CONTACT}">{CONTACT}</a> and include the company and a link to its announcement.</p>"""),
+<p>Spotted an error? Email <a href="mailto:{CONTACT}">{CONTACT}</a> and include the company and a link to its announcement.</p>{'''
+<p>The site is free. Some pages include broker referral links, and we may earn a bonus if you open an account through one. That never affects the data. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>''' if REFERRALS else ''}"""),
  '/methodology/':("How we get the data","Where MapleDividends dividend data comes from and how it's checked.","""<h1>How we get the data</h1>
 <ol><li><strong>Source.</strong> We read company filings (press-release exhibits on forms 6-K and 8-K) published on the U.S. SEC's public EDGAR system. Many TSX companies also list in the U.S. and file their dividend announcements there.</li>
 <li><strong>Parsing.</strong> Our software pulls out the dividend amount, record date and pay date as the company wrote them. We don't estimate or forecast dividends.</li>
@@ -143,11 +152,11 @@ PAGES={
 <p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>{'''
 <p><strong>Visitor statistics.</strong> We use Cloudflare Web Analytics to count page views. It doesn't use cookies or local storage and doesn't track you across sites.</p>''' if BEACON_TOKEN else ''}
 <p><strong>Newsletter.</strong> If you sign up for our email newsletter, we'll collect your email address to send it. It is stored with our email provider, Kit (kit.com). You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
-<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>
+{'''<p><strong>Referral and affiliate links.</strong> Some pages include broker referral links (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>). We don't share any of your information with the broker. If you click one, the broker may use cookies or a referral code to credit the referral, under its own privacy policy.</p>''' if REFERRALS else '''<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>'''}
 <p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
- '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.","""<h1>Affiliate disclosure</h1>
+ '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.",f"""<h1>Affiliate disclosure</h1>
 <p>MapleDividends is free to use. To pay for it, we may include affiliate or referral links to Canadian financial services, such as online brokerages. If you open an account through one of these links, we may get paid a fee by that company, at no cost to you.</p>
 <p>Affiliate relationships never change the dividend data we publish, which comes only from company filings. We'll label affiliate links clearly where they appear.</p>
-<p>As of today, this site has no affiliate links.</p>"""),
+{('<p>Current referral links: ' + ', '.join(r['name'] for r in REFERRALS) + '. These are personal referral links: if you open and fund an account through one, the broker may give us a bonus (and often gives you one too, under its own terms). They appear in the "Start investing" box, which is labelled as referral links. This isn\'t advice to open any account.</p>') if REFERRALS else '<p>As of today, this site has no affiliate links.</p>'}"""),
 }
 if __name__=='__main__': main()

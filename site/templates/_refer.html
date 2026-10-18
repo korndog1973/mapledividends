@@ -1,0 +1,12 @@
+{# "Start investing" box with broker referral links. Configured in build.py (MOOMOO_REF_URL, WEALTHSIMPLE_REF_URL); renders nothing if none are set. #}
+{% macro refer_box(referrals) -%}
+{% if referrals %}
+<aside class="refer" aria-label="Start investing (referral links)">
+  <p class="refer-h">Start investing</p>
+  <ul>{% for r in referrals %}
+    <li><a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">Open a {{ r.name }} account</a> <span class="muted">{{ r.blurb|safe }}</span></li>{% endfor %}
+  </ul>
+  <p class="refer-note">Referral link{% if referrals|length > 1 %}s{% endif %}: we may earn a bonus if you open an account. This isn't advice. <a href="/affiliate-disclosure/">Disclosure</a></p>
+</aside>
+{% endif %}
+{%- endmacro %}
