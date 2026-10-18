@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ title }}</title>
 <meta name="description" content="{{ description }}">
-<link rel="canonical" href="{{ site_url }}{{ path }}">
+{% if noindex %}<meta name="robots" content="noindex">{% else %}<link rel="canonical" href="{{ site_url }}{{ path }}">{% endif %}
 <meta property="og:title" content="{{ title }}">
 <meta property="og:description" content="{{ description }}">
 <meta property="og:url" content="{{ site_url }}{{ path }}">
@@ -37,5 +37,6 @@
     <p class="muted">Data last updated {{ build_date_human }}. Source: company filings on SEC EDGAR.</p>
   </div>
 </footer>
+{% if beacon_token %}<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ beacon_token }}"}'></script>{% endif %}
 </body>
 </html>

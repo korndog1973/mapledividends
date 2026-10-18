@@ -5,6 +5,11 @@ ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST=os.path.join(ROOT,'dist'); SITE_URL=os.environ.get('SITE_URL','https://mapledividends.com')
 TODAY=datetime.date.fromisoformat(os.environ['BUILD_DATE']) if os.environ.get('BUILD_DATE') else datetime.date.today()
 START=os.environ.get("START","2025-07-01")
+# Cloudflare Web Analytics (free, cookieless). The beacon token is public (it ships in every page); paste it here or set
+# the CF_BEACON_TOKEN repo variable. Empty = no beacon.
+BEACON_TOKEN=os.environ.get('CF_BEACON_TOKEN') or ''
+# IndexNow key (Bing/Yandex/etc.). The key file site/static/<key>.txt is published at /<key>.txt.
+INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
 D=datetime.date.fromisoformat
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
@@ -61,8 +66,9 @@ def write(path,html):
 def main():
     data=json.load(open(os.path.join(ROOT,'data','parsed.json')))
     if os.path.exists(DIST): shutil.rmtree(DIST)
-    os.makedirs(DIST); shutil.copy(os.path.join(ROOT,'site','static','style.css'),DIST)
-    common=dict(site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    os.makedirs(DIST)
+    for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
+    common=dict(beacon_token=BEACON_TOKEN,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']
@@ -101,7 +107,7 @@ def main():
     write('/companies/',env.get_template('companies.html').render(title="TSX dividend stocks: list of Canadian dividend payers | MapleDividends",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
-    write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
+    write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
     static=['/','/calendar/','/raises-and-cuts/','/companies/']+list(PAGES)
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
@@ -134,7 +140,8 @@ PAGES={
 <p>Questions or corrections: <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
  '/privacy/':("Privacy policy","MapleDividends privacy policy.",f"""<h1>Privacy policy</h1>
 <p>Last updated: {dh(TODAY)}.</p>
-<p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>
+<p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>{'''
+<p><strong>Visitor statistics.</strong> We use Cloudflare Web Analytics to count page views. It doesn't use cookies or local storage and doesn't track you across sites.</p>''' if BEACON_TOKEN else ''}
 <p><strong>Newsletter.</strong> If you sign up for our email newsletter, we'll collect your email address to send it. It is stored with our email provider, Kit (kit.com). You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
 <p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>
 <p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),

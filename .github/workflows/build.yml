@@ -1,7 +1,7 @@
 # MapleDividends: refresh dividend data from SEC EDGAR and deploy the static site to Cloudflare Pages.
 # Free: public repo => GitHub-hosted runner minutes are free; Cloudflare Pages free plan.
 # Required repo secrets: CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit), CLOUDFLARE_ACCOUNT_ID
-# Optional repo variable: SEC_UA (contact string SEC requires; defaults below)
+# Optional repo variables: SEC_UA (contact string SEC requires; defaults below), CF_BEACON_TOKEN (Cloudflare Web Analytics)
 name: build-and-deploy
 on:
   schedule:
@@ -22,6 +22,7 @@ jobs:
     env:
       SEC_UA: ${{ vars.SEC_UA || 'MapleDividends admin@mapledividends.com' }}
       SITE_URL: https://mapledividends.com
+      CF_BEACON_TOKEN: ${{ vars.CF_BEACON_TOKEN }}
       TZ: America/Vancouver
     steps:
       - uses: actions/checkout@v4
