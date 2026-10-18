@@ -54,8 +54,9 @@ def build_us(B,common):
             if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
         if ch['kind'] in ('raise','cut') and not ch['gap']:
             a,b=ch['decl'],ch['prev']
-            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),filed=ch['first_filed'],filed_h=dh(ch['first_filed'])))
+            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),filed=ch['first_filed'],filed_h=dh(ch['first_filed']),pct=ch['pct']))
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
+    B.US_CHANGES=changes  # Leaky Maple / Golden Pour U.S. tab
     B.write(SECTION,B.env.get_template('syrup.html').render(
         title="Stars & Syrup: U.S. dividend stocks for Canadians (ex-dates, raises & cuts) | MapleDividends",
         description="U.S. dividend stocks popular with Canadian investors: upcoming ex-dividend dates, latest dividends in US$, raises and cuts, checked against SEC filings.",

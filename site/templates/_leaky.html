@@ -1,0 +1,119 @@
+{# Leaky Maple / Golden Pour art: hand-made inline SVG; animation lives in style.css (.lm-*, .gp-*) and stops under prefers-reduced-motion. #}
+{% macro fs(t, sizes) %}{{ sizes[0] if t|length <= 1 else sizes[1] if t|length == 2 else sizes[2] if t|length == 3 else sizes[3] if t|length == 4 else sizes[4] }}{% endmacro %}
+{% macro leaf(id) %}<path id="{{ id }}" d="M0,-10 L2,-5 L5,-6.5 L4,-1 L8.5,-0.5 L6.5,2 L7.5,5 L2.5,4 L1.2,8 L0.5,7 L0.5,11 L-0.5,11 L-0.5,7 L-1.2,8 L-2.5,4 L-7.5,5 L-6.5,2 L-8.5,-0.5 L-4,-1 L-5,-6.5 L-2,-5 Z"/>{% endmacro %}
+
+{% macro leaky_svg(p, uid) %}{% set t = p.ticker if p else '—' %}
+<svg class="lm-art" viewBox="0 0 320 300" role="img" aria-labelledby="{{ uid }}-t" xmlns="http://www.w3.org/2000/svg">
+<title id="{{ uid }}-t">A tapped maple tree leaking syrup into a sap bucket labelled {{ t }}{% if p %} {{ p.big_h }}{% endif %}</title>
+<defs>
+ <linearGradient id="{{ uid }}-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4ea"/><stop offset="1" stop-color="#fde3cf"/></linearGradient>
+ <linearGradient id="{{ uid }}-tin" x1="0" x2="1"><stop offset="0" stop-color="#8b95a3"/><stop offset=".38" stop-color="#f4f5f7"/><stop offset=".55" stop-color="#d7dbe0"/><stop offset="1" stop-color="#6b7280"/></linearGradient>
+ <linearGradient id="{{ uid }}-sap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#b45309"/></linearGradient>
+ <linearGradient id="{{ uid }}-bark" x1="0" x2="1"><stop offset="0" stop-color="#5b3419"/><stop offset=".5" stop-color="#8a5a33"/><stop offset="1" stop-color="#5b3419"/></linearGradient>
+ {{ leaf(uid ~ '-leaf') }}
+</defs>
+<rect width="320" height="300" rx="16" fill="url(#{{ uid }}-sky)"/>
+<circle cx="268" cy="44" r="20" fill="#fff" opacity=".7"/>
+<ellipse cx="160" cy="306" rx="200" ry="30" fill="#cfe3b6"/>
+<g fill="none" stroke="#6e4224" stroke-linecap="round">
+ <path d="M112,170 C98,148 82,138 60,128" stroke-width="10"/><path d="M128,165 C142,142 160,130 186,122" stroke-width="10"/><path d="M120,160 L117,92" stroke-width="11"/>
+</g>
+<path d="M96,300 C104,254 108,206 104,152 L138,152 C135,206 138,256 148,300 Z" fill="url(#{{ uid }}-bark)"/>
+<g stroke="#4a2a13" stroke-width="1.6" fill="none" opacity=".55" stroke-linecap="round"><path d="M112,170 c2,14 -2,26 1,40"/><path d="M127,232 c-2,12 2,24 0,36"/><path d="M118,250 c1,8 -1,14 1,22"/></g>
+<g>
+ <circle cx="58" cy="108" r="38" fill="#ea580c"/><circle cx="36" cy="140" r="22" fill="#dc2626"/><circle cx="112" cy="70" r="48" fill="#dc2626"/>
+ <circle cx="168" cy="88" r="44" fill="#f97316"/><circle cx="150" cy="44" r="30" fill="#f59e0b"/><circle cx="206" cy="122" r="28" fill="#dc2626"/>
+ <circle cx="86" cy="138" r="30" fill="#f59e0b"/><circle cx="140" cy="128" r="32" fill="#b91c1c"/><circle cx="72" cy="66" r="24" fill="#f97316"/>
+</g>
+<g>
+ <use href="#{{ uid }}-leaf" transform="translate(30,96) scale(1.5) rotate(-20)" fill="#b91c1c"/><use href="#{{ uid }}-leaf" transform="translate(98,26) scale(1.7) rotate(10)" fill="#ea580c"/>
+ <use href="#{{ uid }}-leaf" transform="translate(196,64) scale(1.6) rotate(25)" fill="#dc2626"/><use href="#{{ uid }}-leaf" transform="translate(226,124) scale(1.4) rotate(40)" fill="#f59e0b"/>
+ <use href="#{{ uid }}-leaf" transform="translate(128,96) scale(1.8) rotate(-5)" fill="#fbbf24" opacity=".9"/><use href="#{{ uid }}-leaf" transform="translate(60,150) scale(1.4) rotate(-35)" fill="#b91c1c"/>
+ <use href="#{{ uid }}-leaf" transform="translate(166,30) scale(1.3) rotate(15)" fill="#dc2626"/>
+</g>
+<g class="lm-fall"><use href="#{{ uid }}-leaf" transform="translate(214,150) scale(1.3)" fill="#ea580c"/></g>
+<g class="lm-fall f2"><use href="#{{ uid }}-leaf" transform="translate(52,170) scale(1.1)" fill="#dc2626"/></g>
+<!-- syrup oozing out of the bark under the tap -->
+<path class="lm-ooze" d="M135,184 c-4,8 1,15 -2,26 c-1.5,6 4.5,6.5 4.5,0 c0,-9 2.5,-14 1.5,-26 z" fill="url(#{{ uid }}-sap)" opacity=".92"/>
+<!-- spout -->
+<rect x="133" y="176" width="46" height="9" rx="3" fill="url(#{{ uid }}-tin)" stroke="#6b7280" stroke-width=".8"/>
+<path d="M176,176 h7 l2.5,12 h-6.5 z" fill="#9ca3af" stroke="#6b7280" stroke-width=".8"/>
+<path d="M160,185 v6 q0,4 4,4" fill="none" stroke="#6b7280" stroke-width="2"/>
+<!-- drops -->
+<path class="lm-drop" d="M182.5,189 c0,0 -4,6 -4,9 a4,4 0 0 0 8,0 c0,-3 -4,-9 -4,-9 z" fill="url(#{{ uid }}-sap)"/>
+<path class="lm-drop d2" d="M182.5,189 c0,0 -4,6 -4,9 a4,4 0 0 0 8,0 c0,-3 -4,-9 -4,-9 z" fill="url(#{{ uid }}-sap)"/>
+<!-- bucket -->
+<path d="M160,222 Q204,214 248,222" fill="none" stroke="#6b7280" stroke-width="1.6"/>
+<path d="M159,224 L249,224 L241,294 L167,294 Z" fill="url(#{{ uid }}-tin)" stroke="#6b7280" stroke-width="1.4"/>
+<path d="M160.5,236 L247.5,236 M165.8,284 L242.2,284" stroke="#9ca3af" stroke-width="3"/>
+<ellipse cx="204" cy="224" rx="45" ry="6" fill="#4b5563"/><ellipse cx="204" cy="225" rx="41" ry="4" fill="#d97706"/>
+<ellipse class="lm-ripple" cx="182.5" cy="225" rx="7" ry="2" fill="none" stroke="#fde68a" stroke-width="1.4"/>
+<text x="204" y="{{ 268 if p else 266 }}" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-weight="900" font-size="{{ fs(t,[40,36,30,25,20]) }}" fill="#7f1d1d" letter-spacing=".5">{{ t }}</text>
+<text x="204" y="281" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-weight="800" font-size="12.5" fill="#dc2626">{{ p.big_h if p else 'bucket is dry!' }}</text>
+</svg>{% endmacro %}
+
+{% macro golden_svg(p, uid) %}{% set t = p.ticker if p else '—' %}
+<svg class="lm-art" viewBox="0 0 320 300" role="img" aria-labelledby="{{ uid }}-t" xmlns="http://www.w3.org/2000/svg">
+<title id="{{ uid }}-t">A syrup jug pouring golden syrup onto a pancake stack with a flag reading {{ t }}{% if p %} {{ p.big_h }}{% endif %}</title>
+<defs>
+ <linearGradient id="{{ uid }}-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffbeb"/><stop offset="1" stop-color="#fdecc0"/></linearGradient>
+ <linearGradient id="{{ uid }}-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcd34d"/><stop offset="1" stop-color="#c2690a"/></linearGradient>
+ <linearGradient id="{{ uid }}-jug" x1="0" x2="1"><stop offset="0" stop-color="#92400e"/><stop offset=".45" stop-color="#e08a1e"/><stop offset="1" stop-color="#7c2d12"/></linearGradient>
+ {{ leaf(uid ~ '-leaf') }}
+</defs>
+<rect width="320" height="300" rx="16" fill="url(#{{ uid }}-bg)"/>
+<rect y="268" width="320" height="32" fill="#e3c193"/><path d="M0,280 H320 M0,291 H320" stroke="#d4ab76" stroke-width="1"/>
+<ellipse cx="170" cy="272" rx="116" ry="18" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/><ellipse cx="170" cy="270" rx="92" ry="11" fill="#f1f5f9"/>
+{% for i in range(5) %}{% set y = 258 - i*13 %}<ellipse cx="170" cy="{{ y }}" rx="84" ry="15" fill="#a8550f"/><ellipse cx="170" cy="{{ y-5 }}" rx="84" ry="15" fill="{{ '#f0b357' if i is even else '#eaa84a' }}"/>{% endfor %}
+<!-- syrup on top, running over the edge -->
+<path d="M100,201 C108,186 232,184 242,199 C246,207 236,214 220,214 C200,216 140,217 118,213 C104,210 97,207 100,201 Z" fill="url(#{{ uid }}-gold)" opacity=".95"/>
+<g fill="#d97706"><rect class="gp-drip" x="118" y="208" width="9" height="26" rx="4.5"/><rect class="gp-drip g2" x="150" y="211" width="8" height="38" rx="4"/><rect class="gp-drip" x="197" y="211" width="9" height="30" rx="4.5"/><rect class="gp-drip g2" x="228" y="206" width="8" height="20" rx="4"/></g>
+<!-- butter -->
+<g transform="translate(160,186)"><path d="M0,8 l8,-8 h24 l-8,8 z" fill="#fef9c3"/><path d="M0,8 h24 v9 h-24 z" fill="#fde047"/><path d="M24,8 l8,-8 v9 l-8,8 z" fill="#facc15"/></g>
+<!-- stream + jug -->
+<path d="M226,86 C220,116 200,152 194,190" fill="none" stroke="url(#{{ uid }}-gold)" stroke-width="7" stroke-linecap="round"/>
+<path class="gp-flow" d="M226,86 C220,116 200,152 194,190" fill="none" stroke="#fef3c7" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+<g transform="translate(250,62) rotate(-118)">
+ <path d="M-22,4 Q-24,-2 -16,-6 H16 Q24,-2 22,4 V56 Q22,64 14,64 H-14 Q-22,64 -22,56 Z" fill="url(#{{ uid }}-jug)" stroke="#78350f" stroke-width="1.2"/>
+ <rect x="-7" y="-26" width="14" height="22" rx="3" fill="#b45309" stroke="#78350f" stroke-width="1.2"/>
+ <path d="M22,10 q16,4 12,24 q-3,10 -12,10" fill="none" stroke="#78350f" stroke-width="4.5"/>
+ <rect x="-15" y="18" width="30" height="28" rx="4" fill="#fffbeb"/>
+ <use href="#{{ uid }}-leaf" transform="translate(0,31) scale(1.05) rotate(118)" fill="#dc2626"/>
+</g>
+<!-- sparkles -->
+<g fill="#fff"><path class="gp-spark" d="M64,150 l3,-8 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 z"/><path class="gp-spark g2" d="M268,190 l2,-6 l2,6 l6,2 l-6,2 l-2,6 l-2,-6 l-6,-2 z"/></g>
+<!-- flag on a toothpick -->
+<path d="M92,214 V122" stroke="#c9a46f" stroke-width="3" stroke-linecap="round"/>
+<g class="gp-flag">
+ <path d="M93.5,122 H162 L152,144 L162,166 H93.5 Z" fill="#fff" stroke="#047857" stroke-width="2" stroke-linejoin="round"/>
+ <text x="122" y="{{ 147 if p else 150 }}" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-weight="900" font-size="{{ fs(t,[26,24,21,17,13]) }}" fill="#065f46">{{ t }}</text>
+ <text x="122" y="160" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-weight="800" font-size="10.5" fill="#047857">{{ p.big_h if p else '' }}</text>
+</g>
+</svg>{% endmacro %}
+
+{% macro caption(p, kind, base='/dividends/') %}
+{% if p %}<p class="duel-cap">{{ 'Leakiest dividend' if kind == 'cut' else 'Golden pour' }}: <a href="{{ base }}{{ p.slug }}/">{{ p.name }}</a> ({{ p.ticker }}) <span class="{{ 'neg' if kind == 'cut' else 'pos' }}">{{ p.big_h }}</span></p>
+<p class="duel-sub">{{ 'Not Deadly 👎 dividend cut' if kind == 'cut' else 'Deadly 💀 dividend raise' }}, first filed {{ p.filed_h }}.{% if not p.recent %} No {{ 'cuts' if kind == 'cut' else 'raises' }} in the last 12 weeks, so this is the most recent one.{% endif %}</p>
+{% else %}<p class="duel-cap">{{ 'No dividend cuts in our data. The bucket is dry 🎉' if kind == 'cut' else 'No dividend raises in our data yet.' }}</p>{% endif %}
+{% endmacro %}
+
+{% macro exchange_name(x) %}{{ 'TSX' if x == 'TSX' else 'U.S.' }}{% endmacro %}
+{# Placeholder with reserved height; the TradingView hotlists widget is injected when it scrolls into view (see leaky.html). #}
+{% macro tv_slot(x) %}<div class="tv-slot" data-exchange="{{ x }}"><noscript><p class="muted small">Turn on JavaScript to see TradingView's live movers.</p></noscript></div>{% endmacro %}
+
+{% macro duel(d, uid, base='/dividends/', compact=false, exchange=none) %}
+<div class="duel{{ ' compact' if compact }}">
+ <div class="duel-side bad">
+  <h{{ 3 if compact else 2 }} class="duel-h">The Leaky Maple 🍁</h{{ 3 if compact else 2 }}>
+  {{ leaky_svg(d.cut, uid ~ 'l') }}
+  {{ caption(d.cut, 'cut', base) }}
+  {% if exchange %}<p class="tv-h">📉 Today's {{ exchange_name(exchange) }} price movers. Tap <strong>Losers</strong> for the drips.</p>{{ tv_slot(exchange) }}{% endif %}
+ </div>
+ <div class="duel-side good">
+  <h{{ 3 if compact else 2 }} class="duel-h">The Golden Pour 🥞</h{{ 3 if compact else 2 }}>
+  {{ golden_svg(d.raise_, uid ~ 'g') }}
+  {{ caption(d.raise_, 'raise', base) }}
+  {% if exchange %}<p class="tv-h">📈 Today's {{ exchange_name(exchange) }} price movers. Tap <strong>Gainers</strong> for the sweet stuff.</p>{{ tv_slot(exchange) }}{% endif %}
+ </div>
+</div>
+{% endmacro %}

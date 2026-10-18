@@ -9,6 +9,7 @@ START=os.environ.get("START","2025-07-01")
 # the CF_BEACON_TOKEN repo variable. Empty = no beacon.
 BEACON_TOKEN=os.environ.get('CF_BEACON_TOKEN') or ''
 # IndexNow key (Bing/Yandex/etc.). The key file site/static/<key>.txt is published at /<key>.txt.
+US_CHANGES=None  # set by syrup.build_us: Stars & Syrup raises/cuts for the Leaky Maple U.S. tab
 INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 # Broker referral links shown in the "Start investing" box (home + company pages). Empty string = that broker isn't shown;
 # if both are empty the box and the referral wording on the disclosure pages disappear.
@@ -77,7 +78,7 @@ def main():
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
     common=dict(beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
-    urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]
+    urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']
         if not regs: continue
@@ -101,23 +102,26 @@ def main():
             if TODAY-datetime.timedelta(days=30)<=D(r['record'])<TODAY: recent.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
             if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
         # dated by the filing that FIRST announced the new rate; changes whose timing we can't pin down (missing declaration) are left off
-        if ch['kind'] in ('raise','cut') and not ch['gap'] and D(ch['first_filed'])>=TODAY-datetime.timedelta(weeks=12):
+        if ch['kind'] in ('raise','cut') and not ch['gap']:
             fd=D(ch['first_filed']); wk=fd-datetime.timedelta(days=fd.weekday()); a,b=ch['decl'],ch['prev']
-            changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),week=wk,filed=ch['first_filed']))
+            row=dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),week=wk,filed=ch['first_filed'],pct=ch['pct'],filed_h=dh(ch['first_filed']))
+            allchg.append(row)  # every datable raise/cut (Leaky Maple falls back to the latest one if the window is empty)
+            if fd>=TODAY-datetime.timedelta(weeks=12): changes.append(row)
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
     recent.sort(key=lambda e:(e['ex'],e['name']),reverse=True)
     rgroups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(recent,key=lambda e:e['ex'])]
     groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
     weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
-    write('/',env.get_template('index.html').render(title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
+    import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
+    import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES)  # Leaky Maple vs Golden Pour
+    write('/',env.get_template('index.html').render(leaky=lm,title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
     write('/calendar/',env.get_template('calendar.html').render(title="TSX ex-dividend calendar: upcoming Canadian ex-dates | MapleDividends",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
     write('/raises-and-cuts/',env.get_template('raises.html').render(title="Deadly / Not Deadly: Canadian dividend raises & cuts | MapleDividends",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
     write('/companies/',env.get_template('companies.html').render(title="TSX dividend stocks: list of Canadian dividend payers | MapleDividends",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
-    import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
-    static=['/','/calendar/','/raises-and-cuts/','/companies/']+us_static+list(PAGES); urls+=us_urls
+    static=['/','/calendar/','/raises-and-cuts/','/companies/']+lm_static+us_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]
@@ -153,6 +157,7 @@ PAGES={
 <p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>{'''
 <p><strong>Visitor statistics.</strong> We use Cloudflare Web Analytics to count page views. It doesn't use cookies or local storage and doesn't track you across sites.</p>''' if BEACON_TOKEN else ''}
 <p><strong>Market ticker (TradingView).</strong> The price strip at the top of each page is a free third-party widget from TradingView. It loads in a frame from TradingView's servers (tradingview.com and tradingview-widget.com), so your browser sends them standard technical data such as your IP address, browser type and the page you're on. TradingView may use cookies or local storage under its own privacy policy (tradingview.com/privacy-policy/). Prices in the strip are delayed and come from TradingView, not from company filings.</p>
+<p><strong>Market movers (TradingView).</strong> The <a href="/leaky-maple/">Leaky Maple vs Golden Pour</a> page also shows TradingView's free "Stock Market" movers widget (top gainers and losers). It loads from the same TradingView servers, under the same TradingView privacy policy, only when you scroll to it. Its prices are delayed and are price moves, not dividends.</p>
 <p><strong>Newsletter.</strong> If you sign up for our email newsletter, we'll collect your email address to send it. It is stored with our email provider, Kit (kit.com). You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
 {'''<p><strong>Referral and affiliate links.</strong> Some pages include broker referral links (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>). We don't share any of your information with the broker. If you click one, the broker may use cookies or a referral code to credit the referral, under its own privacy policy.</p>''' if REFERRALS else '''<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>'''}
 <p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),

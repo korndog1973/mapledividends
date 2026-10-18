@@ -24,6 +24,14 @@ Free stack: Python, Jinja2, SEC EDGAR (public domain), Cloudflare Pages (static)
 - `data/us_ir_manual.json`: declarations a person copied from a company's own IR announcement because EDGAR doesn't have them yet. Each needs its IR URL. Remove once EDGAR has it. `IR_MANUAL_NOTES.md` lists every entry and the filing that should replace it.
 - Companies with no verified declaration are listed as "not covered yet" on the index instead of guessed.
 
+## Leaky Maple vs Golden Pour (/leaky-maple/)
+- `site/leaky.py`, `site/templates/leaky.html`, `site/templates/_leaky.html` (SVG art macros), styles at the end of `site/static/style.css`.
+- **Leaky Maple** 🍁: the worst dividend cut ("Not Deadly") first filed in the last 12 weeks goes on the sap bucket. **Golden Pour** 🥞: the biggest raise ("Deadly") goes on the pancake flag. If the window has none, the most recent one is shown with its filing date. Same rules as `/raises-and-cuts/` (changes we can't date are left out). The 🇺🇸 tab does the same with Stars & Syrup data.
+- **Data source:** our own EDGAR-verified dividend data only. No price data is fetched or stored, so there's no API key, licence or extra cron; the existing twice-daily build refreshes it. We looked for a free TSX daily-close feed for a "worst stock of the day" version and found none whose free terms allow showing prices on a public site (Stooq is behind a bot wall; Alpha Vantage, Marketstack, EODHD, FMP free tiers are personal/non-commercial; Twelve Data and Finnhub TSX are paid).
+- **Live movers:** TradingView's free embeddable "Stock Market" (hotlists) widget, exchange `TSX` (and `US` on the U.S. tab), injected by a small script only when its reserved-height slot scrolls into view. It runs in the visitor's browser from TradingView under TradingView's widget terms; prices are delayed and are price moves, not dividends. The widget has no setting to open on Losers/Gainers, so the captions tell people which tab to tap. Covered on the privacy page.
+- **Share image:** `dist/leaky-maple/og.png` (1200x630, both tickers) is drawn at build time with Pillow (`requirements.txt`). If Pillow is missing the page just has no og:image.
+- Animations are CSS and stop under `prefers-reduced-motion`.
+
 ## Deploy (later)
 Cloudflare Pages project "mapledividends"; output dir `dist`; custom domain mapledividends.com.
 Option A (recommended): GitHub repo + `.github/workflows/build.yml`. It refreshes twice a day and deploys with wrangler. Needs secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, plus variable SEC_UA.

@@ -1,0 +1,62 @@
+{% extends "base.html" %}{% from "_leaky.html" import duel %}{% from "_signup.html" import signup %}
+{% macro lists(d, base) %}
+<section class="grid2 lm-lists">
+ <div class="card"><h2>Bottom 5 dividend cuts 👎</h2>
+  {% if d.cuts %}<ol class="lm-ol">{% for c in d.cuts %}<li><span class="badge cut">{{ c.big_h }}</span> <a href="{{ base }}{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span> <span class="muted small">{{ c.prev_h }} → {{ c.amount_h }}, first filed {{ c.filed_h }}</span></li>{% endfor %}</ol>
+  {% if d.cuts|length < 5 %}<p class="muted small">{{ 'Only one cut' if d.cuts|length == 1 else d.cuts|length ~ ' cuts' }} in the last {{ weeks }} weeks. Fewer leaks is good news.</p>{% endif %}
+  {% else %}<p class="muted">No dividend cuts in the last {{ weeks }} weeks. 🎉</p>{% endif %}
+ </div>
+ <div class="card"><h2>Top 5 dividend raises 💀</h2>
+  {% if d.raises %}<ol class="lm-ol">{% for c in d.raises %}<li><span class="badge raise">{{ c.big_h }}</span> <a href="{{ base }}{{ c.slug }}/">{{ c.name }}</a> <span class="tk">{{ c.ticker }}</span> <span class="muted small">{{ c.prev_h }} → {{ c.amount_h }}, first filed {{ c.filed_h }}</span></li>{% endfor %}</ol>
+  {% else %}<p class="muted">No dividend raises in the last {{ weeks }} weeks.</p>{% endif %}
+ </div>
+</section>
+{% endmacro %}
+{% block head %}{% if og_image %}<meta property="og:image" content="{{ site_url }}{{ og_image }}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Leaky Maple vs Golden Pour: {{ ca.cut.ticker if ca.cut else 'no cut' }} vs {{ ca.raise_.ticker if ca.raise_ else 'no raise' }}">
+<meta name="twitter:card" content="summary_large_image">{% endif %}{% endblock %}
+{% block body %}
+<h1>Leaky Maple vs Golden Pour 🍁🥞</h1>
+<p class="lead">The worst dividend cut and the biggest dividend raise of the last {{ weeks }} weeks. The cut leaks out of the maple; the raise pours onto the pancakes.</p>
+<div class="lm-tabs">
+ {% if us %}<input type="radio" name="lmt" id="lmt-ca" class="vh" checked><label for="lmt-ca">🇨🇦 TSX</label>
+ <input type="radio" name="lmt" id="lmt-us" class="vh"><label for="lmt-us">🇺🇸 Stars &amp; Syrup</label>{% endif %}
+ <div class="lm-pane ca">
+  {{ duel(ca, 'ca', '/dividends/', exchange='TSX') }}
+  {{ lists(ca, '/dividends/') }}
+ </div>
+ {% if us %}<div class="lm-pane us">
+  {{ duel(us, 'us', '/us/', exchange='US') }}
+  {{ lists(us, '/us/') }}
+  <p class="muted small">U.S. side: the 30 <a href="/stars-and-syrup/">Stars &amp; Syrup</a> stocks, amounts in US$.</p>
+ </div>{% endif %}
+</div>
+<section class="card">
+ <h2>How it works</h2>
+ <p>Every time the site rebuilds (twice a day), we look at each company's regular dividend per share and compare it with the one before, the same way our <a href="/raises-and-cuts/">Deadly / Not Deadly</a> list does. The biggest percentage cut filed in the last {{ weeks }} weeks goes on the sap bucket. The biggest raise goes on the pancake flag. If there's been no cut (or raise) in that window, we show the most recent one with its date.</p>
+ <p>Each change is dated by the company filing that first announced the new rate. Changes we can't date, because a declaration in between is missing from our data, are left out. Special dividends don't count.</p>
+ <p>The movers under the art are TradingView's free widget: delayed share-<em>price</em> moves for the day, not dividends. It loads from TradingView when you scroll to it.</p>
+ <p><strong>For fun, not advice.</strong> A dividend cut isn't a reason to sell and a raise isn't a reason to buy. Check the company's own announcement first.</p>
+</section>
+{{ signup(compact=true) }}
+<script>
+/* Load TradingView's Stock Market (hotlists) widget only when its reserved slot is on screen (hidden tab = not loaded). */
+(function(){
+  function load(el){
+    if(el.getAttribute('data-done'))return; el.setAttribute('data-done','1');
+    var x=el.getAttribute('data-exchange'),c=document.createElement('div');
+    c.className='tradingview-widget-container';
+    c.innerHTML='<div class="tradingview-widget-container__widget"></div><div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/markets/'+(x==='US'?'stocks-usa':'stocks-canada')+'/" rel="noopener nofollow" target="_blank"><span class="blue-text">'+(x==='US'?'U.S.':'Canadian')+' stocks today</span></a><span class="trademark"> by TradingView</span></div>';
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/external-embedding/embed-widget-hotlists.js'; s.async=true;
+    s.text=JSON.stringify({colorTheme:'light',dateRange:'1D',exchange:x,showChart:false,locale:'en',width:'100%',height:'100%',largeChartUrl:'',isTransparent:true,showSymbolLogo:true,showFloatingTooltip:false});
+    c.appendChild(s); el.appendChild(c);
+  }
+  var slots=document.querySelectorAll('.tv-slot');
+  if(!('IntersectionObserver' in window)){for(var i=0;i<slots.length;i++)load(slots[i]);return;}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){load(e.target);io.unobserve(e.target);}});},{rootMargin:'300px'});
+  for(var j=0;j<slots.length;j++)io.observe(slots[j]);
+})();
+</script>
+{% endblock %}
