@@ -6,7 +6,9 @@ name: build-and-deploy
 on:
   schedule:
     - cron: "17 11 * * *"   # 04:17 PDT / 03:17 PST
+    - cron: "32 12 * * *"   # 05:32 PDT / 04:32 PST
     - cron: "17 23 * * *"   # 16:17 PDT / 15:17 PST
+    - cron: "32 0 * * *"    # 17:32 PDT / 16:32 PST
   workflow_dispatch: {}
   push:
     branches: [main]
