@@ -92,9 +92,9 @@
 </svg>{% endmacro %}
 
 {% macro caption(p, kind, base='/dividends/') %}
-{% if p %}<p class="duel-cap">{{ 'Leakiest dividend' if kind == 'cut' else 'Golden pour' }}: <a href="{{ base }}{{ p.slug }}/">{{ p.name }}</a> ({{ p.ticker }}) <span class="{{ 'neg' if kind == 'cut' else 'pos' }}">{{ p.big_h }}</span></p>
-<p class="duel-sub">{{ 'Not Deadly 👎 dividend cut' if kind == 'cut' else 'Deadly 💀 dividend raise' }}, first filed {{ p.filed_h }}.{% if not p.recent %} No {{ 'cuts' if kind == 'cut' else 'raises' }} in the last 12 weeks, so this is the most recent one.{% endif %}</p>
-{% else %}<p class="duel-cap">{{ 'No dividend cuts in our data. The bucket is dry 🎉' if kind == 'cut' else 'No dividend raises in our data yet.' }}</p>{% endif %}
+{% if p %}<p class="duel-cap">{{ 'Leak of the Day' if kind == 'cut' else 'Pour of the Day' }}: <a href="{{ base }}{{ p.slug }}/">{{ p.name }}</a> ({{ p.ticker }}) <span class="{{ 'neg' if kind == 'cut' else 'pos' }}">{{ p.big_h }}</span></p>
+<p class="duel-sub">{{ 'Not Deadly 👎' if kind == 'cut' else 'Deadly 💀' }} <strong>{{ 'Cut' if kind == 'cut' else 'Raise' }} filed {{ p.filed_h }}</strong>, {{ p.prev_h }} → {{ p.amount_h }}.{% if p.fresh %} 🆕 Filed this week.{% else %} From our history: one of {{ p.pool_n }} {{ 'cuts' if kind == 'cut' else 'raises' }} we rotate through daily.{% endif %}</p>
+{% else %}<p class="duel-cap">{{ 'No dividend cuts anywhere in our data. The bucket is dry 🎉' if kind == 'cut' else 'No dividend raises in our data yet.' }}</p>{% endif %}
 {% endmacro %}
 
 {# Daily Roast 🍁 / Syrup Bath 🥞 blurb (site/roast.py), only filed facts. #}
@@ -106,14 +106,14 @@
 {% macro duel(d, uid, base='/dividends/', compact=false, exchange=none) %}
 <div class="duel{{ ' compact' if compact }}">
  <div class="duel-side bad">
-  <h{{ 3 if compact else 2 }} class="duel-h">The Leaky Maple 🍁</h{{ 3 if compact else 2 }}>
+  <h{{ 3 if compact else 2 }} class="duel-h">Leak of the Day 🍁</h{{ 3 if compact else 2 }}>
   {{ leaky_svg(d.cut, uid ~ 'l') }}
   {{ caption(d.cut, 'cut', base) }}
   {% if not compact %}{{ fun_blurb(d.fun, 'cut') }}{% endif %}
   {% if exchange %}<p class="tv-h">📉 Today's {{ exchange_name(exchange) }} price movers. Tap <strong>Losers</strong> for the drips.</p>{{ tv_slot(exchange) }}{% endif %}
  </div>
  <div class="duel-side good">
-  <h{{ 3 if compact else 2 }} class="duel-h">The Golden Pour 🥞</h{{ 3 if compact else 2 }}>
+  <h{{ 3 if compact else 2 }} class="duel-h">Pour of the Day 🥞</h{{ 3 if compact else 2 }}>
   {{ golden_svg(d.raise_, uid ~ 'g') }}
   {{ caption(d.raise_, 'raise', base) }}
   {% if not compact %}{{ fun_blurb(d.fun, 'raise') }}{% endif %}

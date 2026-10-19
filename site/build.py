@@ -9,6 +9,8 @@ START=os.environ.get("START","2025-07-01")
 # the CF_BEACON_TOKEN repo variable. Empty = no beacon.
 BEACON_TOKEN=os.environ.get('CF_BEACON_TOKEN') or ''
 # IndexNow key (Bing/Yandex/etc.). The key file site/static/<key>.txt is published at /<key>.txt.
+US_REGS=None  # set by syrup.build_us: per-company U.S. declarations (Leaky Maple full-history pool)
+CA_REGS=[]  # per-company TSX declarations (Leaky Maple full-history pool)
 US_CHANGES=None  # set by syrup.build_us: Stars & Syrup raises/cuts for the Leaky Maple U.S. tab
 INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 # Broker referral links shown in the "Start investing" box (home + company pages). Empty string = that broker isn't shown;
@@ -84,6 +86,7 @@ def main():
         regs=c['regular']
         if not regs: continue
         s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs,fq)
+        CA_REGS.append(dict(slug=s,ticker=t,name=c['name'],regs=regs,fq=fq))
         Lh=dict(amount_h=money(L['amount'],L['currency']),currency=L['currency'],currency_note=CUR_NOTE.get(L.get('currency_basis')) if L['currency'] else None,unit=unit_of(L['snippet']),ex_h=dh(L['record']),record_h=dh(L['record']),pay_h=dh(L['pay']),
                 freq=fq,change=ch,filed_h=dh(L['file_date']),form=L['form'],source=L['source'])
         hist=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Regular',source=r['source'],rec=r['record']) for r in regs]
@@ -114,7 +117,7 @@ def main():
     groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
     weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
     import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
-    import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES)  # Leaky Maple vs Golden Pour
+    import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
     write('/',env.get_template('index.html').render(leaky=lm,title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
     write('/calendar/',env.get_template('calendar.html').render(title="TSX ex-dividend calendar: upcoming Canadian ex-dates | MapleDividends",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
     write('/raises-and-cuts/',env.get_template('raises.html').render(title="Deadly / Not Deadly: Canadian dividend raises & cuts | MapleDividends",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))

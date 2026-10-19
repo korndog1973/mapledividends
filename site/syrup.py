@@ -29,6 +29,7 @@ def build_us(B,common):
             g=sorted((D(a['record'])-D(b['record'])).days for a,b in zip(regs,regs[1:]))[(len(regs)-1)//2]
             if 60<=g<=120: fq='Quarterly'
         ch=B.change(regs,fq)
+        B.US_REGS=(B.US_REGS or [])+[dict(slug=s,ticker=t,name=c['name'],regs=regs,fq=fq)]
         if ch.get('label'): ch['label']=ch['label'].replace(', announced ',', first reported ')
         if ch['kind'] in ('raise','cut'): ch=dict(ch,label=('Deadly 💀 ' if ch['kind']=='raise' else 'Not Deadly 👎 ')+ch['label'])
         note=US_CUR_NOTE if L.get('currency_basis')=='us' else B.CUR_NOTE.get(L.get('currency_basis'))
