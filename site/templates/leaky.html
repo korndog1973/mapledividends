@@ -18,8 +18,8 @@
 <meta name="twitter:card" content="summary_large_image">{% endif %}{% endblock %}
 {% block body %}
 <h1>Leaky Maple vs Golden Pour 🍁🥞</h1>
-<p class="lead">A different real dividend cut and dividend raise every day, picked from past company filings. The cut leaks out of the maple and gets a roast; the raise pours onto the pancakes and gets a syrup bath.</p>
-<p class="fresh">⏰ Updated before the opening bell. Last refresh {{ build_date_human }}. <strong>For fun, not advice.</strong></p>
+<p class="lead">The biggest % price loser and the biggest % price gainer among our dividend stocks, every trading day. The loser leaks out of the maple and gets a roast; the gainer pours onto the pancakes and gets a syrup bath.</p>
+<p class="fresh">⏰ Prices as of the {{ ca.asof_h or "last available" }} close, not advice. Refreshed {{ build_date_human }}, before the opening bell.</p>
 <div class="lm-tabs">
  {% if us %}<input type="radio" name="lmt" id="lmt-ca" class="vh" checked><label for="lmt-ca">🇨🇦 TSX</label>
  <input type="radio" name="lmt" id="lmt-us" class="vh"><label for="lmt-us">🇺🇸 Stars &amp; Syrup</label>{% endif %}
@@ -36,8 +36,9 @@
 {{ joke_box(joke) }}
 <section class="card">
  <h2>How it works</h2>
- <p>Every time the site rebuilds (twice a day), we look at each company's regular dividend per share and compare it with the one before, the same way our <a href="/raises-and-cuts/">Deadly / Not Deadly</a> list does. Every cut and raise we can date, across our full history, goes into a pool. Each morning the bucket gets a different cut (the Leak of the Day) and the pancake flag gets a different raise (the Pour of the Day), rotating through the pool so nothing repeats until every one has had its turn. They're real past filings, so the date is always shown. If a company files a new cut or raise, it jumps the line for the week it's filed. The Bottom 5 / Top 5 lists below the art still cover just the last {{ weeks }} weeks.</p>
- <p>The roast and the syrup bath are written from a handful of templates that rotate daily, and they only use filed facts: the company, the ticker, the % change, the old and new dividend, and the filing date. They tease the dividend, not the people behind it, and they don't predict anything. The site rebuilds at 4:17am Pacific, so it's updated before the opening bell (6:30am Pacific), and again in the afternoon.</p>
+ <p>Before the opening bell each morning we take the last completed session's closing price for every TSX stock we track and the 30 <a href="/stars-and-syrup/">Stars &amp; Syrup</a> U.S. stocks, and compare it with the close the session before. The biggest % drop is the Leak of the Day; the biggest % gain is the Pour of the Day. Prices come from Yahoo Finance's free chart data and are shown with the session date. If prices can't be fetched, the page keeps the last good day and says which close it is.</p>
+ <p>The roast and the syrup bath come from a handful of templates that rotate daily, and they only use those facts: company, ticker, % change, prior and last close, and the date. They tease the share price, not the people, and they don't predict anything. A one-day move says nothing about the dividend.</p>
+ <p>The Bottom 5 / Top 5 dividend cut and raise lists below still cover the last {{ weeks }} weeks of company filings.</p>
  <p>Each change is dated by the company filing that first announced the new rate. Changes we can't date, because a declaration in between is missing from our data, are left out. Special dividends don't count.</p>
  <p>The movers under the art are TradingView's free widget: delayed share-<em>price</em> moves for the day, not dividends. It loads from TradingView when you scroll to it.</p>
  <p><strong>For fun, not advice.</strong> A dividend cut isn't a reason to sell and a raise isn't a reason to buy. Check the company's own announcement first.</p>

@@ -3,7 +3,7 @@ dividend raise (syrup pouring onto pancakes). Built only from the raises/cuts we
 so there's no new data source, key or licence. The live price movers under the art are TradingView's free embeddable
 Stock Market (hotlists) widget, which loads in the visitor's browser straight from TradingView."""
 import os, datetime, zlib
-import roast  # daily Roast / Syrup Bath blurbs (site/roast.py)
+import movers, roast  # daily Roast / Syrup Bath blurbs (site/roast.py)
 PATH='/leaky-maple/'
 OG='og.png'
 WEEKS=12  # same window as the raises & cuts page
@@ -63,8 +63,8 @@ def og_png(path,ca):
     def P(pts,**k): d.polygon([(x*S,y*S) for x,y in pts],**k)
     d.rectangle([0,0,600*S,H],fill='#fde8dc'); d.rectangle([600*S,0,W,H],fill='#fef3c7')
     cut=ca.get('cut'); r=ca.get('raise_')
-    text((300,52),'LEAKY MAPLE',42,'#7f1d1d'); text((300,94),'leak of the day: a real dividend cut',24,'#7f1d1d',bold=False)
-    text((900,52),'GOLDEN POUR',42,'#78350f'); text((900,94),'pour of the day: a real dividend raise',24,'#78350f',bold=False)
+    text((300,52),'LEAKY MAPLE',42,'#7f1d1d'); text((300,94),'leak of the day: biggest price drop',24,'#7f1d1d',bold=False)
+    text((900,52),'GOLDEN POUR',42,'#78350f'); text((900,94),'pour of the day: biggest price gain',24,'#78350f',bold=False)
     # --- left: tapped maple + sap bucket
     E(300,600,380,60,fill='#cfe8bd')
     P([(108,580),(122,300),(168,300),(186,580)],fill='#7c4a26')
@@ -75,7 +75,7 @@ def og_png(path,ca):
     d.line([(208*S,462*S),(502*S,462*S)],fill='#9ca3af',width=5*S)
     E(355,440,150,12,fill='#78350f')
     text((355,505),cut['ticker'] if cut else '-',76,'#7f1d1d',maxw=230)
-    text((355,548),(cut['big_h'] if cut else 'no cuts!'),30,'#dc2626')
+    text((355,548),(cut['big_h'] if cut else 'no losers!'),30,'#dc2626')
     # --- right: pancakes, butter, flag, jug pouring
     E(900,552,240,24,fill='#ffffff',outline='#cbd5e1',width=3*S)
     for k in range(5):
@@ -104,19 +104,29 @@ def og_png(path,ca):
     text((836,280),r['big_h'] if r else '',24,'#047857')
     d.rectangle([0,H-50*S,W,H],fill='#ffffff'); text((600,606),'mapledividends.com/leaky-maple  ·  for fun, not advice',22,'#374151',bold=False)
     im.resize((1200,630),Image.LANCZOS).save(path,optimize=True); return True
+def price_side(chg,quotes,today,B):
+    """Leak = biggest % price loser, Pour = biggest % price gainer at the last close. chg keeps the 12-week dividend lists."""
+    d=side(chg,today,[],'')
+    qs=[dict(q,kind='cut' if q['pct']<0 else 'raise',big_h=pct_h(q['pct']),prev_h=B.money(q['prev'],q['currency']),
+             amount_h=B.money(q['close'],q['currency']),filed_h=B.dh(datetime.date.fromisoformat(q['date']))) for q in quotes]
+    lo=[q for q in qs if q['pct']<0]; hi=[q for q in qs if q['pct']>0]
+    d['cut']=min(lo,key=lambda q:q['pct']) if lo else None
+    d['raise_']=max(hi,key=lambda q:q['pct']) if hi else None
+    d['n_quotes']=len(qs); d['asof_h']=qs[0]['filed_h'] if qs else None
+    return d
 def build(B,common,ca_chg,us_chg,ca_regs=None,us_regs=None):
     """Writes /leaky-maple/ (+ og.png); returns (context for the home page teaser, [static paths])."""
-    ca=side(ca_chg,B.TODAY,history(B,ca_regs) if ca_regs else None,'ca')
-    us=side(us_chg,B.TODAY,history(B,us_regs) if us_regs else None,'us') if us_chg is not None else None
+    ca=price_side(ca_chg,movers.fetch(ca_regs or [],'TSX',B.TODAY,B.ROOT),B.TODAY,B)
+    us=price_side(us_chg,movers.fetch(us_regs or [],'US',B.TODAY,B.ROOT),B.TODAY,B) if us_chg is not None else None
     ca['fun']=roast.blurbs(ca,B.TODAY,'TSX')
     if us: us['fun']=roast.blurbs(us,B.TODAY,'U.S.')
     os.makedirs(os.path.join(B.DIST,PATH.strip('/')),exist_ok=True)
     og=PATH+OG+'?v='+B.TODAY.strftime('%Y%m%d') if og_png(os.path.join(B.DIST,PATH.strip('/'),OG),ca) else None
     c,r=ca['cut'],ca['raise_']
-    bits=[f"Leak of the Day: {c['name']} ({c['ticker']}) dividend cut {c['big_h']}, filed {c['filed_h']}" if c else "No dividend cuts in our data",
-          f"Pour of the Day: {r['name']} ({r['ticker']}) dividend raise {r['big_h']}, filed {r['filed_h']}" if r else "no dividend raises in our data"]
+    bits=[f"Leak of the Day: {c['name']} ({c['ticker']}) {c['big_h']} at the {c['filed_h']} close" if c else "No TSX losers at the last close",
+          f"Pour of the Day: {r['name']} ({r['ticker']}) {r['big_h']} at the {r['filed_h']} close" if r else "no TSX gainers at the last close"]
     B.write(PATH,B.env.get_template('leaky.html').render(
-        title="Leaky Maple vs Golden Pour: worst dividend cut vs biggest dividend raise | MapleDividends",
-        description=f"{bits[0]}. {bits[1]}. A different real TSX dividend cut and raise every day, from past company filings. For fun, not advice.",
+        title="Leaky Maple vs Golden Pour: biggest daily loser vs biggest gainer | MapleDividends",
+        description=f"{bits[0]}. {bits[1]}. Biggest % price loser and gainer among our TSX dividend stocks at the last close. For fun, not advice.",
         path=PATH,ca=ca,us=us,weeks=WEEKS,og_image=og,**common))
     return dict(ca=ca),[PATH]

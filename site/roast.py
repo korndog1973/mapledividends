@@ -1,44 +1,44 @@
 """Daily Roast 🍁 / Syrup Bath 🥞 blurbs for Leaky Maple vs Golden Pour, plus the Joke of the Day 🥞.
-Template-only: every number comes from the verified raise/cut row (name, ticker, % change, old and new amounts with
-currency, first-filed date). Templates poke fun at the number and the dividend only: never people, management, fraud,
+Template-only: every number comes from the daily price row (name, ticker, % change, prior and last close with
+currency, session date). Templates poke fun at the number and the share price only: never people, management, fraud,
 solvency or predictions. Picked by build date (the build runs in America/Vancouver time, 4:17am PT, before the open),
 so the static site changes once a day without any JavaScript."""
 import json, os, re, zlib
 MINUS='\u2212'
-ROAST=[  # worst cut ({pct} is like −55.2%, {pa} like 55.2%)
- "{n} took a chainsaw to its dividend: {old} → {new} ({pct}). The bucket's catching drips, eh.",
- "Somebody left the tap open at {n}: the dividend leaked from {old} to {new} ({pct}). Grab a bigger bucket.",
- "{n} boiled its dividend way down: {old} → {new} ({pct}). Boiling usually makes syrup sweeter. Not this batch.",
- "Sap report for {n} ({t}): {old} went in, {new} comes out. That's a {pa} cut, first filed {date}. Even the squirrels are double-checking the math.",
- "{n}'s dividend went on a strict syrup diet: {old} → {new} ({pct}). Those pancakes are looking a little dry.",
- "The {n} bucket used to fill with {old} a payout. Now it's {new} ({pct}). Drip… drip… drip.",
- "Fresh from the sugar shack: {n} shrank its payout from {old} to {new} ({pct}). Somebody check that spout for holes.",
- "{n} trimmed its dividend like a lumberjack on a deadline: {old} → {new}, a {pa} chop filed {date}.",
+ROAST=[  # biggest % price loser at the last close ({old}=prior close, {new}=last close, {date}=session date)
+ "{n} sprang a leak: {old} → {new} at the {date} close ({pct}). The bucket's catching drips, eh.",
+ "Somebody left the tap open at {n}: the shares dripped from {old} to {new} ({pct}) on {date}. Grab a bigger bucket.",
+ "{n} ({t}) boiled down to {new} at the {date} close, from {old}. That's {pct}. Not the sweet kind of boiling.",
+ "Sap report for {n} ({t}): {pa} lower on {date}, {old} → {new}. Worst drip in our list.",
+ "{n}'s share price went on a syrup diet: {old} → {new} ({pct}) on {date}.",
+ "Drip… drip… {n} closed {date} at {new}, down {pa} from {old}.",
+ "Fresh from the sugar shack: {n} slid {pa} on {date}, {old} → {new}. Check that spout for holes.",
+ "{n} got the chainsaw on {date}: {old} → {new}, a {pa} chop. Biggest drop in our list.",
 ]
-PRAISE=[  # biggest raise
- "{n} just jumped in a hot syrup bath: {pct} to {new}. Pass the pancakes.",
- "Pour it on! {n} raised its dividend from {old} to {new} ({pct}), first filed {date}. Extra butter for this stack.",
- "{n} ({t}) is soaking in a warm maple bubble bath: dividend up {pa}, {old} → {new}. Rubber duck sold separately.",
- "Sweet news from the sugar shack: {n} bumped its payout to {new} from {old} ({pct}). Grade A amber.",
- "{n}'s dividend went back for seconds: {old} → {new} ({pct}). Stack 'em high.",
- "Hold the napkins: {n} let the syrup flow, raising its dividend {pa} to {new}.",
- "{n} poured a little extra on everyone's plate: {old} → {new} ({pct}). Golden.",
- "Somebody tapped the good tree. {n} raised its dividend {pa}, from {old} to {new}, first filed {date}.",
+PRAISE=[  # biggest % price gainer at the last close
+ "{n} hopped in a hot syrup bath: {pct} to {new} at the {date} close. Pass the pancakes.",
+ "Pour it on! {n} climbed from {old} to {new} ({pct}) on {date}. Extra butter for this stack.",
+ "{n} ({t}) is soaking in a warm maple bubble bath: up {pa} on {date}, {old} → {new}. Rubber duck sold separately.",
+ "Sweet news from the sugar shack: {n} closed {date} at {new}, up from {old} ({pct}). Grade A amber.",
+ "{n}'s shares went back for seconds on {date}: {old} → {new} ({pct}). Stack 'em high.",
+ "Hold the napkins: {n} let the syrup flow, up {pa} to {new} at the {date} close.",
+ "{n} poured a little extra on the plate: {old} → {new} ({pct}) on {date}. Golden.",
+ "Somebody tapped the good tree. {n} gained {pa} on {date}, from {old} to {new}. Top of our list.",
 ]
-ROAST_SHORT=["{s} cut its dividend {pa} ({old} → {new}). Drip, drip.",
- "{s} boiled its payout down to {new} ({pct}). Bucket's leaking.",
- "{s} took a chainsaw to the dividend: {pct}.",
- "{s}'s dividend went on a syrup diet: {old} → {new}."]
-PRAISE_SHORT=["{s} raised its dividend {pa} to {new}. Pass the pancakes.",
+ROAST_SHORT=["{s} dripped {pa} ({old} → {new}). Drip, drip.",
+ "{s} boiled down to {new} ({pct}). Bucket's leaking.",
+ "{s} got the chainsaw: {pct} at the close.",
+ "{s} went on a syrup diet: {old} → {new}."]
+PRAISE_SHORT=["{s} rose {pa} to {new}. Pass the pancakes.",
  "{s} is in a hot syrup bath: {old} → {new} ({pct}).",
- "{s} let the syrup flow: dividend up {pa}.",
+ "{s} let the syrup flow: up {pa}.",
  "{s} went back for seconds: {pct} to {new}."]
-DRY=["Not one dividend cut in our {mkt} data. The bucket is bone dry, the tree is fine, and the squirrels are bored. 🎉",
- "Nothing to roast today: zero {mkt} dividend cuts in our data. The sap bucket is collecting dust instead of drips.",
- "The roast is cancelled. No {mkt} dividend cuts in our data, so the bucket is dry and the chainsaw stays in the shed."]
-DRY_SHORT=["No cuts to roast. Bucket's dry! 🎉","Zero cuts. The chainsaw stays in the shed."]
-EMPTY=["No dividend raises in our {mkt} data yet. The pancakes are stacked and waiting. Plates out."]
-EMPTY_SHORT=["No raises yet. Pancakes waiting."]
+DRY=["Not one {mkt} stock in our list closed lower. The bucket is bone dry and the squirrels are bored. 🎉",
+ "Nothing to roast: no {mkt} losers in our list at the last close. The sap bucket is collecting dust instead of drips.",
+ "The roast is cancelled. Nothing in our {mkt} list fell at the last close, so the chainsaw stays in the shed."]
+DRY_SHORT=["No losers to roast. Bucket's dry! 🎉","Nothing fell. The chainsaw stays in the shed."]
+EMPTY=["No {mkt} gainers in our list at the last close (or prices weren't available). The pancakes are waiting."]
+EMPTY_SHORT=["No gainers. Pancakes waiting."]
 SUFFIX=re.compile(r'(,?\s+(Inc|Inc\.|Incorporated|Corp\.?|Corporation|Company|Co\.|Ltd\.?|Limited|plc|N\.V\.|S\.A\.|& Co\.?))+$',re.I)
 def short_name(n):
     n=re.sub(r'^The\s+|\s*\(The\)$','',n.strip()); m=SUFFIX.sub('',n).strip(' ,')

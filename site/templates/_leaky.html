@@ -93,8 +93,8 @@
 
 {% macro caption(p, kind, base='/dividends/') %}
 {% if p %}<p class="duel-cap">{{ 'Leak of the Day' if kind == 'cut' else 'Pour of the Day' }}: <a href="{{ base }}{{ p.slug }}/">{{ p.name }}</a> ({{ p.ticker }}) <span class="{{ 'neg' if kind == 'cut' else 'pos' }}">{{ p.big_h }}</span></p>
-<p class="duel-sub">{{ 'Not Deadly 👎' if kind == 'cut' else 'Deadly 💀' }} <strong>{{ 'Cut' if kind == 'cut' else 'Raise' }} filed {{ p.filed_h }}</strong>, {{ p.prev_h }} → {{ p.amount_h }}.{% if p.fresh %} 🆕 Filed this week.{% else %} From our history: one of {{ p.pool_n }} {{ 'cuts' if kind == 'cut' else 'raises' }} we rotate through daily.{% endif %}</p>
-{% else %}<p class="duel-cap">{{ 'No dividend cuts anywhere in our data. The bucket is dry 🎉' if kind == 'cut' else 'No dividend raises in our data yet.' }}</p>{% endif %}
+<p class="duel-sub">{{ 'Not Deadly 👎 Biggest drop' if kind == 'cut' else 'Deadly 💀 Biggest gain' }} at the <strong>{{ p.filed_h }} close</strong>: {{ p.prev_h }} → {{ p.amount_h }}.</p>
+{% else %}<p class="duel-cap">{{ 'No losers in our list at the last close. The bucket is dry 🎉' if kind == 'cut' else 'No gainers in our list at the last close.' }}</p>{% endif %}
 {% endmacro %}
 
 {# Daily Roast 🍁 / Syrup Bath 🥞 blurb (site/roast.py), only filed facts. #}
