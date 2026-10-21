@@ -17,11 +17,19 @@ INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 # if both are empty the box and the referral wording on the disclosure pages disappear.
 MOOMOO_REF_URL='https://j.moomoo.com/0KnjKO'   # Moomoo Canada referral (code J8U8DMTM)
 WEALTHSIMPLE_REF_URL = 'https://wealthsimple.com/invite/4CAYHA'                        # paste Wealthsimple referral link here to show it
+MOOMOO_OFFER_ENDS=datetime.date(2026,10,31)  # Moomoo coupon promo end: Moomoo mentions drop off automatically on the first build after this
 REFERRALS=[r for r in (
-    dict(name='Moomoo',url=MOOMOO_REF_URL,blurb='Trading app for Canadian and U.S. stocks, with TFSA and RRSP accounts.'),
-    dict(name='Wealthsimple',url=WEALTHSIMPLE_REF_URL,blurb='Canadian investing app with TFSA, RRSP and FHSA accounts.'),
-) if r['url']]
+    dict(name='Moomoo',url=MOOMOO_REF_URL,blurb='Trading app for Canadian and U.S. stocks, with TFSA and RRSP accounts.',
+         perk='C$100 in trading coupons when you deposit C$100+ (offer ends Oct 31, 2026)',ends=MOOMOO_OFFER_ENDS),
+    dict(name='Wealthsimple',url=WEALTHSIMPLE_REF_URL,blurb='Canadian investing app with TFSA, RRSP and FHSA accounts.',
+         perk='we each get C$25 when you fund C$100+',ends=None),
+) if r['url'] and (not r['ends'] or TODAY<=r['ends'])]
 env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
+import zlib
+def ref_pick(key):
+    """One broker per page, rotated by a stable hash of the page key (ticker/path) so neighbouring pages differ."""
+    return REFERRALS[zlib.crc32(str(key).encode())%len(REFERRALS)] if REFERRALS else None
+env.globals['ref_pick']=ref_pick
 D=datetime.date.fromisoformat
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
 CUR_NOTE={'filing':"currency per the filing's general statement",'company':"currency per the company's other filings",'override':"currency from our company notes; this filing doesn't state it"}

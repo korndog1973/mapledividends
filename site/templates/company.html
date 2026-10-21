@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_refer.html" import refer_box %}{% block body %}
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_refer.html" import refer_box, ref_line %}{% block body %}
 <nav class="crumbs"><a href="/">Home</a> › <a href="{{ list_url|default('/companies/') }}">{{ list_name|default('Companies') }}</a> › {{ c.ticker }}</nav>
 <h1>{{ c.name }} ({{ exchange|default('TSX') }}: {{ c.ticker }}) dividend</h1>
 <p class="lead">{% if L %}Latest declared {{ L.freq|lower if L.freq != 'Not stated' else '' }} dividend: <strong>{{ L.amount_h }}</strong>{% if L.unit %} per {{ L.unit }}{% endif %}, ex-dividend {{ L.ex_h }}, paid {{ L.pay_h }}.{% endif %}</p>{%- if stale_note %}
@@ -17,6 +17,7 @@
     <dt>Source</dt><dd><a href="{{ L.source }}" rel="nofollow noopener" target="_blank">{{ L.source_label or 'Company filing on SEC EDGAR' }}</a></dd>
   </dl>
 </section>
+{{ ref_line(c.ticker, "Want to own " ~ c.ticker ~ " before an ex-date? ") }}
 {% endif %}
 <section class="card">
   <h2>DRIP (dividend reinvestment plan)</h2>

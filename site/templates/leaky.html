@@ -16,10 +16,11 @@
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Leaky Maple vs Golden Pour: {{ ca.cut.ticker if ca.cut else 'no cut' }} vs {{ ca.raise_.ticker if ca.raise_ else 'no raise' }}">
 <meta name="twitter:card" content="summary_large_image">{% endif %}{% endblock %}
-{% block body %}
+{% block body %}{% from "_refer.html" import ref_line %}
 <h1>Leaky Maple vs Golden Pour 🍁🥞</h1>
 <p class="lead">The biggest % price loser and the biggest % price gainer among our dividend stocks, every trading day. The loser leaks out of the maple and gets a roast; the gainer pours onto the pancakes and gets a syrup bath.</p>
 <p class="fresh">⏰ Prices as of the {{ ca.asof_h or "last available" }} close, not advice. Refreshed {{ build_date_human }}, before the opening bell.</p>
+{{ ref_line(build_id, "Spotted a mover you like? ") }}
 <div class="lm-tabs">
  {% if us %}<input type="radio" name="lmt" id="lmt-ca" class="vh" checked><label for="lmt-ca">🇨🇦 TSX</label>
  <input type="radio" name="lmt" id="lmt-us" class="vh"><label for="lmt-us">🇺🇸 Stars &amp; Syrup</label>{% endif %}

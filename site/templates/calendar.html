@@ -1,6 +1,7 @@
-{% extends "base.html" %}{% from "_signup.html" import signup %}{% block body %}
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% from "_refer.html" import ref_line %}{% block body %}
 <h1>Upcoming ex-dividend calendar for TSX stocks</h1>
 <p class="lead">Declared dividends with an ex-date on or after {{ today_h }}. To get the dividend, you generally need to buy <em>before</em> the ex-date.</p>
+{{ ref_line(path, "Need an account before an ex-date? ") }}
 {% if groups %}{% for g in groups %}
 <section class="card"><h2>{{ g.date_h }}</h2>
 <table class="t"><thead><tr><th>Company</th><th class="r">Amount</th><th>Pay date</th><th>Frequency</th></tr></thead><tbody>

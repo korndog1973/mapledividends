@@ -1,7 +1,7 @@
 """Daily Roast 🍁 / Syrup Bath 🥞 blurbs for Leaky Maple vs Golden Pour, plus the Joke of the Day 🥞.
 Template-only: every number comes from the daily price row (name, ticker, % change, prior and last close with
 currency, session date). Templates poke fun at the number and the share price only: never people, management, fraud,
-solvency or predictions. Picked by build date (the build runs in America/Vancouver time, 4:17am PT, before the open),
+solvency or predictions. Picked by build date (the build runs early morning America/Vancouver time, before the open),
 so the static site changes once a day without any JavaScript."""
 import json, os, re, zlib
 MINUS='\u2212'

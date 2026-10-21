@@ -1,0 +1,1006 @@
+{
+ "TSX": [
+  {
+   "slug": "aem",
+   "ticker": "AEM",
+   "name": "Agnico Eagle Mines Limited",
+   "date": "2026-10-20",
+   "close": 261.83,
+   "prev": 264.64,
+   "pct": -1.06,
+   "currency": "CAD"
+  },
+  {
+   "slug": "agi",
+   "ticker": "AGI",
+   "name": "Alamos Gold Inc.",
+   "date": "2026-10-20",
+   "close": 44.76,
+   "prev": 45.13,
+   "pct": -0.82,
+   "currency": "CAD"
+  },
+  {
+   "slug": "aqn",
+   "ticker": "AQN",
+   "name": "Algonquin Power & Utilities Corp.",
+   "date": "2026-10-20",
+   "close": 7.35,
+   "prev": 7.27,
+   "pct": 1.1,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bto",
+   "ticker": "BTO",
+   "name": "B2Gold Corp.",
+   "date": "2026-10-20",
+   "close": 7.3,
+   "prev": 7.36,
+   "pct": -0.82,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bmo",
+   "ticker": "BMO",
+   "name": "Bank of Montreal",
+   "date": "2026-10-20",
+   "close": 235.4,
+   "prev": 234.52,
+   "pct": 0.38,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bns",
+   "ticker": "BNS",
+   "name": "Bank of Nova Scotia (The)",
+   "date": "2026-10-20",
+   "close": 129.78,
+   "prev": 128.61,
+   "pct": 0.91,
+   "currency": "CAD"
+  },
+  {
+   "slug": "abx",
+   "ticker": "ABX",
+   "name": "Barrick Mining Corporation",
+   "date": "2026-10-20",
+   "close": 56.9,
+   "prev": 57.12,
+   "pct": -0.39,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bte",
+   "ticker": "BTE",
+   "name": "Baytex Energy Corp.",
+   "date": "2026-10-20",
+   "close": 7.54,
+   "prev": 7.63,
+   "pct": -1.18,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bce",
+   "ticker": "BCE",
+   "name": "BCE Inc.",
+   "date": "2026-10-20",
+   "close": 28.15,
+   "prev": 28.0,
+   "pct": 0.54,
+   "currency": "CAD"
+  },
+  {
+   "slug": "byd",
+   "ticker": "BYD",
+   "name": "Boyd Group Services inc.",
+   "date": "2026-10-20",
+   "close": 113.91,
+   "prev": 112.64,
+   "pct": 1.13,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bam",
+   "ticker": "BAM",
+   "name": "Brookfield Asset Management Ltd.",
+   "date": "2026-10-20",
+   "close": 64.57,
+   "prev": 63.76,
+   "pct": 1.27,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bn",
+   "ticker": "BN",
+   "name": "Brookfield Corporation",
+   "date": "2026-10-20",
+   "close": 52.49,
+   "prev": 51.46,
+   "pct": 2.0,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bip",
+   "ticker": "BIP",
+   "name": "Brookfield Infrastructure Partners L.P.",
+   "date": "2026-10-20",
+   "close": 51.63,
+   "prev": 52.42,
+   "pct": -1.51,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bep",
+   "ticker": "BEP",
+   "name": "Brookfield Renewable Partners L.P.",
+   "date": "2026-10-20",
+   "close": 39.64,
+   "prev": 39.71,
+   "pct": -0.18,
+   "currency": "CAD"
+  },
+  {
+   "slug": "bnt",
+   "ticker": "BNT",
+   "name": "Brookfield Wealth Solutions Ltd.",
+   "date": "2026-10-20",
+   "close": 52.42,
+   "prev": 51.34,
+   "pct": 2.1,
+   "currency": "CAD"
+  },
+  {
+   "slug": "doo",
+   "ticker": "DOO",
+   "name": "BRP Inc.",
+   "date": "2026-10-20",
+   "close": 78.75,
+   "prev": 77.01,
+   "pct": 2.26,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cco",
+   "ticker": "CCO",
+   "name": "Cameco Corporation",
+   "date": "2026-10-20",
+   "close": 113.15,
+   "prev": 113.88,
+   "pct": -0.64,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cm",
+   "ticker": "CM",
+   "name": "Canadian Imperial Bank Of Commerce",
+   "date": "2026-10-20",
+   "close": 159.12,
+   "prev": 157.67,
+   "pct": 0.92,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cnq",
+   "ticker": "CNQ",
+   "name": "Canadian Natural Resources Limited",
+   "date": "2026-10-20",
+   "close": 76.23,
+   "prev": 76.46,
+   "pct": -0.3,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cp",
+   "ticker": "CP",
+   "name": "Canadian Pacific Kansas City Limited",
+   "date": "2026-10-20",
+   "close": 122.72,
+   "prev": 122.24,
+   "pct": 0.39,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cve",
+   "ticker": "CVE",
+   "name": "Cenovus Energy Inc.",
+   "date": "2026-10-20",
+   "close": 46.65,
+   "prev": 46.93,
+   "pct": -0.6,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cg",
+   "ticker": "CG",
+   "name": "Centerra Gold Inc.",
+   "date": "2026-10-20",
+   "close": 30.86,
+   "prev": 30.92,
+   "pct": -0.19,
+   "currency": "CAD"
+  },
+  {
+   "slug": "gib",
+   "ticker": "GIB",
+   "name": "CGI Inc.",
+   "date": "2026-10-20",
+   "close": 111.1,
+   "prev": 106.96,
+   "pct": 3.87,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cde",
+   "ticker": "CDE",
+   "name": "Coeur Mining, Inc.",
+   "date": "2026-10-20",
+   "close": 21.29,
+   "prev": 21.67,
+   "pct": -1.75,
+   "currency": "CAD"
+  },
+  {
+   "slug": "cigi",
+   "ticker": "CIGI",
+   "name": "Colliers International Group Inc.",
+   "date": "2026-10-20",
+   "close": 130.79,
+   "prev": 126.08,
+   "pct": 3.74,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ele",
+   "ticker": "ELE",
+   "name": "Elemental Royalty Corporation",
+   "date": "2026-10-20",
+   "close": 23.22,
+   "prev": 23.36,
+   "pct": -0.6,
+   "currency": "CAD"
+  },
+  {
+   "slug": "efx",
+   "ticker": "EFX",
+   "name": "Enerflex Ltd.",
+   "date": "2026-10-20",
+   "close": 33.96,
+   "prev": 34.67,
+   "pct": -2.05,
+   "currency": "CAD"
+  },
+  {
+   "slug": "eqx",
+   "ticker": "EQX",
+   "name": "Equinox Gold Corp.",
+   "date": "2026-10-20",
+   "close": 15.53,
+   "prev": 15.65,
+   "pct": -0.77,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ag",
+   "ticker": "AG",
+   "name": "First Majestic Silver Corp.",
+   "date": "2026-10-20",
+   "close": 22.48,
+   "prev": 22.53,
+   "pct": -0.22,
+   "currency": "CAD"
+  },
+  {
+   "slug": "fsv",
+   "ticker": "FSV",
+   "name": "FirstService Corporation",
+   "date": "2026-10-20",
+   "close": 194.67,
+   "prev": 188.62,
+   "pct": 3.21,
+   "currency": "CAD"
+  },
+  {
+   "slug": "fnv",
+   "ticker": "FNV",
+   "name": "Franco-Nevada Corporation",
+   "date": "2026-10-20",
+   "close": 338.93,
+   "prev": 340.75,
+   "pct": -0.53,
+   "currency": "CAD"
+  },
+  {
+   "slug": "gfl",
+   "ticker": "GFL",
+   "name": "GFL Environmental Inc.",
+   "date": "2026-10-20",
+   "close": 62.46,
+   "prev": 62.97,
+   "pct": -0.81,
+   "currency": "CAD"
+  },
+  {
+   "slug": "gil",
+   "ticker": "GIL",
+   "name": "Gildan Activewear Inc.",
+   "date": "2026-10-20",
+   "close": 57.51,
+   "prev": 57.6,
+   "pct": -0.16,
+   "currency": "CAD"
+  },
+  {
+   "slug": "grt",
+   "ticker": "GRT",
+   "name": "Granite Real Estate Investment Trust",
+   "date": "2026-10-20",
+   "close": 85.59,
+   "prev": 84.2,
+   "pct": 1.65,
+   "currency": "CAD"
+  },
+  {
+   "slug": "hbm",
+   "ticker": "HBM",
+   "name": "HudBay Minerals Inc.",
+   "date": "2026-10-20",
+   "close": 33.27,
+   "prev": 33.75,
+   "pct": -1.42,
+   "currency": "CAD"
+  },
+  {
+   "slug": "h",
+   "ticker": "H",
+   "name": "Hydro One Limited",
+   "date": "2026-10-20",
+   "close": 52.78,
+   "prev": 52.55,
+   "pct": 0.44,
+   "currency": "CAD"
+  },
+  {
+   "slug": "imo",
+   "ticker": "IMO",
+   "name": "Imperial Oil Limited",
+   "date": "2026-10-20",
+   "close": 190.15,
+   "prev": 190.83,
+   "pct": -0.36,
+   "currency": "CAD"
+  },
+  {
+   "slug": "k",
+   "ticker": "K",
+   "name": "Kinross Gold Corporation",
+   "date": "2026-10-20",
+   "close": 33.24,
+   "prev": 33.4,
+   "pct": -0.48,
+   "currency": "CAD"
+  },
+  {
+   "slug": "mg",
+   "ticker": "MG",
+   "name": "Magna International Inc.",
+   "date": "2026-10-20",
+   "close": 93.29,
+   "prev": 92.34,
+   "pct": 1.03,
+   "currency": "CAD"
+  },
+  {
+   "slug": "mfc",
+   "ticker": "MFC",
+   "name": "Manulife Financial Corporation",
+   "date": "2026-10-20",
+   "close": 62.53,
+   "prev": 62.26,
+   "pct": 0.43,
+   "currency": "CAD"
+  },
+  {
+   "slug": "mx",
+   "ticker": "MX",
+   "name": "Methanex Corporation",
+   "date": "2026-10-20",
+   "close": 89.03,
+   "prev": 91.14,
+   "pct": -2.32,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ntr",
+   "ticker": "NTR",
+   "name": "Nutrien Ltd.",
+   "date": "2026-10-20",
+   "close": 97.13,
+   "prev": 98.12,
+   "pct": -1.01,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ogc",
+   "ticker": "OGC",
+   "name": "OceanaGold Corporation",
+   "date": "2026-10-20",
+   "close": 37.16,
+   "prev": 37.58,
+   "pct": -1.12,
+   "currency": "CAD"
+  },
+  {
+   "slug": "otex",
+   "ticker": "OTEX",
+   "name": "Open Text Corporation",
+   "date": "2026-10-20",
+   "close": 37.27,
+   "prev": 36.31,
+   "pct": 2.64,
+   "currency": "CAD"
+  },
+  {
+   "slug": "or",
+   "ticker": "OR",
+   "name": "OR Royalties Inc.",
+   "date": "2026-10-20",
+   "close": 48.91,
+   "prev": 49.04,
+   "pct": -0.27,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ovv",
+   "ticker": "OVV",
+   "name": "Ovintiv Inc.",
+   "date": "2026-10-20",
+   "close": 98.74,
+   "prev": 98.79,
+   "pct": -0.05,
+   "currency": "CAD"
+  },
+  {
+   "slug": "paas",
+   "ticker": "PAAS",
+   "name": "Pan American Silver Corp.",
+   "date": "2026-10-20",
+   "close": 62.25,
+   "prev": 62.76,
+   "pct": -0.81,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ppl",
+   "ticker": "PPL",
+   "name": "Pembina Pipeline Corporation",
+   "date": "2026-10-20",
+   "close": 70.49,
+   "prev": 70.4,
+   "pct": 0.13,
+   "currency": "CAD"
+  },
+  {
+   "slug": "rba",
+   "ticker": "RBA",
+   "name": "RB Global, Inc.",
+   "date": "2026-10-20",
+   "close": 113.63,
+   "prev": 112.61,
+   "pct": 0.91,
+   "currency": "CAD"
+  },
+  {
+   "slug": "qsr",
+   "ticker": "QSR",
+   "name": "Restaurant Brands International Inc.",
+   "date": "2026-10-20",
+   "close": 105.66,
+   "prev": 105.04,
+   "pct": 0.59,
+   "currency": "CAD"
+  },
+  {
+   "slug": "qsp",
+   "ticker": "QSP",
+   "name": "Restaurant Brands International Limited Partnership",
+   "date": "2026-10-20",
+   "close": 105.67,
+   "prev": 105.67,
+   "pct": 0.0,
+   "currency": "CAD"
+  },
+  {
+   "slug": "rci",
+   "ticker": "RCI",
+   "name": "Rogers Communications Inc.",
+   "date": "2026-10-20",
+   "close": 45.35,
+   "prev": 44.65,
+   "pct": 1.57,
+   "currency": "CAD"
+  },
+  {
+   "slug": "svm",
+   "ticker": "SVM",
+   "name": "Silvercorp Metals Inc.",
+   "date": "2026-10-20",
+   "close": 12.99,
+   "prev": 13.78,
+   "pct": -5.73,
+   "currency": "CAD"
+  },
+  {
+   "slug": "sobo",
+   "ticker": "SOBO",
+   "name": "South Bow Corporation",
+   "date": "2026-10-20",
+   "close": 48.47,
+   "prev": 48.27,
+   "pct": 0.41,
+   "currency": "CAD"
+  },
+  {
+   "slug": "sii",
+   "ticker": "SII",
+   "name": "Sprott Inc.",
+   "date": "2026-10-20",
+   "close": 149.02,
+   "prev": 151.6,
+   "pct": -1.7,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ssrm",
+   "ticker": "SSRM",
+   "name": "SSR Mining Inc.",
+   "date": "2026-10-20",
+   "close": 43.95,
+   "prev": 44.41,
+   "pct": -1.04,
+   "currency": "CAD"
+  },
+  {
+   "slug": "stn",
+   "ticker": "STN",
+   "name": "Stantec Inc.",
+   "date": "2026-10-20",
+   "close": 97.05,
+   "prev": 96.88,
+   "pct": 0.18,
+   "currency": "CAD"
+  },
+  {
+   "slug": "slf",
+   "ticker": "SLF",
+   "name": "Sun Life Financial Inc.",
+   "date": "2026-10-20",
+   "close": 111.95,
+   "prev": 111.18,
+   "pct": 0.69,
+   "currency": "CAD"
+  },
+  {
+   "slug": "su",
+   "ticker": "SU",
+   "name": "Suncor Energy Inc.",
+   "date": "2026-10-20",
+   "close": 110.11,
+   "prev": 110.63,
+   "pct": -0.47,
+   "currency": "CAD"
+  },
+  {
+   "slug": "trp",
+   "ticker": "TRP",
+   "name": "TC Energy Corporation",
+   "date": "2026-10-20",
+   "close": 86.85,
+   "prev": 85.77,
+   "pct": 1.26,
+   "currency": "CAD"
+  },
+  {
+   "slug": "teck",
+   "ticker": "TECK",
+   "name": "Teck Resources Limited",
+   "date": "2026-10-20",
+   "close": 90.51,
+   "prev": 89.59,
+   "pct": 1.03,
+   "currency": "CAD"
+  },
+  {
+   "slug": "t",
+   "ticker": "T",
+   "name": "TELUS Corporation",
+   "date": "2026-10-20",
+   "close": 11.86,
+   "prev": 11.69,
+   "pct": 1.45,
+   "currency": "CAD"
+  },
+  {
+   "slug": "tfii",
+   "ticker": "TFII",
+   "name": "TFI International Inc.",
+   "date": "2026-10-20",
+   "close": 156.78,
+   "prev": 157.8,
+   "pct": -0.65,
+   "currency": "CAD"
+  },
+  {
+   "slug": "tri",
+   "ticker": "TRI",
+   "name": "Thomson Reuters Corporation",
+   "date": "2026-10-20",
+   "close": 158.42,
+   "prev": 152.7,
+   "pct": 3.75,
+   "currency": "CAD"
+  },
+  {
+   "slug": "ta",
+   "ticker": "TA",
+   "name": "TransAlta Corporation",
+   "date": "2026-10-20",
+   "close": 18.23,
+   "prev": 18.37,
+   "pct": -0.76,
+   "currency": "CAD"
+  },
+  {
+   "slug": "tfpm",
+   "ticker": "TFPM",
+   "name": "Triple Flag Precious Metals Corp.",
+   "date": "2026-10-20",
+   "close": 43.11,
+   "prev": 43.22,
+   "pct": -0.25,
+   "currency": "CAD"
+  },
+  {
+   "slug": "vet",
+   "ticker": "VET",
+   "name": "Vermilion Energy Inc.",
+   "date": "2026-10-20",
+   "close": 18.83,
+   "prev": 19.17,
+   "pct": -1.77,
+   "currency": "CAD"
+  },
+  {
+   "slug": "voxr",
+   "ticker": "VOXR",
+   "name": "Vox Royalty Corp.",
+   "date": "2026-10-20",
+   "close": 6.97,
+   "prev": 7.05,
+   "pct": -1.13,
+   "currency": "CAD"
+  },
+  {
+   "slug": "wfg",
+   "ticker": "WFG",
+   "name": "West Fraser Timber Co. Ltd.",
+   "date": "2026-10-20",
+   "close": 93.21,
+   "prev": 92.94,
+   "pct": 0.29,
+   "currency": "CAD"
+  },
+  {
+   "slug": "wpm",
+   "ticker": "WPM",
+   "name": "Wheaton Precious Metals Corp.",
+   "date": "2026-10-20",
+   "close": 184.56,
+   "prev": 186.49,
+   "pct": -1.03,
+   "currency": "CAD"
+  }
+ ],
+ "US": [
+  {
+   "slug": "mmm",
+   "ticker": "MMM",
+   "name": "3M Company",
+   "date": "2026-10-20",
+   "close": 171.37,
+   "prev": 162.01,
+   "pct": 5.78,
+   "currency": "USD"
+  },
+  {
+   "slug": "abbv",
+   "ticker": "ABBV",
+   "name": "AbbVie Inc.",
+   "date": "2026-10-20",
+   "close": 289.08,
+   "prev": 282.68,
+   "pct": 2.26,
+   "currency": "USD"
+  },
+  {
+   "slug": "mo",
+   "ticker": "MO",
+   "name": "Altria Group, Inc.",
+   "date": "2026-10-20",
+   "close": 74.64,
+   "prev": 74.09,
+   "pct": 0.74,
+   "currency": "USD"
+  },
+  {
+   "slug": "aapl",
+   "ticker": "AAPL",
+   "name": "Apple Inc.",
+   "date": "2026-10-20",
+   "close": 339.5,
+   "prev": 342.94,
+   "pct": -1.0,
+   "currency": "USD"
+  },
+  {
+   "slug": "t",
+   "ticker": "T",
+   "name": "AT&T Inc.",
+   "date": "2026-10-20",
+   "close": 23.42,
+   "prev": 23.2,
+   "pct": 0.95,
+   "currency": "USD"
+  },
+  {
+   "slug": "blk",
+   "ticker": "BLK",
+   "name": "BlackRock, Inc.",
+   "date": "2026-10-20",
+   "close": 1128.6801,
+   "prev": 1124.6,
+   "pct": 0.36,
+   "currency": "USD"
+  },
+  {
+   "slug": "avgo",
+   "ticker": "AVGO",
+   "name": "Broadcom Inc.",
+   "date": "2026-10-20",
+   "close": 334.37,
+   "prev": 334.59,
+   "pct": -0.07,
+   "currency": "USD"
+  },
+  {
+   "slug": "cvx",
+   "ticker": "CVX",
+   "name": "Chevron Corporation",
+   "date": "2026-10-20",
+   "close": 225.71,
+   "prev": 224.37,
+   "pct": 0.6,
+   "currency": "USD"
+  },
+  {
+   "slug": "csco",
+   "ticker": "CSCO",
+   "name": "Cisco Systems, Inc.",
+   "date": "2026-10-20",
+   "close": 106.71,
+   "prev": 106.5,
+   "pct": 0.2,
+   "currency": "USD"
+  },
+  {
+   "slug": "ko",
+   "ticker": "KO",
+   "name": "The Coca-Cola Company",
+   "date": "2026-10-20",
+   "close": 93.49,
+   "prev": 93.42,
+   "pct": 0.07,
+   "currency": "USD"
+  },
+  {
+   "slug": "cost",
+   "ticker": "COST",
+   "name": "Costco Wholesale Corporation",
+   "date": "2026-10-20",
+   "close": 994.61,
+   "prev": 995.53,
+   "pct": -0.09,
+   "currency": "USD"
+  },
+  {
+   "slug": "xom",
+   "ticker": "XOM",
+   "name": "Exxon Mobil Corporation",
+   "date": "2026-10-20",
+   "close": 177.86,
+   "prev": 178.28,
+   "pct": -0.24,
+   "currency": "USD"
+  },
+  {
+   "slug": "hd",
+   "ticker": "HD",
+   "name": "The Home Depot, Inc.",
+   "date": "2026-10-20",
+   "close": 315.11,
+   "prev": 309.88,
+   "pct": 1.69,
+   "currency": "USD"
+  },
+  {
+   "slug": "ibm",
+   "ticker": "IBM",
+   "name": "International Business Machines Corporation",
+   "date": "2026-10-20",
+   "close": 241.92,
+   "prev": 236.39,
+   "pct": 2.34,
+   "currency": "USD"
+  },
+  {
+   "slug": "jnj",
+   "ticker": "JNJ",
+   "name": "Johnson & Johnson",
+   "date": "2026-10-20",
+   "close": 259.36,
+   "prev": 253.79,
+   "pct": 2.19,
+   "currency": "USD"
+  },
+  {
+   "slug": "jpm",
+   "ticker": "JPM",
+   "name": "JPMorgan Chase & Co.",
+   "date": "2026-10-20",
+   "close": 335.26,
+   "prev": 333.53,
+   "pct": 0.52,
+   "currency": "USD"
+  },
+  {
+   "slug": "lmt",
+   "ticker": "LMT",
+   "name": "Lockheed Martin Corporation",
+   "date": "2026-10-20",
+   "close": 548.71,
+   "prev": 548.23,
+   "pct": 0.09,
+   "currency": "USD"
+  },
+  {
+   "slug": "mcd",
+   "ticker": "MCD",
+   "name": "McDonald's Corporation",
+   "date": "2026-10-20",
+   "close": 246.52,
+   "prev": 242.67,
+   "pct": 1.59,
+   "currency": "USD"
+  },
+  {
+   "slug": "mrk",
+   "ticker": "MRK",
+   "name": "Merck & Co., Inc.",
+   "date": "2026-10-20",
+   "close": 148.3,
+   "prev": 143.63,
+   "pct": 3.25,
+   "currency": "USD"
+  },
+  {
+   "slug": "msft",
+   "ticker": "MSFT",
+   "name": "Microsoft Corporation",
+   "date": "2026-10-20",
+   "close": 531.87,
+   "prev": 533.52,
+   "pct": -0.31,
+   "currency": "USD"
+  },
+  {
+   "slug": "nee",
+   "ticker": "NEE",
+   "name": "NextEra Energy, Inc.",
+   "date": "2026-10-20",
+   "close": 78.86,
+   "prev": 78.17,
+   "pct": 0.88,
+   "currency": "USD"
+  },
+  {
+   "slug": "pep",
+   "ticker": "PEP",
+   "name": "PepsiCo, Inc.",
+   "date": "2026-10-20",
+   "close": 134.02,
+   "prev": 133.57,
+   "pct": 0.34,
+   "currency": "USD"
+  },
+  {
+   "slug": "pfe",
+   "ticker": "PFE",
+   "name": "Pfizer Inc.",
+   "date": "2026-10-20",
+   "close": 30.11,
+   "prev": 29.44,
+   "pct": 2.28,
+   "currency": "USD"
+  },
+  {
+   "slug": "pm",
+   "ticker": "PM",
+   "name": "Philip Morris International Inc.",
+   "date": "2026-10-20",
+   "close": 199.9,
+   "prev": 201.05,
+   "pct": -0.57,
+   "currency": "USD"
+  },
+  {
+   "slug": "pg",
+   "ticker": "PG",
+   "name": "The Procter & Gamble Company",
+   "date": "2026-10-20",
+   "close": 159.32,
+   "prev": 157.69,
+   "pct": 1.03,
+   "currency": "USD"
+  },
+  {
+   "slug": "o",
+   "ticker": "O",
+   "name": "Realty Income Corporation",
+   "date": "2026-10-20",
+   "close": 56.34,
+   "prev": 55.51,
+   "pct": 1.5,
+   "currency": "USD"
+  },
+  {
+   "slug": "txn",
+   "ticker": "TXN",
+   "name": "Texas Instruments Incorporated",
+   "date": "2026-10-20",
+   "close": 277.78,
+   "prev": 276.15,
+   "pct": 0.59,
+   "currency": "USD"
+  },
+  {
+   "slug": "ups",
+   "ticker": "UPS",
+   "name": "United Parcel Service, Inc.",
+   "date": "2026-10-20",
+   "close": 98.52,
+   "prev": 97.46,
+   "pct": 1.09,
+   "currency": "USD"
+  },
+  {
+   "slug": "vz",
+   "ticker": "VZ",
+   "name": "Verizon Communications Inc.",
+   "date": "2026-10-20",
+   "close": 44.54,
+   "prev": 44.15,
+   "pct": 0.88,
+   "currency": "USD"
+  },
+  {
+   "slug": "wmt",
+   "ticker": "WMT",
+   "name": "Walmart Inc.",
+   "date": "2026-10-20",
+   "close": 117.85,
+   "prev": 118.7,
+   "pct": -0.72,
+   "currency": "USD"
+  }
+ ]
+}

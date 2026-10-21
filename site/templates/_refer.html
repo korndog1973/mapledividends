@@ -10,3 +10,10 @@
 </aside>
 {% endif %}
 {%- endmacro %}
+
+{# One-line contextual referral mention. Broker rotates by `key` (ticker/path) via ref_pick in build.py; Moomoo drops off after its offer ends. #}
+{% macro ref_line(key, lead='') -%}
+{% set r = ref_pick(key) %}{% if r %}
+<p class="ref-line">{{ lead }}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a> <span class="ref-tag">(referral)</span>: {{ r.perk }}. <a href="/affiliate-disclosure/" class="ref-disc">Disclosure</a></p>
+{% endif %}
+{%- endmacro %}
