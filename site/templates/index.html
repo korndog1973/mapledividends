@@ -9,6 +9,10 @@
   <p class="legend">A different real dividend cut and raise from past filings every day. Updated before the opening bell. For fun, not advice.</p>
   {{ duel(leaky.ca, 'home', '/dividends/', compact=true) }}
 </section>{% endif %}
+{% if power %}<section class="card pg-teaser">
+  <div class="lm-teaser-h"><h2>Data Centre &amp; AI Power Tracker ⚡</h2><a href="/power-grid/">See all {{ power.n }} projects →</a></div>
+  <p class="legend">AI needs power. We track {{ power.n }} sourced data centre and power deals ({{ power.n_canada }} in Canada) and the TSX stocks behind them, like TransAlta, Capital Power, Pembina, BCE and Cameco.</p>
+</section>{% endif %}
 <section class="grid2">
   <div class="card">
     <h2>Upcoming ex-dividend dates</h2>

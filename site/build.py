@@ -126,14 +126,15 @@ def main():
     weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
     import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
     import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
-    write('/',env.get_template('index.html').render(leaky=lm,title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
+    import power; pg_static,pg=power.build(sys.modules[__name__],common)  # Data Centre & AI Power Tracker
+    write('/',env.get_template('index.html').render(leaky=lm,power=pg,title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
     write('/calendar/',env.get_template('calendar.html').render(title="TSX ex-dividend calendar: upcoming Canadian ex-dates | MapleDividends",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
     write('/raises-and-cuts/',env.get_template('raises.html').render(title="Deadly / Not Deadly: Canadian dividend raises & cuts | MapleDividends",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
     write('/companies/',env.get_template('companies.html').render(title="TSX dividend stocks: list of Canadian dividend payers | MapleDividends",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/']+lm_static+us_static+list(PAGES); urls+=us_urls
+    static=['/','/calendar/','/raises-and-cuts/','/companies/']+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]

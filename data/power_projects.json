@@ -1,0 +1,358 @@
+{
+ "_about": "Curated by hand from public sources. Every row cites source_url; only sourced facts. as_of = date last checked.",
+ "rows": [
+  {
+   "project": "Keephills data centre (TransAlta + CPP Investments + Brookfield)",
+   "location": "Parkland County",
+   "province": "AB",
+   "mw": "230 MW (up to 1,000)",
+   "status": "MOU signed; definitive deal pending",
+   "announced": "2026-02-26",
+   "tickers": [
+    [
+     "TA",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://transalta.com/newsroom/transalta-reports-first-quarter-results-and-reaffirms-annual-guidance",
+   "note": "AESO Phase 1 load contract: P3083 Keephills Data Centre Phase I, 230 MW.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Greenlight Electricity Centre (gas plant for a data centre)",
+   "location": "Sturgeon County",
+   "province": "AB",
+   "mw": "932",
+   "status": "Final investment decision; service targeted late 2030",
+   "announced": "2026-07-02",
+   "tickers": [
+    [
+     "PPL",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.reuters.com/business/energy/pembina-approves-alberta-power-project-tied-major-data-center-development-2026-07-02/",
+   "note": "C$4.6B, with Kineticor and Morgan Stanley Infrastructure Partners; customer unnamed.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "AESO P2936 GLDC Load (Greenlight data centre load)",
+   "location": "Alberta Industrial Heartland",
+   "province": "AB",
+   "mw": "970",
+   "status": "Load contract executed (AESO Phase 1)",
+   "announced": "2025-11-17",
+   "tickers": [
+    [
+     "PPL",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.aeso.ca/grid/connecting-to-the-grid/large-load-projects/",
+   "note": "Date is when Phase 1 results were reported (onenergy.iannieboer.com).",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Meta data centre energy supply (Capital Power)",
+   "location": "Sturgeon County",
+   "province": "AB",
+   "mw": "250",
+   "status": "Contract signed; load in service 2H 2028",
+   "announced": "2026-07-08",
+   "tickers": [
+    [
+     "CPX",
+     "TSX"
+    ],
+    [
+     "META",
+     "US"
+    ]
+   ],
+   "source_url": "https://www.capitalpower.com/media/media_releases/capital-power-enters-long-term-energy-supply-agreement-with-meta-in-alberta/",
+   "note": "10+ year Energy Supply Agreement.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Wonder Valley AI Data Centre Park (O'Leary Digital)",
+   "location": "Greenview, near Grande Prairie",
+   "province": "AB",
+   "mw": "Up to 1,000 MW IT (Phase 1)",
+   "status": "Proposed; approvals incomplete, no FID",
+   "announced": "2024-12-09",
+   "tickers": [],
+   "source_url": "https://albertadatacentrewatch.ca/projects/wonder-valley-ai-data-centre-park/",
+   "note": "Private. Full build 7.5 GW or 9 GW (figures conflict). Off-grid gas.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Beacon Heartland Campus",
+   "location": "Sturgeon County (Industrial Heartland)",
+   "province": "AB",
+   "mw": "800",
+   "status": "Master Development Permit issued; ops targeted fall 2027",
+   "announced": null,
+   "tickers": [],
+   "source_url": "https://beacondatacenters.com/heartland-campus/",
+   "note": "Private. Bring-your-own gas power (920 MWe).",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "eStruxture CAL-3",
+   "location": "Rocky View County (Calgary area)",
+   "province": "AB",
+   "mw": "90",
+   "status": "Launch scheduled fall 2026",
+   "announced": null,
+   "tickers": [],
+   "source_url": "https://www.estruxture.com/data-centers/calgary/cal-3",
+   "note": "Private.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Bell AI Fabric: Groq inference site",
+   "location": "Kamloops",
+   "province": "BC",
+   "mw": "7",
+   "status": "Planned to open June 2025",
+   "announced": "2025-05-28",
+   "tickers": [
+    [
+     "BCE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.bce.ca/Bell-Canada-Increases-Sovereign-AI-Capacity-with-Bell-AI-Fabric",
+   "note": "",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Bell AI Fabric: Merritt site",
+   "location": "Merritt",
+   "province": "BC",
+   "mw": "7",
+   "status": "Planned to open by end of 2025",
+   "announced": "2025-05-28",
+   "tickers": [
+    [
+     "BCE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.bce.ca/Bell-Canada-Increases-Sovereign-AI-Capacity-with-Bell-AI-Fabric",
+   "note": "",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Bell AI Fabric: Thompson Rivers University data centre",
+   "location": "Kamloops",
+   "province": "BC",
+   "mw": "26",
+   "status": "Planned to open 2026",
+   "announced": "2025-05-28",
+   "tickers": [
+    [
+     "BCE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.bce.ca/Bell-Canada-Increases-Sovereign-AI-Capacity-with-Bell-AI-Fabric",
+   "note": "",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Bell AI Fabric: second Kamloops data centre",
+   "location": "Kamloops",
+   "province": "BC",
+   "mw": "26",
+   "status": "Planned for 2027",
+   "announced": "2025-05-28",
+   "tickers": [
+    [
+     "BCE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.bce.ca/Bell-Canada-Increases-Sovereign-AI-Capacity-with-Bell-AI-Fabric",
+   "note": "",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Bell AI Fabric: two large AI data centres",
+   "location": "British Columbia",
+   "province": "BC",
+   "mw": "400+ MW combined",
+   "status": "Advanced planning",
+   "announced": "2025-05-28",
+   "tickers": [
+    [
+     "BCE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.bce.ca/Bell-Canada-Increases-Sovereign-AI-Capacity-with-Bell-AI-Fabric",
+   "note": "Bell AI Fabric targets 500+ MW of hydro-powered compute across six B.C. sites.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "TELUS Sovereign AI Factory: Rimouski",
+   "location": "Rimouski",
+   "province": "QC",
+   "mw": null,
+   "status": "First site; operations planned summer 2025",
+   "announced": "2025-04-15",
+   "tickers": [
+    [
+     "T",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.telus.com/en/about/news-and-events/media-releases/telus-to-launch-sovereign-ai-factories-in-kamloops-and-rimouski-propelling-canada-to-the-forefront-of-ai-innovation",
+   "note": "MW not disclosed. NVIDIA Hopper/Blackwell systems.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "TELUS Sovereign AI Factory: Kamloops",
+   "location": "Kamloops",
+   "province": "BC",
+   "mw": null,
+   "status": "Planned after Rimouski",
+   "announced": "2025-04-15",
+   "tickers": [
+    [
+     "T",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.telus.com/en/about/news-and-events/media-releases/telus-to-launch-sovereign-ai-factories-in-kamloops-and-rimouski-propelling-canada-to-the-forefront-of-ai-innovation",
+   "note": "MW not disclosed.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "BUZZ HPC AI gigafactory (HIVE)",
+   "location": "Greater Toronto Area",
+   "province": "ON",
+   "mw": "320",
+   "status": "Land bought; target online 2H 2027",
+   "announced": "2026-05-18",
+   "tickers": [
+    [
+     "HIVE",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.hivedigitaltechnologies.com/news/hives-buzz-hpc-announces-320-mw-sovereign-ai-infrastructure-in-greater-toronto-area/",
+   "note": "~C$3.5B; 100,000+ GPUs at full build.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Google Hydro Framework Agreement (Brookfield)",
+   "location": "Pennsylvania + U.S. (PJM, MISO)",
+   "province": "U.S.",
+   "mw": "Up to 3,000 MW (670 signed)",
+   "status": "First 20-year PPAs signed",
+   "announced": "2025-07-15",
+   "tickers": [
+    [
+     "BEP",
+     "TSX"
+    ],
+    [
+     "BAM",
+     "TSX"
+    ],
+    [
+     "GOOGL",
+     "US"
+    ]
+   ],
+   "source_url": "https://bep.brookfield.com/press-releases/bep/brookfield-and-google-sign-hydro-framework-agreement-deliver-3000-mw-homegrown",
+   "note": "Holtwood and Safe Harbor hydro, $3B+ of power.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Microsoft renewable framework (Brookfield)",
+   "location": "U.S. and Europe",
+   "province": "U.S./Intl",
+   "mw": "10,500+ MW",
+   "status": "Framework; delivery 2026-2030",
+   "announced": "2024-05-01",
+   "tickers": [
+    [
+     "BEP",
+     "TSX"
+    ],
+    [
+     "MSFT",
+     "US"
+    ]
+   ],
+   "source_url": "https://www.sec.gov/Archives/edgar/data/1791863/000117184324002391/exh_991.htm",
+   "note": "Five-year framework agreement.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Westinghouse reactors partnership (U.S. Government + Brookfield + Cameco)",
+   "location": "United States",
+   "province": "U.S.",
+   "mw": null,
+   "status": "Binding term sheet; US$80B+ of reactors",
+   "announced": "2025-10-28",
+   "tickers": [
+    [
+     "CCO",
+     "TSX"
+    ],
+    [
+     "BAM",
+     "TSX"
+    ],
+    [
+     "BEP",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.cameco.com/media/news/cameco-and-brookfield-establish-transformational-partnership-with-united-states",
+   "note": "Reactors expected to power data centre and AI compute; MW not stated.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Brookfield + Bloom Energy AI power partnership",
+   "location": "United States",
+   "province": "U.S.",
+   "mw": null,
+   "status": "Expanded to US$25B (from US$5B)",
+   "announced": "2025-10",
+   "tickers": [
+    [
+     "BAM",
+     "TSX"
+    ],
+    [
+     "BE",
+     "US"
+    ]
+   ],
+   "source_url": "https://investor.bloomenergy.com/press-releases/press-release-details/2026/Brookfield-and-Bloom-Energy-Expand-AI-Infrastructure-Partnership-to-25-Billion-Fivefold-Increase-to-Build-and-Finance-Rapid-Power-for-AI-Infrastructure/default.aspx",
+   "note": "Fuel cells for AI factories; MW not stated.",
+   "as_of": "2026-10-22"
+  },
+  {
+   "project": "Project Blue data centre supply (Tucson Electric Power, a Fortis utility)",
+   "location": "Tucson",
+   "province": "U.S. (AZ)",
+   "mw": "Up to 286 MW (phase 1)",
+   "status": "Approved by Arizona regulator; starts 2027",
+   "announced": "2025-12-09",
+   "tickers": [
+    [
+     "FTS",
+     "TSX"
+    ]
+   ],
+   "source_url": "https://www.tep.com/data-center-esa/",
+   "note": "Date = Arizona Corporation Commission approval (azcapitoltimes.com).",
+   "as_of": "2026-10-22"
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% from "_refer.html" import ref_line %}{% block body %}
+<section class="pg-hero">
+  <h1>Canadian Data Centre &amp; AI Power Tracker ⚡</h1>
+  <p class="lead">AI runs on electricity. Here are {{ rows|length }} real data centre and power deals ({{ n_canada }} in Canada) and the TSX stocks tied to them. Each row links to its source.</p>
+  <p class="legend">Checked {{ asof_h }}. MW = megawatts of power or load as the source states it. Not advice.</p>
+</section>
+<section class="card">
+  <h2>Stocks in the deals</h2>
+  {% if price_date %}<p class="legend">Price change on the last completed session ({{ price_date }} close). Delayed, from a free source. Not advice.</p>{% endif %}
+  <div class="pg-tk">{% for t in tickers %}
+    <div class="pg-tkc"><div><span class="tk">{{ t.ticker }}{% if t.market=='US' %} 🇺🇸{% endif %}</span> <strong>{{ t.name }}</strong></div>
+    <div class="pg-px">{% if t.close_h %}{{ t.close_h }} <span class="{{ 'neg' if t.pct<0 else 'pos' }}">{{ t.pct_h }}</span>{% else %}<span class="muted">price n/a</span>{% endif %}</div>
+    <div class="muted small">{{ t.n }} project{{ 's' if t.n>1 }} below</div></div>{% endfor %}
+  </div>
+</section>
+<section class="card">
+  <h2>Projects and deals</h2>
+  <div class="pg-list">{% for r in rows %}
+  <article class="pg-row">
+    <div class="pg-top"><span class="pg-prov">{{ r.province }}</span> <span class="pg-mw">{{ (r.mw if 'MW' in r.mw else r.mw ~ ' MW') if r.mw else 'MW not stated' }}</span></div>
+    <h3>{{ r.project }}</h3>
+    <p class="pg-meta">{{ r.location }} · {{ r.status }} · Announced {{ r.announced_h }}</p>
+    {% if r.note %}<p class="muted small">{{ r.note }}</p>{% endif %}
+    <p class="pg-foot">{% if r.tickers %}{% for t,m in r.tickers %}<span class="tk">{{ t }}{{ ' (US)' if m=='US' }}</span> {% endfor %}{% else %}<span class="muted small">Private, no listed stock</span>{% endif %}
+    <a class="pg-src" href="{{ r.source_url }}" rel="noopener nofollow" target="_blank">Source ↗</a></p>
+  </article>{% endfor %}
+  </div>
+</section>
+<section class="card pg-alert">
+<form class="signup" action="https://app.kit.com/forms/10060949/subscriptions" method="post" data-kit-form="10060949" aria-label="Data centre stock alerts signup">
+  <p class="signup-h">Data centre stock alerts ⚡</p>
+  <p class="signup-sub">We're testing whether people want this. Sign up and we'll email you when new Canadian data centre or power projects or deals land. Free, unsubscribe anytime.</p>
+  <input type="hidden" name="fields[interest]" value="power-grid">
+  <input type="hidden" name="referrer" value="{{ site_url }}{{ path }}">
+  <div class="row">
+    <label class="vh" for="email-pg">Email address</label>
+    <input id="email-pg" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required>
+    <button type="submit">Alert me</button>
+  </div>
+  <p class="signup-msg" role="status" aria-live="polite"></p>
+</form>
+<script>
+(function(){var f=document.currentScript.previousElementSibling;if(!f||!window.fetch||!window.FormData)return;
+f.addEventListener('submit',function(e){e.preventDefault();var b=f.querySelector('button'),m=f.querySelector('.signup-msg');b.disabled=true;m.textContent='Signing you up…';
+fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}}).then(function(r){return r.json().catch(function(){return null}).then(function(j){return {ok:r.ok,j:j}})}).then(function(x){
+if(x.ok&&!(x.j&&x.j.status==='failed')){f.classList.add('done');m.textContent='Almost done! Check your email to confirm.';}
+else{b.disabled=false;m.textContent='Something went wrong. Please check your email address and try again.';}
+}).catch(function(){f.submit();});});})();
+</script>
+</section>
+{{ ref_line(path, 'Want to buy the power names? ') }}
+<p class="muted small">We build this list by hand from company news releases, filings and the AESO connection list, and leave out anything we can't source. Projects change. Check the source before you act. Spotted a missing project? Tell us at hello@mapledividends.com. Not advice.</p>
+{% endblock %}
