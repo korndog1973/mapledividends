@@ -1,0 +1,17 @@
+# Cloudflare Pages config, read by `wrangler pages deploy dist` in .github/workflows/build.yml.
+# Once this file exists, it is the source of truth for the Pages project's bindings (dashboard bindings become read-only).
+name = "mapledividends"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-07-18"
+
+# Workers AI for the "Ask MapleDividends" chat box (functions/api/ask.js). Free plan: 10,000 neurons/day, then calls
+# fail (no charge). Keep the account on Workers FREE; never upgrade without Craig's OK.
+[ai]
+binding = "AI"
+
+# Optional, recommended: exact daily caps across all Cloudflare data centres. Create a free KV namespace
+# (dashboard > Storage & Databases > KV > Create "mapledividends-ask"), paste its ID below and uncomment.
+# Without it, caps are counted per data centre (best effort). KV free = 1,000 writes/day; we use 2 per question (~800 at the cap).
+# [[kv_namespaces]]
+# binding = "ASK_KV"
+# id = "PASTE_KV_NAMESPACE_ID"

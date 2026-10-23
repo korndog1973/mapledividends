@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% from "_refer.html" import ref_line %}{% block body %}
+{% extends "base.html" %}{% from "_refer.html" import ref_line %}{% from "_ask.html" import ask_box %}{% block body %}
 <section class="pg-hero">
   <h1>Canadian Data Centre &amp; AI Power Tracker ⚡</h1>
   <p class="lead">AI runs on electricity. Here are {{ rows|length }} real data centre and power deals ({{ n_canada }} in Canada) and the TSX stocks tied to them. Each row links to its source.</p>
@@ -48,6 +48,7 @@ else{b.disabled=false;m.textContent='Something went wrong. Please check your ema
 }).catch(function(){f.submit();});});})();
 </script>
 </section>
+{{ ask_box(["Which projects are in Alberta?", "What is Capital Power doing with data centres?", "How did TA close?"]) }}
 {{ ref_line(path, 'Want to buy the power names? ') }}
 <p class="muted small">We build this list by hand from company news releases, filings and the AESO connection list, and leave out anything we can't source. Projects change. Check the source before you act. Spotted a missing project? Tell us at hello@mapledividends.com. Not advice.</p>
 {% endblock %}

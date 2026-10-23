@@ -120,3 +120,18 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 
 /* Broker-required referral disclosure (e.g. Wealthsimple): small, quiet, wraps on mobile */
 .ws-disc{font-size:.75rem;line-height:1.4;color:#6b7280;margin:.35rem 0 0;max-width:60ch;overflow-wrap:anywhere}
+/* Ask MapleDividends chat box */
+.ask{max-width:620px}.ask-h{margin:0 0 2px;font-size:1.15rem}.ask-sub{color:var(--mut);font-size:.92rem;margin:0 0 10px}
+.ask-log{display:flex;flex-direction:column;gap:8px;max-height:360px;overflow-y:auto}.ask-log:empty{display:none}
+.ask-m{padding:9px 12px;border-radius:12px;font-size:.95rem;max-width:88%;white-space:pre-wrap;word-wrap:break-word}
+.ask-u{align-self:flex-end;background:var(--red);color:#fff;border-bottom-right-radius:4px}
+.ask-a{align-self:flex-start;background:#f3f4f6;border-bottom-left-radius:4px}.ask-wait{color:var(--mut);font-style:italic}
+.ask-cap{background:#fffbeb;color:#92400e}
+.ask-links{margin:6px 0 0;font-size:.85rem;display:flex;flex-wrap:wrap;gap:4px 12px}.ask-foot{margin:6px 0 0;font-size:.75rem;color:var(--mut)}
+.ask-ex{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.ask-chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 10px;font-size:.85rem;color:var(--ink);cursor:pointer}
+.ask-na{margin:10px 0 6px;font-size:.8rem;font-weight:600;color:var(--mut)}
+.ask-f{display:flex;gap:8px}.ask-f input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:1rem}
+.ask-f button{padding:10px 16px;border:0;border-radius:8px;background:var(--red);color:#fff;font-weight:700;cursor:pointer}
+.ask-f button:disabled,.ask-f input:disabled{opacity:.6}.ask-left{margin:6px 0 0}.ask-left:empty{display:none}
+.ask-nl{margin-top:12px;max-width:none}

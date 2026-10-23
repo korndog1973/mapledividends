@@ -1,0 +1,51 @@
+{# Ask MapleDividends chat box: POSTs to /api/ask (functions/api/ask.js). Answers only from our own data. #}
+{% macro ask_box(examples) -%}
+<section class="card ask" id="ask" aria-label="Ask MapleDividends">
+  <h2 class="ask-h">Ask MapleDividends 🍁</h2>
+  <p class="ask-sub">Quick questions about our data: ex-dates, raises and cuts, and the power tracker.</p>
+  <div class="ask-log" role="log" aria-live="polite"></div>
+  <div class="ask-ex">{% for e in examples %}<button type="button" class="ask-chip">{{ e }}</button>{% endfor %}</div>
+  <p class="ask-na">Not advice. Answers come only from MapleDividends data and can be wrong, so check the source filing.</p>
+  <form class="ask-f">
+    <label class="vh" for="ask-q">Your question</label>
+    <input id="ask-q" name="q" maxlength="300" placeholder="e.g. When is BMO's next ex-date?" autocomplete="off" required>
+    <button type="submit">Ask</button>
+  </form>
+  <p class="ask-left muted small"></p>
+  <form class="signup ask-nl" hidden action="https://app.kit.com/forms/10060949/subscriptions" method="post" data-kit-form="10060949" aria-label="Newsletter signup">
+    <p class="signup-h">Like these answers? Get them weekly 📬</p>
+    <p class="signup-sub">Free Canadian dividend raises, cuts and ex-dates. Unsubscribe anytime. You can keep asking either way.</p>
+    <input type="hidden" name="fields[interest]" value="ask-chat">
+    <div class="row">
+      <label class="vh" for="email-ask">Email address</label>
+      <input id="email-ask" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required>
+      <button type="submit">Subscribe</button>
+    </div>
+    <p class="signup-msg" role="status" aria-live="polite"></p>
+  </form>
+</section>
+<script>
+(function(){var box=document.getElementById('ask');if(!box||!window.fetch)return;
+var log=box.querySelector('.ask-log'),f=box.querySelector('.ask-f'),inp=f.querySelector('input'),btn=f.querySelector('button'),left=box.querySelector('.ask-left'),nl=box.querySelector('.ask-nl');
+var K='mdAsk'+new Date().toISOString().slice(0,10),n=+(localStorage.getItem(K)||0);
+function showNl(){nl.hidden=false;}
+if(n>=3)showNl();
+function add(cls,txt,links,asof){var d=document.createElement('div');d.className='ask-m '+cls;d.textContent=txt;
+ if(links&&links.length){var p=document.createElement('p');p.className='ask-links';links.forEach(function(u){var a=document.createElement('a');a.href=u;a.textContent=u.replace(/^\/|\/$/g,'').replace(/\//g,' › ')||'home';p.appendChild(a);});d.appendChild(p);}
+ if(asof){var s=document.createElement('p');s.className='ask-foot';s.textContent='Not advice. From MapleDividends data as of '+asof+'.';d.appendChild(s);}
+ log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
+box.querySelectorAll('.ask-chip').forEach(function(c){c.addEventListener('click',function(){inp.value=c.textContent;f.requestSubmit?f.requestSubmit():f.dispatchEvent(new Event('submit'));});});
+f.addEventListener('submit',function(e){e.preventDefault();var q=inp.value.trim();if(!q)return;
+ add('ask-u',q);inp.value='';btn.disabled=true;var w=add('ask-a ask-wait','Looking that up…');
+ fetch('/api/ask',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({q:q})}).then(function(r){return r.json();}).then(function(j){
+  w.remove();
+  if(j.capped){add('ask-a ask-cap',j.answer||j.error);showNl();left.textContent='';box.querySelector('.ask-ex').hidden=true;inp.disabled=true;btn.disabled=true;inp.placeholder='Back tomorrow 🍁';return;}
+  if(j.error){add('ask-a ask-cap',j.error);btn.disabled=false;return;}
+  add('ask-a',j.answer,j.links,j.as_of);n++;localStorage.setItem(K,n);if(n>=3)showNl();
+  if(typeof j.left==='number')left.textContent=j.left+' free question'+(j.left==1?'':'s')+' left today.';
+  btn.disabled=false;}).catch(function(){w.remove();add('ask-a ask-cap','Couldn\'t reach the Q&A box. Try again in a bit.');btn.disabled=false;});});
+nl.addEventListener('submit',function(e){e.preventDefault();var b=nl.querySelector('button'),m=nl.querySelector('.signup-msg');b.disabled=true;m.textContent='Subscribing…';
+ fetch(nl.action,{method:'POST',body:new FormData(nl),headers:{'Accept':'application/json'}}).then(function(r){if(r.ok){nl.classList.add('done');m.textContent='Almost done! Check your email to confirm.';}else{b.disabled=false;m.textContent='Something went wrong. Please check your email and try again.';}}).catch(function(){nl.submit();});});
+})();
+</script>
+{%- endmacro %}
