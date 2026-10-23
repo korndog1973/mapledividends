@@ -17,12 +17,13 @@ INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 # if both are empty the box and the referral wording on the disclosure pages disappear.
 MOOMOO_REF_URL='https://j.moomoo.com/0KnjKO'   # Moomoo Canada referral (code J8U8DMTM)
 WEALTHSIMPLE_REF_URL = 'https://wealthsimple.com/invite/4CAYHA'                        # paste Wealthsimple referral link here to show it
+WS_DISCLOSURE='Any opinions expressed in this content are solely my own and not the views or opinions of Wealthsimple. If you click on referral links in this piece and sign up for a Wealthsimple account I may receive a commission.'
 MOOMOO_OFFER_ENDS=datetime.date(2026,10,31)  # Moomoo coupon promo end: Moomoo mentions drop off automatically on the first build after this
 REFERRALS=[r for r in (
     dict(name='Moomoo',url=MOOMOO_REF_URL,blurb='Trading app for Canadian and U.S. stocks, with TFSA and RRSP accounts.',
-         perk='C$100 in trading coupons when you deposit C$100+ (offer ends Oct 31, 2026)',ends=MOOMOO_OFFER_ENDS),
+         perk='C$100 in trading coupons when you deposit C$100+ (offer ends Oct 31, 2026)',ends=MOOMOO_OFFER_ENDS,disclosure=''),
     dict(name='Wealthsimple',url=WEALTHSIMPLE_REF_URL,blurb='Canadian investing app with TFSA, RRSP and FHSA accounts.',
-         perk='we each get C$25 when you fund C$100+',ends=None),
+         perk='we each get C$25 when you fund C$100+',ends=None,disclosure=WS_DISCLOSURE),
 ) if r['url'] and (not r['ends'] or TODAY<=r['ends'])]
 env=Environment(loader=FileSystemLoader(os.path.join(ROOT,'site','templates')),autoescape=select_autoescape(['html']))
 import zlib
@@ -175,8 +176,9 @@ PAGES={
 {'''<p><strong>Referral and affiliate links.</strong> Some pages include broker referral links (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>). We don't share any of your information with the broker. If you click one, the broker may use cookies or a referral code to credit the referral, under its own privacy policy.</p>''' if REFERRALS else '''<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>'''}
 <p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
  '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.",f"""<h1>Affiliate disclosure</h1>
+<p>MapleDividends is operated by CHASELIST, a B.C. sole proprietorship.</p>
 <p>MapleDividends is free to use. To pay for it, we may include affiliate or referral links to Canadian financial services, such as online brokerages. If you open an account through one of these links, we may get paid a fee by that company, at no cost to you.</p>
 <p>Affiliate relationships never change the dividend data we publish, which comes only from company filings. We'll label affiliate links clearly where they appear.</p>
-{('<p>Current referral links: ' + ', '.join(r['name'] for r in REFERRALS) + '. These are personal referral links: if you open and fund an account through one, the broker may give us a bonus (and often gives you one too, under its own terms). They appear in the "Start investing" box, which is labelled as referral links. This isn\'t advice to open any account.</p>') if REFERRALS else '<p>As of today, this site has no affiliate links.</p>'}"""),
+{('<p>Current referral links: ' + ', '.join(r['name'] for r in REFERRALS) + '. These are personal referral links: if you open and fund an account through one, the broker may give us a bonus (and often gives you one too, under its own terms). They appear in the "Start investing" box, which is labelled as referral links. This isn\'t advice to open any account.</p>' + ''.join('<p class="ws-disc"><strong>' + r['name'] + ':</strong> ' + r['disclosure'] + '</p>' for r in REFERRALS if r.get('disclosure'))) if REFERRALS else '<p>As of today, this site has no affiliate links.</p>'}"""),
 }
 if __name__=='__main__': main()

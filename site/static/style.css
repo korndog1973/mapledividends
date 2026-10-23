@@ -117,3 +117,6 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 .pg-src{margin-left:auto;font-size:.85rem}
 .pg-teaser .pg-mini{margin:.3rem 0 .5rem;padding-left:1.1rem}
 @media(max-width:480px){.pg-list{grid-template-columns:1fr}.pg-tk{grid-template-columns:1fr 1fr}.pg-hero h1{font-size:1.35rem}}
+
+/* Broker-required referral disclosure (e.g. Wealthsimple): small, quiet, wraps on mobile */
+.ws-disc{font-size:.75rem;line-height:1.4;color:#6b7280;margin:.35rem 0 0;max-width:60ch;overflow-wrap:anywhere}

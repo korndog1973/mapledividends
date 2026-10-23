@@ -6,7 +6,8 @@
   <ul>{% for r in referrals %}
     <li><a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">Open a {{ r.name }} account</a> <span class="muted">{{ r.blurb|safe }}</span></li>{% endfor %}
   </ul>
-  <p class="refer-note">Referral link{% if referrals|length > 1 %}s{% endif %}: we may earn a bonus if you open an account. This isn't advice. <a href="/affiliate-disclosure/">Disclosure</a></p>
+  <p class="refer-note">Referral link{% if referrals|length > 1 %}s{% endif %}: we may earn a bonus if you open an account. This isn't advice. <a href="/affiliate-disclosure/">Disclosure</a></p>{% for r in referrals if r.disclosure %}
+  <p class="ws-disc">{{ r.disclosure }}</p>{% endfor %}
 </aside>
 {% endif %}
 {%- endmacro %}
@@ -14,6 +15,7 @@
 {# One-line contextual referral mention. Broker rotates by `key` (ticker/path) via ref_pick in build.py; Moomoo drops off after its offer ends. #}
 {% macro ref_line(key, lead='') -%}
 {% set r = ref_pick(key) %}{% if r %}
-<p class="ref-line">{{ lead }}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a> <span class="ref-tag">(referral)</span>: {{ r.perk }}. <a href="/affiliate-disclosure/" class="ref-disc">Disclosure</a></p>
+<p class="ref-line">{{ lead }}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a> <span class="ref-tag">(referral)</span>: {{ r.perk }}. <a href="/affiliate-disclosure/" class="ref-disc">Disclosure</a></p>{% if r.disclosure %}
+<p class="ws-disc">{{ r.disclosure }}</p>{% endif %}
 {% endif %}
 {%- endmacro %}
