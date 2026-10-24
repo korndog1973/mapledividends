@@ -45,10 +45,10 @@ def build_us(B,common):
         stale_note=None if not (stale or lag) else (f"Heads up: the latest declaration we could verify has a record date of {dh(L['record'])}. {c['name']} has probably declared newer dividends that aren't in the SEC filings we read yet, so check the company's investor relations site for the current one.") if stale else (
             f"{c['name']} doesn't file each dividend announcement with the SEC, so this comes from its quarterly or annual report. A newer declaration may be out that we haven't picked up yet; check the company's investor relations site.")
         name=c['name']; path=f"/us/{s}/"
-        title=f"{name} ({t}) dividend: ex-date, history, raises & cuts | Stars & Syrup | MapleDividends"
+        title=f"{name} ({t}) dividend dates {TODAY.year}: ex-date, pay date | MapleDividends"
         desc=f"{name} ({ex}: {t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}, paid {Lh['pay_h']}. U.S. dividend history, raises and cuts for Canadian investors, with links to the SEC filings."
         B.write(path,B.env.get_template('company.html').render(title=title,description=desc,path=path,c=c,L=Lh,history=hist,drip=None,start_h=dh(B.START),
-                exchange=ex,list_url=SECTION,list_name='Stars & Syrup 🇺🇸',us=True,stale_note=stale_note,**common))
+                exchange=ex,list_url='/us/',list_name='U.S. dividend stocks 🇺🇸',us=True,stale_note=stale_note,**dict(common,**B.ticker_extras(dict(c,ticker=t),Lh,regs+c['special'],path,'US'))))
         urls.append((path,L['file_date']))
         rows.append(dict(slug=s,ticker=t,name=name,exchange=ex,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h'],ch=ch,stale=stale,lag=lag))
         for r in regs+c['special']:

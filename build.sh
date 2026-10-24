@@ -11,5 +11,6 @@ if [ -z "${SKIP_FETCH:-}" ]; then
   DATASET=us MAXDOCS=24 python3 pipeline/fetch_edgar.py   # Stars & Syrup (U.S. section)
 fi
 python3 pipeline/parse.py
+python3 pipeline/bigpayers.py   # TD/ENB/CNR/FTS/EMA sentence patterns the generic parser misses
 DATASET=us python3 pipeline/parse.py
 python3 site/build.py

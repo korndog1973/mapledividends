@@ -31,6 +31,18 @@ def ref_pick(key):
     """One broker per page, rotated by a stable hash of the page key (ticker/path) so neighbouring pages differ."""
     return REFERRALS[zlib.crc32(str(key).encode())%len(REFERRALS)] if REFERRALS else None
 env.globals['ref_pick']=ref_pick
+import seo
+env.globals['breadcrumb_ld']=lambda path,leaf: seo.ld_breadcrumbs(SITE_URL,path,leaf)
+def ticker_extras(c,Lh,regs,path,market='TSX'):
+    """FAQ + Dataset/FAQPage JSON-LD + per-ticker OG card for a company page (facts already on the page only)."""
+    t=c['ticker']; s=slug(t)
+    up=sorted([r for r in regs if D(r['record'])>=TODAY],key=lambda r:r['record'])
+    nxt=dict(up[0],amount_h=money(up[0]['amount'],up[0]['currency'])) if up else None
+    faqs=seo.faq(c,Lh,nxt,dh)
+    og=f"/og/{'us-' if market!='TSX' else ''}{s}.png"
+    seo.og_image(os.path.join(DIST,og.strip('/')),f"{t} dividend dates {TODAY.year}",[c['name'][:44],f"Latest: {Lh['amount_h']} · ex-date {Lh['ex_h']}",f"Paid {Lh['pay_h']} · {Lh['freq']}"],'mapledividends.com · from company filings')
+    srcs=list(dict.fromkeys(r['source'] for r in regs))
+    return dict(faqs=faqs,ld=seo.ld_company(SITE_URL,path,c,Lh,faqs,srcs,TODAY.isoformat(),market),og_image=og,og_alt=f"{c['name']} ({t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}",crumb=t)
 D=datetime.date.fromisoformat
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
 CUR_NOTE={'filing':"currency per the filing's general statement",'company':"currency per the company's other filings",'override':"currency from our company notes; this filing doesn't state it"}
@@ -89,8 +101,9 @@ def main():
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
     import roast  # Joke of the Day 🥞 (data/jokes.json), one per build date
-    common=dict(joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
-    urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]
+    common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]; pending=[]
+    seo.og_image(os.path.join(DIST,'og.png'),'Canadian dividend dates',['TSX ex-dates, pay dates, raises & cuts','checked against company filings'],'mapledividends.com · free · not advice')
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
         regs=c['regular']
         if not regs: continue
@@ -106,9 +119,9 @@ def main():
             if r.get('drip_kw'):
                 drip=dict(text=("The company's filing mentions a dividend reinvestment plan"+(f" with a {r['drip_disc']}% discount" if r.get('drip_disc') else "")+f" (filing dated {dh(r['file_date'])})."),source=r['source']); break
         name=c['name']
-        title=f"{name} ({t}) dividend: ex-date, history, DRIP | MapleDividends"
+        title=f"{name} ({t}) dividend dates {TODAY.year}: ex-date, pay date | MapleDividends"
         desc=f"{name} (TSX: {t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}, paid {Lh['pay_h']}. {fq} payer. Dividend history, raises/cuts and DRIP info, with links to the source filings."
-        write(f"/dividends/{s}/",env.get_template('company.html').render(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**common))
+        pending.append((s,t,f"/dividends/{s}/",dict(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**ticker_extras(c,Lh,regs+c['special'],f"/dividends/{s}/"),**common)))
         urls.append((f"/dividends/{s}/",L['file_date']))
         companies.append(dict(slug=s,ticker=t,name=name,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h']))
         for r in regs+c['special']:
@@ -121,6 +134,18 @@ def main():
             allchg.append(row)  # every datable raise/cut (Leaky Maple falls back to the latest one if the window is empty)
             if fd>=TODAY-datetime.timedelta(weeks=12): changes.append(row)
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
+    # internal links: 'Same sector' + 'Next ex-dates' blocks, then render the deferred company pages
+    latest={r['ticker']:r for r in companies}
+    for s_,t_,p_,kw in pending:
+        nx=[dict(url=f"/dividends/{e['slug']}/",ticker=e['ticker'],ex_h=e['ex_h']) for e in upcoming if e['ticker']!=t_]
+        nx=list({x['ticker']:x for x in reversed(nx)}.values())[::-1][:8]
+        title_n='Next ex-dates'
+        if len(nx)<5:
+            more=[dict(url=f"/dividends/{e['slug']}/",ticker=e['ticker'],ex_h=e['ex_h']) for e in sorted(recent,key=lambda e:e['ex'],reverse=True) if e['ticker']!=t_ and e['ticker'] not in {x['ticker'] for x in nx}]
+            nx+=list({x['ticker']:x for x in reversed(more)}.values())[::-1][:8-len(nx)]; title_n='Next and recent ex-dates'
+        sk=seo.sector_of(t_)
+        sl=[dict(url=f"/dividends/{latest[x]['slug']}/",ticker=x,ex_h=latest[x]['ex_h']) for x in (seo.SECTORS[sk]['tickers'] if sk else []) if x in latest and x!=t_]
+        write(p_,env.get_template('company.html').render(next_links=nx,next_title=title_n,sector_links=sl,sector_key=sk,sector_name=seo.SECTORS[sk]['name'] if sk else None,**kw))
     recent.sort(key=lambda e:(e['ex'],e['name']),reverse=True)
     rgroups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(recent,key=lambda e:e['ex'])]
     groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
@@ -129,14 +154,34 @@ def main():
     import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
     import power; pg_static,pg=power.build(sys.modules[__name__],common)  # Data Centre & AI Power Tracker
     import ask; ask.build(sys.modules[__name__])  # Ask MapleDividends chat data (dist/ask-data.json, read by functions/api/ask.js)
-    write('/',env.get_template('index.html').render(leaky=lm,power=pg,title="MapleDividends: Canadian dividend calendar, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
-    write('/calendar/',env.get_template('calendar.html').render(title="TSX ex-dividend calendar: upcoming Canadian ex-dates | MapleDividends",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
-    write('/raises-and-cuts/',env.get_template('raises.html').render(title="Deadly / Not Deadly: Canadian dividend raises & cuts | MapleDividends",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
-    write('/companies/',env.get_template('companies.html').render(title="TSX dividend stocks: list of Canadian dividend payers | MapleDividends",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
+    write('/',env.get_template('index.html').render(leaky=lm,power=pg,ld=seo.ld_home(SITE_URL),title=f"MapleDividends: Canadian dividend calendar {TODAY.year}, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
+    write('/calendar/',env.get_template('calendar.html').render(title=f"TSX ex-dividend calendar {TODAY.year}: upcoming Canadian ex-dates | MapleDividends",crumb="Ex-dividend calendar",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
+    write('/raises-and-cuts/',env.get_template('raises.html').render(title=f"Deadly / Not Deadly: Canadian dividend raises & cuts {TODAY.year} | MapleDividends",crumb="Raises & cuts",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
+    write('/companies/',env.get_template('companies.html').render(title=f"TSX dividend stocks {TODAY.year}: list of Canadian dividend payers | MapleDividends",crumb="Companies",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
-    write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content="<h1>Page not found</h1><p>Try the <a href='/companies/'>company list</a> or the <a href='/calendar/'>ex-dividend calendar</a>.</p>",**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/']+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
+    hub_static=[]
+    for k,sec in seo.SECTORS.items():
+        rows=[latest[x] for x in sec['tickers'] if x in latest]
+        up=[e for e in upcoming if e['ticker'] in sec['tickers']]
+        write(f'/sectors/{k}/',env.get_template('hub.html').render(title=f"{sec['name']}: dividend dates {TODAY.year} (ex-date, pay date) | MapleDividends",description=f"{sec['intro']} Covers {', '.join(r['ticker'] for r in rows)}.",
+              path=f'/sectors/{k}/',crumb=sec['short'],h1=f"{sec['name']}: dividend dates {TODAY.year}",intro=sec['intro'],rows=rows,upcoming=up,base='/dividends/',sectors=seo.SECTORS,here=k,
+              missing=[x for x in sec['tickers'] if x not in latest],**common)); hub_static.append(f'/sectors/{k}/')
+    write('/sectors/',env.get_template('hub.html').render(title=f"Canadian dividend stocks by sector {TODAY.year} | MapleDividends",description="Canadian dividend payers grouped by sector: banks, pipelines, utilities and telecom, with ex-dates and pay dates from company filings.",
+          path='/sectors/',crumb='Sectors',h1='Canadian dividend stocks by sector',intro='Pick a sector to see each company\'s latest declared dividend, ex-date and pay date.',rows=[],upcoming=[],base='/dividends/',sectors=seo.SECTORS,here=None,missing=[],**common)); hub_static.append('/sectors/')
+    usrows=[]
+    for r in sorted(US_REGS or [],key=lambda r:r['name'].lower()):
+        L0=r['regs'][0]; usrows.append(dict(slug=r['slug'],ticker=r['ticker'],name=r['name'],amount_h=money(L0['amount'],L0['currency']),freq=r['fq'],ex_h=dh(L0['record'])))
+    usup=sorted([dict(slug=r['slug'],ticker=r['ticker'],name=r['name'],ex=x['record'],ex_h=dh(x['record']),pay_h=dh(x['pay']),amount_h=money(x['amount'],x['currency'])) for r in (US_REGS or []) for x in r['regs'] if D(x['record'])>=TODAY],key=lambda e:e['ex'])
+    write('/us/',env.get_template('hub.html').render(title=f"U.S. dividend stocks for Canadians: dividend dates {TODAY.year} | MapleDividends",description=f"{len(usrows)} U.S. dividend stocks popular with Canadian investors: latest dividend, ex-date and pay date from SEC filings. Note the 15% U.S. withholding tax in a TFSA.",
+          path='/us/',crumb='U.S. dividend stocks',h1=f"U.S. dividend stocks: dividend dates {TODAY.year}",intro="U.S. companies Canadians often hold, with each one's latest declared dividend. Amounts are in US$. U.S. dividends in a TFSA usually have 15% U.S. tax withheld; in an RRSP they generally don't (Canada–U.S. tax treaty). Not tax advice.",
+          rows=usrows,upcoming=usup,base='/us/',sectors=seo.SECTORS,here=None,missing=[],more_link=('/stars-and-syrup/','Stars & Syrup: U.S. raises and cuts'),**common)); hub_static.append('/us/')
+    popular=[latest[x] for x in ['ENB','TD','BNS','BMO','CM','FTS','CNR','BCE','T','TRP','EMA','SU'] if x in latest]
+    nf="<h1>Page not found</h1><p>That page doesn't exist (or moved). These might help:</p><div class='nf-grid'><a href='/calendar/'>📅 Ex-dividend calendar</a><a href='/companies/'>🍁 All TSX companies</a><a href='/sectors/'>🏦 Stocks by sector</a><a href='/us/'>🇺🇸 U.S. dividend stocks</a><a href='/raises-and-cuts/'>💀 Raises &amp; cuts</a><a href='/'>🏠 Home</a></div>"
+    nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{r['ticker']}</a> <span class='muted small'>{r['name']}</span></li>" for r in popular)+"</ul>"
+    nf+="<p class='small muted'>Looking for a company we don't cover yet? Email <a href='mailto:"+CONTACT+"'>"+CONTACT+"</a>.</p>"
+    write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content=nf,**common))
+    static=['/','/calendar/','/raises-and-cuts/','/companies/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]

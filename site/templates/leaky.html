@@ -12,10 +12,7 @@
  </div>
 </section>
 {% endmacro %}
-{% block head %}{% if og_image %}<meta property="og:image" content="{{ site_url }}{{ og_image }}">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Leaky Maple vs Golden Pour: {{ ca.cut.ticker if ca.cut else 'no cut' }} vs {{ ca.raise_.ticker if ca.raise_ else 'no raise' }}">
-<meta name="twitter:card" content="summary_large_image">{% endif %}{% endblock %}
+{# og:image / twitter:card come from base.html (og_image is passed in) #}
 {% block body %}{% from "_refer.html" import ref_line %}
 <h1>Leaky Maple vs Golden Pour 🍁🥞</h1>
 <p class="lead">The biggest % price loser and the biggest % price gainer among our dividend stocks, every trading day. The loser leaks out of the maple and gets a roast; the gainer pours onto the pancakes and gets a syrup bath.</p>

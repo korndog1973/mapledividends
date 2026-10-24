@@ -75,5 +75,21 @@
  "TRI": {
   "currency": "USD",
   "note": "Thomson Reuters declares dividends in US dollars"
+ },
+ "TD": {
+  "currency": "CAD",
+  "note": "TD declares common dividends in Canadian dollars (reports in C$)"
+ },
+ "ENB": {
+  "currency": "CAD",
+  "note": "Enbridge declares common dividends in Canadian dollars"
+ },
+ "FTS": {
+  "currency": "CAD",
+  "note": "Fortis declares common dividends in Canadian dollars"
+ },
+ "EMA": {
+  "currency": "CAD",
+  "note": "Emera declares common dividends in Canadian dollars"
  }
 }

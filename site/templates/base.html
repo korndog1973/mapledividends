@@ -11,6 +11,19 @@
 <meta property="og:url" content="{{ site_url }}{{ path }}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="MapleDividends">
+<meta property="og:locale" content="en_CA">
+<meta property="og:image" content="{{ site_url }}{{ og_image|default('/og.png') }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ og_alt|default('MapleDividends: Canadian dividend dates from company filings') }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ title }}">
+<meta name="twitter:description" content="{{ description }}">
+<meta name="twitter:image" content="{{ site_url }}{{ og_image|default('/og.png') }}">
+{%- set bc = breadcrumb_ld(path, crumb|default(title.split(' | ')[0])) %}{% if bc %}
+<script type="application/ld+json">{{ bc|tojson }}</script>{% endif %}
+{%- for j in ld|default([]) %}
+<script type="application/ld+json">{{ j|tojson }}</script>{% endfor %}
 <meta name="theme-color" content="#b91c1c">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍁</text></svg>">
 <link rel="stylesheet" href="/style.css?v={{ build_id }}">
@@ -69,6 +82,7 @@
   <div class="wrap">
     <p><strong>Not financial advice.</strong> MapleDividends is general information built from public company filings. It may contain errors or be out of date. Always check the company's own announcement before you act. <a href="/disclaimer/">Full disclaimer</a>.</p>
     <p class="links"><a href="/about/">About</a> · <a href="/methodology/">How we get the data</a> · <a href="/disclaimer/">Disclaimer</a> · <a href="/privacy/">Privacy</a> · <a href="/affiliate-disclosure/">Affiliate disclosure</a></p>
+    <p class="links">Sectors: <a href="/sectors/banks/">Banks</a> · <a href="/sectors/pipelines/">Pipelines</a> · <a href="/sectors/utilities/">Utilities</a> · <a href="/sectors/telecom/">Telecom</a> · <a href="/us/">U.S. dividend stocks</a></p>
     {% if referrals %}<p class="muted small ref-foot">Support the site: {% for r in referrals %}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a>{{ ' · ' if not loop.last }}{% endfor %} (referral links).</p>{% for r in referrals if r.disclosure %}<p class="ws-disc">{{ r.disclosure }}</p>{% endfor %}{% endif %}
     <p class="muted">Data last updated {{ build_date_human }}. Source: company filings on SEC EDGAR.</p>
   </div>
