@@ -4,6 +4,13 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST=os.path.join(ROOT,'dist'); SITE_URL=os.environ.get('SITE_URL','https://mapledividends.com')
 TODAY=datetime.date.fromisoformat(os.environ['BUILD_DATE']) if os.environ.get('BUILD_DATE') else datetime.date.today()
+def fresh_when(now=None):
+    """'before the opening bell' only for a weekday build before 6:30am Pacific; every other build is 'after the close'."""
+    from zoneinfo import ZoneInfo
+    pt=ZoneInfo('America/Vancouver')
+    now=datetime.datetime.now(pt) if now is None else (now.astimezone(pt) if now.tzinfo else now.replace(tzinfo=pt))
+    if now.weekday()<5 and (now.hour,now.minute)<(6,30): return 'before the opening bell'
+    return 'after the close'
 START=os.environ.get("START","2025-07-01")
 # Cloudflare Web Analytics (free, cookieless). The beacon token is public (it ships in every page); paste it here or set
 # the CF_BEACON_TOKEN repo variable. Empty = no beacon.
@@ -101,7 +108,7 @@ def main():
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
     import roast  # Joke of the Day 🥞 (data/jokes.json), one per build date
-    common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY))
+    common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY),fresh_when=fresh_when())
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]; pending=[]
     seo.og_image(os.path.join(DIST,'og.png'),'Canadian dividend dates',['TSX ex-dates, pay dates, raises & cuts','checked against company filings'],'mapledividends.com · free · not advice')
     for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):

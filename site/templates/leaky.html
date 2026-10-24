@@ -16,7 +16,7 @@
 {% block body %}{% from "_refer.html" import ref_line %}
 <h1>Leaky Maple vs Golden Pour 🍁🥞</h1>
 <p class="lead">The biggest % price loser and the biggest % price gainer among our dividend stocks, every trading day. The loser leaks out of the maple and gets a roast; the gainer pours onto the pancakes and gets a syrup bath.</p>
-<p class="fresh">⏰ Prices as of the {{ ca.asof_h or "last available" }} close, not advice. Refreshed {{ build_date_human }}, before the opening bell.</p>
+<p class="fresh">⏰ Prices as of the {{ ca.asof_h or "last available" }} close, not advice. Refreshed {{ build_date_human }}, {{ fresh_when }}.</p>
 {{ ref_line(build_id, "Spotted a mover you like? ") }}
 <div class="lm-tabs">
  {% if us %}<input type="radio" name="lmt" id="lmt-ca" class="vh" checked><label for="lmt-ca">🇨🇦 TSX</label>
@@ -34,7 +34,7 @@
 {{ joke_box(joke) }}
 <section class="card">
  <h2>How it works</h2>
- <p>Before the opening bell each morning we take the last completed session's closing price for every TSX stock we track and the 30 <a href="/stars-and-syrup/">Stars &amp; Syrup</a> U.S. stocks, and compare it with the close the session before. The biggest % drop is the Leak of the Day; the biggest % gain is the Pour of the Day. Prices come from Yahoo Finance's free chart data and are shown with the session date. If prices can't be fetched, the page keeps the last good day and says which close it is.</p>
+ <p>We take the last completed session's closing price for every TSX stock we track and the 30 <a href="/stars-and-syrup/">Stars &amp; Syrup</a> U.S. stocks, and compare it with the close the session before. Weekday builds before 6:30am Pacific run before the opening bell; later builds run after the close. The biggest % drop is the Leak of the Day; the biggest % gain is the Pour of the Day. Prices come from Yahoo Finance's free chart data and are shown with the session date. If prices can't be fetched, the page keeps the last good day and says which close it is.</p>
  <p>The roast and the syrup bath come from a handful of templates that rotate daily, and they only use those facts: company, ticker, % change, prior and last close, and the date. They tease the share price, not the people, and they don't predict anything. A one-day move says nothing about the dividend.</p>
  <p>The Bottom 5 / Top 5 dividend cut and raise lists below still cover the last {{ weeks }} weeks of company filings.</p>
  <p>Each change is dated by the company filing that first announced the new rate. Changes we can't date, because a declaration in between is missing from our data, are left out. Special dividends don't count.</p>
