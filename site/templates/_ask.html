@@ -5,7 +5,7 @@
   <p class="ask-sub">Quick questions about our data: ex-dates, raises and cuts, and the power tracker.</p>
   <div class="ask-log" role="log" aria-live="polite"></div>
   <div class="ask-ex">{% for e in examples %}<button type="button" class="ask-chip">{{ e }}</button>{% endfor %}</div>
-  <p class="ask-na">Not advice. Answers come only from MapleDividends data and can be wrong, so check the source filing.</p>
+  <p class="ask-na">General info, not advice. Facts from MapleDividends data only, no picks or predictions. Answers can be wrong, so check the source filing.</p>
   <form class="ask-f">
     <label class="vh" for="ask-q">Your question</label>
     <input id="ask-q" name="q" maxlength="300" placeholder="e.g. When is BMO's next ex-date?" autocomplete="off" required>
@@ -32,7 +32,7 @@ function showNl(){nl.hidden=false;}
 if(n>=3)showNl();
 function add(cls,txt,links,asof){var d=document.createElement('div');d.className='ask-m '+cls;d.textContent=txt;
  if(links&&links.length){var p=document.createElement('p');p.className='ask-links';links.forEach(function(u){var a=document.createElement('a');a.href=u;a.textContent=u.replace(/^\/|\/$/g,'').replace(/\//g,' › ')||'home';p.appendChild(a);});d.appendChild(p);}
- if(asof){var s=document.createElement('p');s.className='ask-foot';s.textContent='Not advice. From MapleDividends data as of '+asof+'.';d.appendChild(s);}
+ if(asof){var s=document.createElement('p');s.className='ask-foot';s.textContent='General info, not advice. From MapleDividends data as of '+asof+'.';d.appendChild(s);}
  log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
 box.querySelectorAll('.ask-chip').forEach(function(c){c.addEventListener('click',function(){inp.value=c.textContent;f.requestSubmit?f.requestSubmit():f.dispatchEvent(new Event('submit'));});});
 f.addEventListener('submit',function(e){e.preventDefault();var q=inp.value.trim();if(!q)return;

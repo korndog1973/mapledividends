@@ -5,7 +5,13 @@
 // Either way the Workers AI Free plan hard-stops at 10,000 neurons/day, so this can never bill.
 const MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8-fast';
 const GLOBAL_CAP = 400, VISITOR_CAP = 10, MAX_Q = 300, MAX_TOKENS = 300, MAX_ROWS = 20;
-const SYSTEM = 'You are the MapleDividends data helper. Answer ONLY from the DATA rows below. If the answer is not in the DATA, reply exactly: "I don\'t know. That isn\'t in our data yet." Never recommend buying, selling or holding anything, and never give personal financial advice; if asked, say you can only share the data. Do not guess or use outside knowledge. Give amounts, dates and currencies exactly as written. Plain text, max 120 words.';
+const NOTE = 'General info, not advice.';
+const ADVICE_MSG = "I can only share facts from MapleDividends data, not advice, picks or predictions. Try asking about a company's ex-date, payout or recent raise.";
+// Personalized-advice, pick and prediction questions are refused before the model runs (0 neurons, never counted).
+const ADVICE_RE = /\b(should (i|we)|shall i|worth (buying|it)|buy or sell|good (buy|investment|stock)|is it (a )?(good|safe|time)|recommend|suggest|pick(s)?\b|best (stock|dividend|pick|bank|etf|buy)|top (stock|pick)|safest|which (one|stock|is better)|will .{0,40}\b(rise|fall|go up|go down|drop|raise|cut|crash|grow)|predict|forecast|price target|going to (rise|fall|go up|go down)|my (tfsa|rrsp|fhsa|portfolio|retirement|money|savings))/i;
+// Last line of defence if the model drifts into advice anyway.
+const ADVICE_OUT_RE = /\b(you should|i (would )?recommend|i suggest|good (buy|investment)|consider (buying|selling)|is likely to|will (likely|probably))\b/i;
+const SYSTEM = 'You are the MapleDividends data helper. You give general information only, never advice. Answer ONLY with facts from the DATA rows below (amounts, dates, currencies exactly as written). If the answer is not in the DATA, reply exactly: "I don\'t know. That isn\'t in our data yet." NEVER: tell anyone whether to buy, sell or hold anything; say what they "should" do; pick, rank or recommend stocks ("best", "top", "safest"); predict prices, dividends, raises, cuts or returns; or comment on anyone\'s personal situation (TFSA, RRSP, age, income, portfolio). If asked any of that, reply exactly: "' + ADVICE_MSG + '" Do not guess or use outside knowledge. Plain text, max 100 words.';
 const STOP = new Set('the and for with what when whats next does did is are was its it of on in to a an me my i you how much many which who will any about tell show from that this there their has have do be or at by per share shares stock stocks dividend dividends pay paid payout date dates ex canada canadian inc corp'.split(' '));
 const CAPPED_MSG = "We've hit today's free question limit. Try again tomorrow, or get our free weekly newsletter for dividend raises, cuts and ex-dates.";
 const VISITOR_MSG = "That's your 10 free questions for today. Come back tomorrow, or get our free weekly newsletter for dividend raises, cuts and ex-dates.";
@@ -82,6 +88,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (hit) { const o = await hit.json(); return json({ ...o, cached: true, left: VISITOR_CAP - vN }); } // repeats are free and don't count
   if (gN >= GLOBAL_CAP) return json({ capped: 'global', answer: CAPPED_MSG, left: VISITOR_CAP - vN });
 
+  if (ADVICE_RE.test(q)) return json({ answer: ADVICE_MSG, note: NOTE, as_of: data.as_of_h, links: ['/calendar/'], left: VISITOR_CAP - vN });
   const rows = retrieve(data, q);
   const links = [...new Set(rows.map(r => r.u))].slice(0, 3);
   let answer;
@@ -96,11 +103,12 @@ export async function onRequestPost({ request, env, waitUntil }) {
         { role: 'system', content: `${SYSTEM}\n\nDATA (MapleDividends, as of ${data.as_of_h}):\n${ctx}` },
         { role: 'user', content: q }] });
       answer = String(res && res.response || '').trim() || "I don't know. That isn't in our data yet.";
+      if (ADVICE_OUT_RE.test(answer)) answer = ADVICE_MSG;
     } catch (e) {
       return json({ capped: 'global', answer: "The Q&A box is resting for today. Try again tomorrow, or get our free weekly newsletter.", left: VISITOR_CAP - vN - 1 });
     }
   }
-  const out = { answer, as_of: data.as_of_h, links };
+  const out = { answer, note: NOTE, as_of: data.as_of_h, links };
   waitUntil(caches.default.put(cacheKey, new Response(JSON.stringify(out), { headers: { 'content-type': 'application/json', 'cache-control': 'max-age=86400' } })));
   return json({ ...out, left: VISITOR_CAP - vN - (rows.length ? 1 : 0) });
 }

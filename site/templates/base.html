@@ -83,7 +83,7 @@
     <p><strong>Not financial advice.</strong> MapleDividends is general information built from public company filings. It may contain errors or be out of date. Always check the company's own announcement before you act. <a href="/disclaimer/">Full disclaimer</a>.</p>
     <p class="links"><a href="/about/">About</a> · <a href="/methodology/">How we get the data</a> · <a href="/disclaimer/">Disclaimer</a> · <a href="/privacy/">Privacy</a> · <a href="/affiliate-disclosure/">Affiliate disclosure</a></p>
     <p class="links">Sectors: <a href="/sectors/banks/">Banks</a> · <a href="/sectors/pipelines/">Pipelines</a> · <a href="/sectors/utilities/">Utilities</a> · <a href="/sectors/telecom/">Telecom</a> · <a href="/us/">U.S. dividend stocks</a></p>
-    {% if referrals %}<p class="muted small ref-foot">Support the site: {% for r in referrals %}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a>{{ ' · ' if not loop.last }}{% endfor %} (referral links).</p>{% for r in referrals if r.disclosure %}<p class="ws-disc">{{ r.disclosure }}</p>{% endfor %}{% endif %}
+    {% if referrals %}<p class="muted small ref-foot">Support the site: {% for r in referrals %}<a href="{{ r.url }}" rel="sponsored nofollow noopener" target="_blank">{{ r.name }}</a>{{ ' · ' if not loop.last }}{% endfor %} (referral links).</p>{% for r in referrals %}<p class="ref-paid">Referral link: {{ r.paid }}.</p>{% endfor %}{% for r in referrals if r.disclosure %}<p class="ws-disc">{{ r.disclosure }}</p>{% endfor %}{% endif %}
     <p class="muted">Data last updated {{ build_date_human }}. Source: company filings on SEC EDGAR.</p>
   </div>
 </footer>
