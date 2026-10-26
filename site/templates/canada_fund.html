@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% block body %}
+<article class="prose csf">
+<h1>Canada Strong Fund Watch: can I buy it yet?</h1>
+<p class="muted small">Last updated: {{ updated_h }}. We update this page when Ottawa publishes something new. General info, not advice.</p>
+
+<section class="card csf-status">
+  <h2>Short answer: no, not yet</h2>
+  <p><strong>Status: not open.</strong> There's no launch date. As of Oct 21, 2026, the federal government hadn't said when the Canada Strong Fund will launch or exactly how it will work (<a href="{{ src.cbc }}" rel="noopener" target="_blank">CBC News</a>).</p>
+  <p><strong>Next date to watch: Nov 5, 2026.</strong> That's when the Finance Minister tables Budget 2026 (<a href="{{ src.budget }}" rel="noopener" target="_blank">Department of Finance Canada</a>). The minister's spokesperson told CBC the fall budget will include a "significant" update on the fund.</p>
+</section>
+
+<h2>What's been announced</h2>
+<ul>
+  <li>Prime Minister Mark Carney announced the fund in April 2026 with seed funding of $25 billion over three years.</li>
+  <li>It's meant to invest only in Canada, be arm's-length from government, and fund major projects in areas like energy, infrastructure, agriculture and technology.</li>
+  <li>It's expected to include a "retail investment product" so ordinary Canadians can buy in. The details haven't been announced.</li>
+  <li>Who will run it (the CEO and board) hasn't been announced. The government still has to create a Crown corporation for it.</li>
+</ul>
+<p class="muted small">Source: <a href="{{ src.cbc }}" rel="noopener" target="_blank">CBC News, Oct 21, 2026</a>.</p>
+
+<h2>What we know so far</h2>
+<div class="csf-table">
+  <div class="csf-row"><span class="csf-k">Can I buy it?</span><span class="csf-v">No. It isn't open to investors yet.</span></div>
+  <div class="csf-row"><span class="csf-k">Launch date</span><span class="csf-v">Not announced yet.</span></div>
+  <div class="csf-row"><span class="csf-k">TFSA / RRSP / FHSA eligible?</span><span class="csf-v">Not announced yet.</span></div>
+  <div class="csf-row"><span class="csf-k">Fees</span><span class="csf-v">Not announced yet.</span></div>
+  <div class="csf-row"><span class="csf-k">How to buy (bank, broker, government)</span><span class="csf-v">Not announced yet.</span></div>
+  <div class="csf-row"><span class="csf-k">Minimum investment</span><span class="csf-v">Not announced yet.</span></div>
+  <div class="csf-row"><span class="csf-k">Returns or payouts</span><span class="csf-v">Not announced yet.</span></div>
+</div>
+<p class="muted small">The government told CBC the retail part is taking time because there's no existing template for it from other countries.</p>
+
+<section class="card csf-scam">
+  <h2>⚠️ Scam warning</h2>
+  <p>There is no way to buy into the Canada Strong Fund today. If anyone offers you "early access", a "pre-sale" or guaranteed returns from it, by ad, text, email, phone or social media, treat it as a scam. Don't send money or personal details.</p>
+  <p>When it does open, the details will come from the Government of Canada (canada.ca). Report suspected fraud to the <a href="https://antifraudcentre-centreantifraude.ca/" rel="noopener" target="_blank">Canadian Anti-Fraud Centre</a>.</p>
+</section>
+
+<h2>Tell me when it opens</h2>
+<p>Join our free weekly email and we'll include it when Ottawa says how Canadians can buy in.</p>
+{{ signup(compact=true) }}
+
+{% if ws %}<p class="ref-line">Already investing on your own? <a href="{{ ws.url }}" rel="sponsored nofollow noopener" target="_blank">{{ ws.name }}</a>: {{ ws.perk }}.<br><span class="ref-paid">Referral link: {{ ws.paid }}. <a href="/affiliate-disclosure/" class="ref-disc">Disclosure</a></span></p>
+<p class="ws-disc">{{ ws.disclosure }}</p>{% endif %}
+
+<h2>Sources</h2>
+<ul class="small">
+  <li><a href="{{ src.cbc }}" rel="noopener" target="_blank">CBC News: Carney government has no launch date planned for proposed sovereign wealth fund</a> (Oct 21, 2026)</li>
+  <li><a href="{{ src.budget }}" rel="noopener" target="_blank">Department of Finance Canada: Government of Canada to release Budget 2026 on November 5</a> (Oct 20, 2026)</li>
+</ul>
+<p class="muted small">General info, not advice. MapleDividends doesn't know whether the fund will suit you and doesn't recommend buying or avoiding it.</p>
+</article>
+{% endblock %}

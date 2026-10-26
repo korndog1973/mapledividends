@@ -167,6 +167,8 @@ def main():
     write('/calendar/',env.get_template('calendar.html').render(title=f"TSX ex-dividend calendar {TODAY.year}: upcoming Canadian ex-dates | MapleDividends",crumb="Ex-dividend calendar",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
     write('/raises-and-cuts/',env.get_template('raises.html').render(title=f"Deadly / Not Deadly: Canadian dividend raises & cuts {TODAY.year} | MapleDividends",crumb="Raises & cuts",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
     write('/companies/',env.get_template('companies.html').render(title=f"TSX dividend stocks {TODAY.year}: list of Canadian dividend payers | MapleDividends",crumb="Companies",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
+    ws=next((r for r in REFERRALS if r['name']=='Wealthsimple'),None)  # Canada Strong Fund Watch: one Wealthsimple referral line
+    write('/canada-strong-fund/',env.get_template('canada_fund.html').render(title="Canada Strong Fund: can I buy it yet? Launch date, TFSA, fees | MapleDividends",crumb="Canada Strong Fund Watch",description="Is the Canada Strong Fund open to Canadians yet? Launch date, TFSA eligibility, fees and how to buy, with sources. Updated as Ottawa announces details.",path='/canada-strong-fund/',updated_h=dh(CSF_UPDATED),ws=ws,src=CSF_SOURCES,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
     hub_static=[]
@@ -188,25 +190,28 @@ def main():
     popular=[latest[x] for x in ['ENB','TD','BNS','BMO','CM','FTS','CNR','BCE','T','TRP','EMA','SU'] if x in latest]
     nf="<h1>Page not found</h1><p>That page doesn't exist (or moved). These might help:</p><div class='nf-grid'><a href='/calendar/'>📅 Ex-dividend calendar</a><a href='/companies/'>🍁 All TSX companies</a><a href='/sectors/'>🏦 Stocks by sector</a><a href='/us/'>🇺🇸 U.S. dividend stocks</a><a href='/raises-and-cuts/'>💀 Raises &amp; cuts</a><a href='/'>🏠 Home</a></div>"
     nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{r['ticker']}</a> <span class='muted small'>{r['name']}</span></li>" for r in popular)+"</ul>"
-    nf+="<p class='small muted'>Looking for a company we don't cover yet? Email <a href='mailto:"+CONTACT+"'>"+CONTACT+"</a>.</p>"
+    nf+="<p class='small muted'>Looking for a company we don't cover yet? Email "+CONTACT_TXT+".</p>"
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content=nf,**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
+    static=['/','/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]
     sm.append('</urlset>'); open(os.path.join(DIST,'sitemap.xml'),'w').write('\n'.join(sm))
-    open(os.path.join(DIST,'robots.txt'),'w').write(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
+    open(os.path.join(DIST,'robots.txt'),'w').write(f"User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: {SITE_URL}/sitemap.xml\n")
     open(os.path.join(DIST,'_headers'),'w').write("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n/style.css\n  Cache-Control: public, max-age=31536000, immutable\n")
     n=sum(1 for _ in __import__('glob').glob(os.path.join(DIST,'**','*.html'),recursive=True))
     stats=dict(build_date=TODAY.isoformat(),html_pages=n,company_pages=len(companies),upcoming_exdates=len(upcoming),raises_cuts_12w=len(changes))
     json.dump(stats,open(os.path.join(ROOT,'data','build_stats.json'),'w'),indent=1); print(stats)
 CONTACT="hello@mapledividends.com"
+CONTACT_TXT="hello [at] mapledividends.com"  # written out so Cloudflare email obfuscation doesn't create /cdn-cgi/ links Google reports as 4xx
+CSF_UPDATED=datetime.date(2026,10,26)  # bump when the Canada Strong Fund Watch facts change
+CSF_SOURCES=dict(cbc='https://www.cbc.ca/news/politics/sovereign-wealth-fund-update-9.7387449',budget='https://www.canada.ca/en/department-finance/news/2026/10/government-of-canada-to-release-budget-2026-on-november-5-2026.html')
 PAGES={
  '/about/':("About MapleDividends","About MapleDividends, a free Canadian dividend tracker.",f"""<h1>About MapleDividends</h1>
 <p>MapleDividends is a free tracker of dividends paid by TSX-listed Canadian companies: upcoming ex-dividend dates, pay dates, raises, cuts and DRIP details.</p>
 <p>It's built and run in Vancouver, B.C. We care about accuracy more than coverage. Every dividend we show links to the company filing it came from, and we leave out anything we couldn't check.</p>
 <p>Coverage is limited for now. We start with TSX companies that also file with the U.S. SEC, then add others as we find reliable sources we're allowed to use. See <a href="/methodology/">how we get the data</a>.</p>
-<p>Spotted an error? Email <a href="mailto:{CONTACT}">{CONTACT}</a> and include the company and a link to its announcement.</p>{'''
+<p>Spotted an error? Email {CONTACT_TXT} and include the company and a link to its announcement.</p>{'''
 <p>The site is free. Some pages include broker referral links, and we may earn a bonus if you open an account through one. That never affects the data. See our <a href="/affiliate-disclosure/">affiliate disclosure</a>.</p>''' if REFERRALS else ''}"""),
  '/methodology/':("How we get the data","Where MapleDividends dividend data comes from and how it's checked.","""<h1>How we get the data</h1>
 <ol><li><strong>Source.</strong> We read company filings (press-release exhibits on forms 6-K and 8-K) published on the U.S. SEC's public EDGAR system. Many TSX companies also list in the U.S. and file their dividend announcements there.</li>
@@ -220,7 +225,7 @@ PAGES={
 <p><strong>Not financial advice.</strong> Everything on MapleDividends is general information for educational purposes. It isn't investment, tax or legal advice, and it isn't a recommendation to buy or sell any security. We're not a registered dealer or adviser.</p>
 <p>Our data comes from public company filings and is processed automatically. It may contain errors, leave things out, or be out of date. Companies can change or cancel dividends at any time. Before you make any decision, check the company's own announcement, your broker, and if needed a qualified professional.</p>
 <p>We aren't liable for any loss that comes from using this site. Past dividends don't guarantee future dividends.</p>
-<p>Questions or corrections: <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
+<p>Questions or corrections: {CONTACT_TXT}.</p>"""),
  '/privacy/':("Privacy policy","MapleDividends privacy policy.",f"""<h1>Privacy policy</h1>
 <p>Last updated: {dh(TODAY)}.</p>
 <p><strong>What we collect.</strong> This site has no accounts, no advertising trackers and no analytics cookies. Our host (Cloudflare) may process standard technical data such as IP addresses to deliver and protect the site. See Cloudflare's privacy policy.</p>{'''
@@ -229,7 +234,7 @@ PAGES={
 <p><strong>Market movers (TradingView).</strong> The <a href="/leaky-maple/">Leaky Maple vs Golden Pour</a> page also shows TradingView's free "Stock Market" movers widget (top gainers and losers). It loads from the same TradingView servers, under the same TradingView privacy policy, only when you scroll to it. Its prices are delayed and are price moves, not dividends.</p>
 <p><strong>Newsletter.</strong> If you sign up for our email newsletter, we'll collect your email address to send it. It is stored with our email provider, Kit (kit.com). You can unsubscribe at any time using the link in every email. We don't sell your information.</p>
 {'''<p><strong>Referral and affiliate links.</strong> Some pages include broker referral links (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>). We don't share any of your information with the broker. If you click one, the broker may use cookies or a referral code to credit the referral, under its own privacy policy.</p>''' if REFERRALS else '''<p><strong>Affiliate links.</strong> If you click an affiliate link (see our <a href="/affiliate-disclosure/">affiliate disclosure</a>), the partner may use cookies to credit the referral.</p>'''}
-<p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>"""),
+<p><strong>Contact.</strong> For privacy questions or requests to access or delete your information, email {CONTACT_TXT}.</p>"""),
  '/affiliate-disclosure/':("Affiliate disclosure","How MapleDividends makes money.",f"""<h1>Affiliate disclosure</h1>
 <p>MapleDividends is operated by CHASELIST, a B.C. sole proprietorship.</p>
 <p>MapleDividends is free to use. To pay for it, we may include affiliate or referral links to Canadian financial services, such as online brokerages. If you open an account through one of these links, we may get paid a fee by that company, at no cost to you.</p>

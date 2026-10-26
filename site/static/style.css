@@ -145,3 +145,12 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 .nf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
 .nf-grid a{display:block;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--card);font-weight:600}
 .ref-paid{display:block;font-size:.75rem;line-height:1.35;color:#6b7280;margin:2px 0 0}
+/* Canada Strong Fund Watch */
+.csf .card{margin:1rem 0}
+.csf-status{border-left:4px solid #c8102e}
+.csf-scam{border-left:4px solid #e0a800;background:#fffbea}
+.csf-table{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin:.5rem 0}
+.csf-row{display:flex;flex-wrap:wrap;gap:.25rem 1rem;padding:.6rem .8rem;border-top:1px solid #eee}
+.csf-row:first-child{border-top:0}
+.csf-k{flex:1 1 12rem;font-weight:600}
+.csf-v{flex:1 1 10rem}
