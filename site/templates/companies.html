@@ -1,7 +1,7 @@
 {% extends "base.html" %}{% block body %}
 <h1>TSX dividend stocks we track</h1>
 <p class="lead">{{ rows|length }} companies with at least one verified dividend declaration.</p>
-<table class="t"><thead><tr><th>Company</th><th class="r">Latest</th><th>Frequency</th><th>Last ex-date</th></tr></thead><tbody>
-{% for r in rows %}<tr><td><a href="/dividends/{{ r.slug }}/">{{ r.name }}</a> <span class="tk">{{ r.ticker }}</span></td><td class="r">{{ r.amount_h }}</td><td>{{ r.freq }}</td><td>{{ r.ex_h }}</td></tr>{% endfor %}
+<table class="t"><thead><tr><th>Company</th><th class="r">Latest</th><th class="hide-sm">Frequency</th><th>Last ex-date</th></tr></thead><tbody>
+{% for r in rows %}<tr><td><a href="/dividends/{{ r.slug }}/">{{ r.name }}</a> <span class="tk">{{ r.ticker }}</span><span class="sm-only fq">{{ r.freq }}</span></td><td class="r">{{ r.amount_h }}</td><td class="hide-sm">{{ r.freq }}</td><td>{{ r.ex_h|nbd }}</td></tr>{% endfor %}
 </tbody></table>
 {% endblock %}

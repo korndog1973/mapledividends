@@ -22,7 +22,7 @@
   <div class="card">
     <h2>Upcoming ex-dividend dates</h2>
     {% if upcoming %}<table class="t"><thead><tr><th>Ex-date</th><th>Company</th><th class="r">Amount</th></tr></thead><tbody>
-    {% for e in upcoming[:12] %}<tr><td>{{ e.ex_h }}</td><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td></tr>{% endfor %}
+    {% for e in upcoming[:12] %}<tr><td>{{ e.ex_h|nbd }}</td><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td></tr>{% endfor %}
     </tbody></table>{% else %}<p class="muted">No upcoming ex-dates in our verified data right now.</p>{% endif %}
     <p><a href="/calendar/">Full calendar →</a></p>
   </div>

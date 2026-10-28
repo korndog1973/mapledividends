@@ -40,6 +40,20 @@ def ref_pick(key):
     """One broker per page, rotated by a stable hash of the page key (ticker/path) so neighbouring pages differ."""
     return REFERRALS[zlib.crc32(str(key).encode())%len(REFERRALS)] if REFERRALS else None
 env.globals['ref_pick']=ref_pick
+from markupsafe import Markup, escape
+def nbd(v):
+    """Table date cells: keep 'Oct 30,' together so a narrow phone column wraps to 2 lines (Oct 30, / 2026), never 3."""
+    return Markup(escape(str(v)).replace(' ','\u00a0',1))
+env.filters['nbd']=nbd
+def display_name(n):
+    """Readable company names from SEC's index style: 'Toronto-Dominion Bank (The)' -> 'The Toronto-Dominion Bank',
+    'Bank Of Commerce' -> 'Bank of Commerce', 'Services inc.' -> 'Services Inc.'. Display only; data files are untouched."""
+    n=n.strip()
+    if n.endswith(' (The)'): n='The '+n[:-6].strip()
+    n=re.sub(r'(?<=\w) Of (?=\w)',' of ',n)
+    n=re.sub(r'\binc\.$','Inc.',n)
+    return n
+def name_key(n): return n.lower().removeprefix('the ')
 import seo
 env.globals['breadcrumb_ld']=lambda path,leaf: seo.ld_breadcrumbs(SITE_URL,path,leaf)
 def ticker_extras(c,Lh,regs,path,market='TSX'):
@@ -106,6 +120,7 @@ def write(path,html):
     os.makedirs(os.path.dirname(p),exist_ok=True); open(p,'w').write(html)
 def main():
     data=json.load(open(os.path.join(ROOT,'data','parsed.json')))
+    for c in data.values(): c['name']=display_name(c['name'])
     if os.path.exists(DIST): shutil.rmtree(DIST)
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
@@ -113,7 +128,7 @@ def main():
     common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY),fresh_when=fresh_when())
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]; pending=[]
     seo.og_image(os.path.join(DIST,'og.png'),'Canadian dividend dates',['TSX ex-dates, pay dates, raises & cuts','checked against company filings'],'mapledividends.com · free · not advice')
-    for t,c in sorted(data.items(),key=lambda kv:kv[1]['name'].lower()):
+    for t,c in sorted(data.items(),key=lambda kv:name_key(kv[1]['name'])):
         regs=c['regular']
         if not regs: continue
         s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs,fq)

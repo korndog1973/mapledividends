@@ -55,4 +55,5 @@ def fetch(items,mkt,today,root):
         try: json.dump(cache,open(path,'w'),indent=1)
         except OSError: pass
         return out
-    return cache.get(mkt,[])
+    names={it['ticker']:it['name'] for it in items}  # fallback: today's display names, not the cached ones
+    return [dict(o,name=names.get(o['ticker'],o['name'])) for o in cache.get(mkt,[])]

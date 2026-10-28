@@ -27,7 +27,7 @@
 <section class="card">
   <h2>Dividend history (verified)</h2>
   <table class="t"><thead><tr><th>Ex / record date</th><th>Pay date</th><th class="r">Amount</th><th>Type</th><th>Source</th></tr></thead><tbody>
-  {% for h in history %}<tr><td>{{ h.record_h }}</td><td>{{ h.pay_h }}</td><td class="r">{{ h.amount_h }}</td><td>{{ h.type }}</td><td><a href="{{ h.source }}" rel="nofollow noopener" target="_blank">{{ h.src or 'filing' }}</a></td></tr>{% endfor %}
+  {% for h in history %}<tr><td>{{ h.record_h|nbd }}</td><td>{{ h.pay_h|nbd }}</td><td class="r">{{ h.amount_h }}</td><td>{{ h.type }}</td><td><a href="{{ h.source }}" rel="nofollow noopener" target="_blank">{{ h.src or 'filing' }}</a></td></tr>{% endfor %}
   </tbody></table>
   <p class="muted small">History only includes declarations in the filings we've checked since {{ start_h }}, so it may be incomplete. {% if c.ambiguous %}Some filings listed several amounts for the same date (for example, different share classes), so we left those out.{% endif %}</p>
 </section>

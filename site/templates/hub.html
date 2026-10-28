@@ -5,12 +5,12 @@
 <ul class="pills">{% for k,sec in sectors.items() %}<li>{% if k == here %}<strong>{{ sec.short }}</strong>{% else %}<a href="/sectors/{{ k }}/">{{ sec.short }}</a>{% endif %}</li>{% endfor %}<li>{% if path == '/us/' %}<strong>U.S. stocks</strong>{% else %}<a href="/us/">U.S. stocks</a>{% endif %}</li></ul>
 {% if rows %}<section class="card">
 <h2>Latest declared dividends</h2>
-<table class="t"><thead><tr><th>Company</th><th class="r">Latest</th><th>Frequency</th><th>Last ex-date</th></tr></thead><tbody>
-{% for r in rows %}<tr><td><a href="{{ base }}{{ r.slug }}/">{{ r.name }}</a> <span class="tk">{{ r.ticker }}</span></td><td class="r">{{ r.amount_h }}</td><td>{{ r.freq }}</td><td>{{ r.ex_h }}</td></tr>{% endfor %}
+<table class="t"><thead><tr><th>Company</th><th class="r">Latest</th><th class="hide-sm">Frequency</th><th>Last ex-date</th></tr></thead><tbody>
+{% for r in rows %}<tr><td><a href="{{ base }}{{ r.slug }}/">{{ r.name }}</a> <span class="tk">{{ r.ticker }}</span><span class="sm-only fq">{{ r.freq }}</span></td><td class="r">{{ r.amount_h }}</td><td class="hide-sm">{{ r.freq }}</td><td>{{ r.ex_h|nbd }}</td></tr>{% endfor %}
 </tbody></table></section>{% endif %}
 {% if upcoming %}<section class="card"><h2>Upcoming ex-dates</h2>
 <table class="t"><thead><tr><th>Ex-date</th><th>Company</th><th class="r">Amount</th><th>Pay date</th></tr></thead><tbody>
-{% for e in upcoming %}<tr><td>{{ e.ex_h }}</td><td><a href="{{ base }}{{ e.slug }}/">{{ e.ticker }}</a></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h }}</td></tr>{% endfor %}
+{% for e in upcoming %}<tr><td>{{ e.ex_h|nbd }}</td><td><a href="{{ base }}{{ e.slug }}/">{{ e.ticker }}</a></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h|nbd }}</td></tr>{% endfor %}
 </tbody></table></section>{% elif rows %}<p class="card muted small">No upcoming ex-dates on file for this group right now. New dividends are usually declared with quarterly results.</p>{% endif %}
 {% if not rows %}<div class="nf-grid">{% for k,sec in sectors.items() %}<a href="/sectors/{{ k }}/">{{ sec.name }}</a>{% endfor %}<a href="/us/">U.S. dividend stocks</a></div>{% endif %}
 {% if missing %}<p class="muted small">Not covered yet: {{ missing|join(', ') }}. We only list companies whose dividend we could verify in a filing.</p>{% endif %}

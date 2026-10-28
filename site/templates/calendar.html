@@ -4,14 +4,14 @@
 {{ ref_line(path, "Need an account before an ex-date? ") }}
 {% if groups %}{% for g in groups %}
 <section class="card"><h2>{{ g.date_h }}</h2>
-<table class="t"><thead><tr><th>Company</th><th class="r">Amount</th><th>Pay date</th><th>Frequency</th></tr></thead><tbody>
-{% for e in g.rows %}<tr><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h }}</td><td>{{ e.freq }}</td></tr>{% endfor %}
+<table class="t"><thead><tr><th>Company</th><th class="r">Amount</th><th>Pay date</th><th class="hide-sm">Frequency</th></tr></thead><tbody>
+{% for e in g.rows %}<tr><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span><span class="sm-only fq">{{ e.freq }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h|nbd }}</td><td class="hide-sm">{{ e.freq }}</td></tr>{% endfor %}
 </tbody></table></section>
 {% endfor %}{% else %}<p class="card muted">No upcoming ex-dates in our verified data yet. Many TSX companies declare their next dividend with quarterly results in late October and November.</p>{% endif %}
 {% if rgroups %}<h2 style="margin-top:28px">Recent ex-dates (last 30 days)</h2>
 {% for g in rgroups %}<section class="card"><h2>{{ g.date_h }}</h2>
-<table class="t"><thead><tr><th>Company</th><th class="r">Amount</th><th>Pay date</th><th>Frequency</th></tr></thead><tbody>
-{% for e in g.rows %}<tr><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h }}</td><td>{{ e.freq }}</td></tr>{% endfor %}
+<table class="t"><thead><tr><th>Company</th><th class="r">Amount</th><th>Pay date</th><th class="hide-sm">Frequency</th></tr></thead><tbody>
+{% for e in g.rows %}<tr><td><a href="/dividends/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span><span class="sm-only fq">{{ e.freq }}</span></td><td class="r">{{ e.amount_h }}</td><td>{{ e.pay_h|nbd }}</td><td class="hide-sm">{{ e.freq }}</td></tr>{% endfor %}
 </tbody></table></section>{% endfor %}{% endif %}
 <p class="muted small">Ex-date = record date for regular cash dividends under T+1 settlement (since May 27, 2024). This list only covers companies in our verified data, so it's not every TSX dividend.</p>
 {{ signup(compact=true) }}

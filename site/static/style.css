@@ -45,6 +45,9 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 .legend{color:var(--mut);font-size:.88rem;margin:-4px 0 12px}
 /* Stars & Syrup: drop secondary table columns on phones */
 @media (max-width:600px){.hide-sm{display:none}}
+/* Phone tables: frequency moves under the company name, slightly tighter cells (0018) */
+.sm-only{display:none}
+@media (max-width:600px){.sm-only{display:block}.t .fq{font-size:.78rem;color:var(--mut);margin-top:2px}.t{font-size:.9rem}.t th,.t td{padding:8px 5px}}
 /* Leaky Maple vs Golden Pour (/leaky-maple/ + home teaser) */
 .duel{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
 .duel-side{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}

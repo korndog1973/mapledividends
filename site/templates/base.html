@@ -35,7 +35,7 @@
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
   <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">Track all markets on TradingView</span></a></div>
-  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+  <script type="application/json" id="tv-tape-cfg">
   {
   "symbols": [
     {"proName": "TSX:XIU", "title": "TSX 60"},
@@ -88,6 +88,23 @@
     <p class="muted">Data last updated {{ build_date_human }}. Source: company filings on SEC EDGAR.</p>
   </div>
 </footer>
+<script>
+/* Ticker tape (0018): TradingView's script (~0.5 MB, ~50 requests) loads only after our own page has finished loading
+   and the browser is idle, or on the first scroll/tap, so the dividend data paints first. Its 58px slot is reserved in CSS. */
+(function(){
+  var done=false;
+  function go(){
+    if(done)return; done=true;
+    var cfg=document.getElementById('tv-tape-cfg'),box=cfg&&cfg.parentNode; if(!box)return;
+    var s=document.createElement('script');
+    s.src='https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js'; s.async=true; s.text=cfg.textContent;
+    box.appendChild(s);
+  }
+  function idle(){ if('requestIdleCallback' in window) requestIdleCallback(go,{timeout:2500}); else setTimeout(go,1200); }
+  ['scroll','touchstart','pointerdown','keydown'].forEach(function(e){addEventListener(e,go,{once:true,passive:true});});
+  if(document.readyState==='complete') idle(); else addEventListener('load',idle,{once:true});
+})();
+</script>
 {% if beacon_token %}<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ beacon_token }}"}'></script>{% endif %}
 </body>
 </html>

@@ -22,7 +22,7 @@ def _payers(B,data,market):
     return out
 def build(B):
     rows=[]
-    rows+=_payers(B,json.load(open(os.path.join(B.ROOT,'data','parsed.json'))),'TSX')
+    rows+=_payers(B,{t:dict(c,name=B.display_name(c['name'])) for t,c in json.load(open(os.path.join(B.ROOT,'data','parsed.json'))).items()},'TSX')
     try: rows+=_payers(B,json.load(open(os.path.join(B.ROOT,'data','us_parsed.json'))),'US')
     except (OSError,ValueError): pass
     try: mv=json.load(open(os.path.join(B.ROOT,'data','movers.json')))
@@ -31,6 +31,7 @@ def build(B):
         if not isinstance(lst,list): continue
         for m in lst:
             cur='C$' if m.get('currency')=='CAD' else 'US$'
+            m=dict(m,name=B.display_name(m['name']))
             rows.append(dict(t=m['ticker'],k=words(m['name']),g=['mover',mkt.lower()],u=('/dividends/' if mkt=='TSX' else '/us/')+m['slug']+'/',
                 x=f"Price move: {m['name']} ({m['ticker']}) closed at {cur}{m['close']:.2f} on {B.dh(m['date'])}, {m['pct']:+.2f}% vs the previous close ({cur}{m['prev']:.2f}).",pct=m['pct']))
     p=os.path.join(B.ROOT,'data','power_projects.json')
