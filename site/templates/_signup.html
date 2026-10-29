@@ -1,8 +1,8 @@
 {# Newsletter signup (Kit form 10060949). Works without JS: a plain POST to Kit, which shows its own confirmation page. With JS, it submits in place. #}
-{% macro signup(compact=false) -%}
+{% macro signup(compact=false, heading=none, sub=none) -%}
 <form class="signup{% if compact %} signup-compact{% endif %}" action="https://app.kit.com/forms/10060949/subscriptions" method="post" data-kit-form="10060949" aria-label="Newsletter signup">
-  <p class="signup-h">Get the weekly Canadian dividend raises &amp; cuts</p>
-  {% if not compact %}<p class="signup-sub">Free, every week, unsubscribe anytime.</p>{% else %}<p class="signup-sub">Free and weekly. Unsubscribe anytime.</p>{% endif %}
+  <p class="signup-h">{% if heading %}{{ heading }}{% else %}Get the weekly Canadian dividend raises &amp; cuts{% endif %}</p>
+  {% if sub %}<p class="signup-sub">{{ sub }}</p>{% elif not compact %}<p class="signup-sub">Free, every week, unsubscribe anytime.</p>{% else %}<p class="signup-sub">Free and weekly. Unsubscribe anytime.</p>{% endif %}
   <div class="row">
     <label class="vh" for="email-{{ 'c' if compact else 'h' }}">Email address</label>
     <input id="email-{{ 'c' if compact else 'h' }}" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required>

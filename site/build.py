@@ -184,6 +184,10 @@ def main():
     write('/companies/',env.get_template('companies.html').render(title=f"TSX dividend stocks {TODAY.year}: list of Canadian dividend payers | MapleDividends",crumb="Companies",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     ws=next((r for r in REFERRALS if r['name']=='Wealthsimple'),None)  # Canada Strong Fund Watch: one Wealthsimple referral line
     write('/canada-strong-fund/',env.get_template('canada_fund.html').render(title="Canada Strong Fund: can I buy it yet? Launch date, TFSA, fees | MapleDividends",crumb="Canada Strong Fund Watch",description="Is the Canada Strong Fund open to Canadians yet? Launch date, TFSA eligibility, fees and how to buy, with sources. Updated as Ottawa announces details.",path='/canada-strong-fund/',updated_h=dh(CSF_UPDATED),ws=ws,src=CSF_SOURCES,**common))
+    thl=json.load(open(os.path.join(ROOT,'data','tariff_hit_list.json')))  # Tariff Hit List: hand-checked rows, every one sourced
+    thl_rows=sorted(thl['rows'],key=lambda r:r['date'],reverse=True)
+    for r in thl_rows: r.setdefault('date_h',dh(r['date']))
+    write('/tariff-hit-list/',env.get_template('tariff_hit_list.html').render(title=f"Canadian stocks hit hardest by tariffs {TODAY.year}: TSX Tariff Hit List | MapleDividends",crumb="Tariff Hit List",description="TSX companies that have put a number on what U.S. tariffs cost them, from their own earnings releases and filings, with each dividend's current status. Sourced and dated.",path='/tariff-hit-list/',updated_h=dh(thl['updated']),rows=thl_rows,ws=ws,**common))
     for p,(tt,dd,content) in PAGES.items():
         write(p,env.get_template('page.html').render(title=tt+" | MapleDividends",description=dd,path=p,content=content,**common))
     hub_static=[]
@@ -207,7 +211,7 @@ def main():
     nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{r['ticker']}</a> <span class='muted small'>{r['name']}</span></li>" for r in popular)+"</ul>"
     nf+="<p class='small muted'>Looking for a company we don't cover yet? Email "+CONTACT_TXT+".</p>"
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content=nf,**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
+    static=['/','/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/','/tariff-hit-list/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]

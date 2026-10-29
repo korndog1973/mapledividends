@@ -1,0 +1,44 @@
+{% extends "base.html" %}{% from "_signup.html" import signup %}{% block body %}
+<article class="prose thl">
+<h1>Tariff Hit List: TSX companies hit by U.S. tariffs</h1>
+<p class="muted small">Last updated: {{ updated_h }}. General info, not advice.</p>
+
+<p>These TSX companies have put a number on what U.S. tariffs cost them, or are expected to cost them, in their own earnings releases, filings or investor materials. Each figure below is quoted from the company and linked to its source. We leave out companies that only describe tariffs in general terms without a figure.</p>
+<p>The <strong>dividend</strong> column shows only what each company has announced: a cut, a suspension, or no change. We don't predict what any company will do next.</p>
+
+<p class="thl-count"><strong>{{ rows|length }} companies</strong> · newest disclosure first</p>
+<div class="thl-list">
+{% for r in rows %}
+  <section class="thl-card">
+    <div class="thl-head"><h2>{{ r.name }}</h2><span class="thl-tk">TSX: {{ r.ticker }}</span></div>
+    <p class="thl-sector muted small">{{ r.sector }}</p>
+    <p class="thl-k">Disclosed tariff impact</p>
+    <p class="thl-v">{{ r.impact }}</p>
+    <p class="thl-k">Source</p>
+    <p class="thl-v"><a href="{{ r.src }}" rel="noopener" target="_blank">{{ r.src_name }}</a>, {{ r.date_h }}{% if r.src2 %} · <a href="{{ r.src2 }}" rel="noopener" target="_blank">{{ r.src2_name }}</a>{% endif %}</p>
+    <div class="thl-div">
+      <div><p class="thl-k">Current dividend</p><p class="thl-v">{{ r.div }}</p></div>
+      <div><p class="thl-k">Dividend at risk?</p><p class="thl-v">{% if r.flag=='suspended' %}<span class="thl-flag thl-red">Dividend suspended</span>{% elif r.flag=='suspended_pre' %}<span class="thl-flag thl-grey">Suspended before tariffs</span>{% elif r.flag=='cut' %}<span class="thl-flag thl-red">Dividend cut</span>{% elif r.flag=='warned' %}<span class="thl-flag thl-amber">Company warned</span>{% elif r.flag=='nodiv' %}<span class="thl-flag thl-grey">No dividend</span>{% else %}<span class="thl-flag thl-ok">No change announced</span>{% endif %}</p></div>
+    </div>
+  </section>
+{% endfor %}
+</div>
+<p class="muted small">"No change announced" means the company hasn't announced a dividend cut or suspension or warned about one. It isn't a forecast. Amounts are in the currency each company reports in. Figures are the company's own estimates or reported costs and are measured in different ways (per quarter, per year, net of mitigation or not), so don't compare them directly.</p>
+
+<h2>Get tariff alerts</h2>
+<p>We add companies as Q3 2026 results come out. Join our free weekly email to hear when a TSX company reports a tariff hit or changes its dividend.</p>
+{{ signup(compact=true, heading='Get TSX tariff alerts', sub='Free, weekly email. Unsubscribe anytime.') }}
+
+{% if ws %}<p class="ref-line">Already investing on your own? <a href="{{ ws.url }}" rel="sponsored nofollow noopener" target="_blank">{{ ws.name }}</a>: {{ ws.perk }}.<br><span class="ref-paid">Referral link: {{ ws.paid }}. <a href="/affiliate-disclosure/" class="ref-disc">Disclosure</a></span></p>
+<p class="ws-disc">{{ ws.disclosure }}</p>{% endif %}
+
+<h2>How we build this list</h2>
+<ul class="small">
+  <li>Every row comes from the company's own press release, quarterly report or investor presentation, or, where noted, its results call. The date shown is the publication date.</li>
+  <li>We quote the figure the company gave. We don't estimate, adjust or add up anything.</li>
+  <li>Softwood lumber figures include long-running U.S. anti-dumping and countervailing duties as well as tariffs, because that's how the companies report them.</li>
+  <li>Spotted an error, or a company we've missed? Email hello [at] mapledividends.com with a link to the filing.</li>
+</ul>
+<p class="muted small"><strong>Not advice.</strong> This page is general information. It isn't a recommendation to buy, sell or hold any security.</p>
+</article>
+{% endblock %}
