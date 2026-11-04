@@ -67,6 +67,20 @@ def ticker_extras(c,Lh,regs,path,market='TSX'):
     srcs=list(dict.fromkeys(r['source'] for r in regs))
     return dict(faqs=faqs,ld=seo.ld_company(SITE_URL,path,c,Lh,faqs,srcs,TODAY.isoformat(),market),og_image=og,og_alt=f"{c['name']} ({t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}",crumb=t)
 D=datetime.date.fromisoformat
+def short_name(n):
+    """Searcher-friendly name for titles: drop a leading 'The' and legal suffixes (display only)."""
+    n=re.sub(r'^The\s+','',n.strip())
+    for _ in range(2): n=re.sub(r',?\s+(Inc\.?|Incorporated|Corporation|Corp\.?|Limited|Ltd\.?|Co\.?|Company|plc|PLC|S\.A\.|N\.V\.|Trust|Fund)$','',n).strip()
+    return n
+def seo_title(name,t,year):
+    sn=short_name(name)
+    lead=sn if sn.upper()==t.upper() else f"{sn} ({t})"
+    return f"{lead} dividend {year}: next ex-dividend date, amount & history"
+def seo_desc(name,t,Lh,fq,mkt,L_record,tail):
+    nxt=D(L_record)>=TODAY
+    f=(fq.lower()+' ') if fq and fq!='Not stated' else ''
+    return (f"{short_name(name)} ({mkt}: {t}) latest declared {f}dividend: {Lh['amount_h']}. "
+            f"{'Next' if nxt else 'Latest'} ex-dividend date {Lh['ex_h']}, paid {Lh['pay_h']}. {tail}")
 def dh(d): d=D(d) if isinstance(d,str) else d; return d.strftime('%b %-d, %Y')
 CUR_NOTE={'filing':"currency per the filing's general statement",'company':"currency per the company's other filings",'override':"currency from our company notes; this filing doesn't state it"}
 def money(a,cur):
@@ -143,8 +157,8 @@ def main():
             if r.get('drip_kw'):
                 drip=dict(text=("The company's filing mentions a dividend reinvestment plan"+(f" with a {r['drip_disc']}% discount" if r.get('drip_disc') else "")+f" (filing dated {dh(r['file_date'])})."),source=r['source']); break
         name=c['name']
-        title=f"{name} ({t}) dividend dates {TODAY.year}: ex-date, pay date | MapleDividends"
-        desc=f"{name} (TSX: {t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}, paid {Lh['pay_h']}. {fq} payer. Dividend history, raises/cuts and DRIP info, with links to the source filings."
+        title=seo_title(name,t,TODAY.year)
+        desc=seo_desc(name,t,Lh,fq,'TSX',L['record'],"Dividend history, raises and cuts, and DRIP info from company filings.")
         pending.append((s,t,f"/dividends/{s}/",dict(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**ticker_extras(c,Lh,regs+c['special'],f"/dividends/{s}/"),**common)))
         urls.append((f"/dividends/{s}/",L['file_date']))
         companies.append(dict(slug=s,ticker=t,name=name,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h']))

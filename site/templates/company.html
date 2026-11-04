@@ -17,6 +17,7 @@
     <dt>Source</dt><dd><a href="{{ L.source }}" rel="nofollow noopener" target="_blank">{{ L.source_label or 'Company filing on SEC EDGAR' }}</a></dd>
   </dl>
 </section>
+{{ signup(compact=true, heading="Track " ~ c.ticker ~ "'s dividend for free", sub="The weekly email lists every " ~ ("U.S." if us else "TSX") ~ " dividend raise and cut we find in company filings, " ~ c.ticker ~ " included. Unsubscribe anytime.") }}
 {{ ref_line(c.ticker, "Want to own " ~ c.ticker ~ " before an ex-date? ") }}
 {% endif %}
 <section class="card">
@@ -46,6 +47,6 @@
   <ul class="pills">{% for x in next_links %}<li><a href="{{ x.url }}">{{ x.ticker }}</a> <span class="muted small">{{ x.ex_h }}</span></li>{% endfor %}</ul>
   <p class="small"><a href="{{ next_more|default('/calendar/') }}">See the full calendar ›</a></p>
 </section>{% endif %}
-{{ signup(compact=true) }}
+{% if not L %}{{ signup(compact=true) }}{% endif %}
 {{ refer_box(referrals) }}
 {% endblock %}
