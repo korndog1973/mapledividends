@@ -22,8 +22,15 @@ def _payers(B,data,market):
     return out
 def build(B):
     rows=[]
-    rows+=_payers(B,{t:dict(c,name=B.display_name(c['name'])) for t,c in json.load(open(os.path.join(B.ROOT,'data','parsed.json'))).items()},'TSX')
-    try: rows+=_payers(B,json.load(open(os.path.join(B.ROOT,'data','us_parsed.json'))),'US')
+    ca={t:dict(c,name=B.display_name(c['name'])) for t,c in json.load(open(os.path.join(B.ROOT,'data','parsed.json'))).items()}
+    allow=B.published_tickers('tsx')
+    if allow is not None: ca={t:c for t,c in ca.items() if t.upper() in allow}
+    rows+=_payers(B,ca,'TSX')
+    try:
+        us=json.load(open(os.path.join(B.ROOT,'data','us_parsed.json')))
+        uallow=B.published_tickers('us')
+        if uallow is not None: us={t:c for t,c in us.items() if t.upper() in uallow}
+        rows+=_payers(B,us,'US')
     except (OSError,ValueError): pass
     try: mv=json.load(open(os.path.join(B.ROOT,'data','movers.json')))
     except (OSError,ValueError): mv={}

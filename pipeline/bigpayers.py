@@ -28,7 +28,9 @@ def main():
     pp=os.path.join(ROOT,'data','parsed.json'); parsed=json.load(open(pp))
     added=[]
     for t,(pat,cur,qs) in PAT.items():
-        if t not in uni or (parsed.get(t) or {}).get('regular'): continue
+        if t not in uni: continue
+        have=parsed.get(t) or {}
+        have_recs={r['record'] for r in (have.get('regular') or [])}
         docs={m['url']:(m['file_date'],m['form']) for m in man if m['ticker']==t}
         for q in qs:
             try:
@@ -56,6 +58,13 @@ def main():
         byrec={}
         for d in regs: byrec.setdefault(d['record'],[]).append(d)
         regs=[v[0] for v in byrec.values() if len(v)==1]
+        extra=[d for d in regs if d['record'] not in have_recs]
+        if have.get('regular'):
+            if not extra: continue
+            have['regular']=sorted(list(have['regular'])+extra,key=lambda d:(d['record'],d.get('file_date') or ''),reverse=True)
+            parsed[t]=have
+            added.append((t,f"+{len(extra)}"))
+            continue
         if not regs: print('bigpayers: no verified declaration for',t); continue
         parsed[t]=dict(ticker=t,name=uni[t]['name'],composite=uni[t].get('composite',False),regular=regs,special=[],ambiguous=sorted(r for r,v in byrec.items() if len(v)>1),
                        unverified_count=0,unverified_errors=[],source_rule='bigpayers')

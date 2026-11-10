@@ -35,6 +35,13 @@
   </div>
 </section>
 <section class="card">
+  <h2>Upcoming U.S. ex-dates</h2>
+  {% if us_upcoming %}<table class="t"><thead><tr><th>Ex-date</th><th>Company</th><th class="r">Amount</th></tr></thead><tbody>
+  {% for e in us_upcoming[:12] %}<tr><td>{{ e.ex_h|nbd }}</td><td><a href="/us/{{ e.slug }}/">{{ e.name }}</a> <span class="tk">{{ e.ticker }}</span></td><td class="r">{{ e.amount_h }}</td></tr>{% endfor %}
+  </tbody></table>{% else %}<p class="muted">No upcoming U.S. ex-dates in our verified data right now.</p>{% endif %}
+  <p><a href="/us/">U.S. dividend stocks →</a></p>
+</section>
+<section class="card">
   <h2>What's here</h2>
   <p>{{ n_companies }} TSX-listed companies with a declaration we've checked against the source. We only publish dividends we could read straight from a company filing, with an amount, a record date and a pay date that agree with each other. <a href="/methodology/">How we get the data</a>.</p>
 </section>

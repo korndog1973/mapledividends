@@ -11,14 +11,32 @@ def fresh_when(now=None):
     now=datetime.datetime.now(pt) if now is None else (now.astimezone(pt) if now.tzinfo else now.replace(tzinfo=pt))
     if now.weekday()<5 and (now.hour,now.minute)<(6,30): return 'before the opening bell'
     return 'after the close'
-START=os.environ.get("START","2025-07-01")
+# Same default as pipeline/fetch_edgar.py. Printed on each company page as the start of the history we checked.
+START=os.environ.get("START","2022-01-01")
 # Cloudflare Web Analytics (free, cookieless). The beacon token is public (it ships in every page); paste it here or set
 # the CF_BEACON_TOKEN repo variable. Empty = no beacon.
 BEACON_TOKEN=os.environ.get('CF_BEACON_TOKEN') or ''
 # IndexNow key (Bing/Yandex/etc.). The key file site/static/<key>.txt is published at /<key>.txt.
 US_REGS=None  # set by syrup.build_us: per-company U.S. declarations (Leaky Maple full-history pool)
+US_UPCOMING=[]  # set by syrup.build_us: upcoming U.S. ex-dates (home page block)
 CA_REGS=[]  # per-company TSX declarations (Leaky Maple full-history pool)
 US_CHANGES=None  # set by syrup.build_us: Stars & Syrup raises/cuts for the Leaky Maple U.S. tab
+def published_tickers(market):
+    """Tickers that may get a stock page, or None when new company pages are allowed.
+
+    data/publish_allowlist.json with freeze=true keeps the scheduled EDGAR refresh running
+    (existing pages still update) but does not publish a new /dividends/ or /us/ stock page
+    for a ticker that is not listed. Sector pages are not gated. Undo: set freeze to false,
+    or run one build with PUBLISH_FREEZE=0.
+    """
+    flag=os.environ.get('PUBLISH_FREEZE','').strip().lower()
+    if flag in ('0','false','no','off'): return None
+    path=os.path.join(ROOT,'data','publish_allowlist.json')
+    if not os.path.exists(path): return None
+    cfg=json.load(open(path))
+    frozen=True if flag in ('1','true','yes','on') else bool(cfg.get('freeze',False))
+    if not frozen: return None
+    return {str(t).upper() for t in (cfg.get(market) or [])}
 INDEXNOW_KEY='898225b7cda0c6da25d61f8790afcf9d'
 # Broker referral links shown in the "Start investing" box (home + company pages). Empty string = that broker isn't shown;
 # if both are empty the box and the referral wording on the disclosure pages disappear.
@@ -56,6 +74,7 @@ def display_name(n):
 def name_key(n): return n.lower().removeprefix('the ')
 import seo
 env.globals['breadcrumb_ld']=lambda path,leaf: seo.ld_breadcrumbs(SITE_URL,path,leaf)
+env.globals['sector_nav']=seo.SECTORS
 def ticker_extras(c,Lh,regs,path,market='TSX'):
     """FAQ + Dataset/FAQPage JSON-LD + per-ticker OG card for a company page (facts already on the page only)."""
     t=c['ticker']; s=slug(t)
@@ -68,9 +87,19 @@ def ticker_extras(c,Lh,regs,path,market='TSX'):
     return dict(faqs=faqs,ld=seo.ld_company(SITE_URL,path,c,Lh,faqs,srcs,TODAY.isoformat(),market),og_image=og,og_alt=f"{c['name']} ({t}) latest dividend {Lh['amount_h']}, ex-date {Lh['ex_h']}",crumb=t)
 D=datetime.date.fromisoformat
 def short_name(n):
-    """Searcher-friendly name for titles: drop a leading 'The' and legal suffixes (display only)."""
+    """Searcher-friendly name for titles and meta: drop a leading 'The' and legal suffixes (display only).
+
+    '& Co.' / '& Company' is one suffix. Stripping the 'Co.' piece on its own leaves a dangling
+    ampersand ('Merck & Co., Inc.' and 'JPMorgan Chase & Co.' were becoming 'Merck &' and
+    'JPMorgan Chase &'). Other names are unchanged.
+    """
     n=re.sub(r'^The\s+','',n.strip())
-    for _ in range(2): n=re.sub(r',?\s+(Inc\.?|Incorporated|Corporation|Corp\.?|Limited|Ltd\.?|Co\.?|Company|plc|PLC|S\.A\.|N\.V\.|Trust|Fund)$','',n).strip()
+    suf=r'Inc\.?|Incorporated|Corporation|Corp\.?|Limited|Ltd\.?|Company|Co\.?|plc|PLC|S\.A\.|N\.V\.|Trust|Fund'
+    for _ in range(4):
+        nxt=re.sub(r',?\s+&\s+(?:Co\.?|Company)$','',n,flags=re.I).strip(' ,')
+        nxt=re.sub(rf',?\s+(?:{suf})$','',nxt,flags=re.I).strip(' ,')
+        if nxt==n: break
+        n=nxt
     return n
 def seo_title(name,t,year):
     sn=short_name(name)
@@ -87,6 +116,31 @@ def money(a,cur):
     s=f"{a:.6f}".rstrip('0'); s=s if len(s.split('.')[1])>=2 else f"{a:.2f}"
     return (f"US${s}" if cur=='USD' else f"C${s}" if cur=='CAD' else f"${s}")
 def slug(t): return re.sub(r'[^a-z0-9]+','-',t.lower()).strip('-')
+def _ex_pills(events, skip, seen, base):
+    out=[]
+    for e in events:
+        tk=e['ticker']
+        if tk==skip or tk in seen: continue
+        seen.add(tk)
+        out.append(dict(url=f"{base}{e['slug']}/",ticker=tk,ex_h=e['ex_h']))
+    return out
+def next_ex_block(upcoming, recent, ticker, base, peers, limit=8):
+    """Links to other companies' ex-dates. Same-sector names come first (still in ex-date order); everyone else fills what is left.
+    Recent ex-dates fill the list when fewer than 5 are still ahead."""
+    upcoming=sorted(upcoming,key=lambda e:(e['ex'],e.get('name') or e['ticker']))
+    sector=set(peers or [])
+    seen=set()
+    same=[e for e in upcoming if e['ticker'] in sector]
+    other=[e for e in upcoming if e['ticker'] not in sector]
+    nx=(_ex_pills(same,ticker,seen,base)+_ex_pills(other,ticker,seen,base))[:limit]
+    title='Next ex-dates'
+    if len(nx)<5:
+        recent_sorted=sorted(recent,key=lambda e:e['ex'],reverse=True)
+        rec_same=[e for e in recent_sorted if e['ticker'] in sector]
+        rec_other=[e for e in recent_sorted if e['ticker'] not in sector]
+        more=_ex_pills(rec_same,ticker,seen,base)+_ex_pills(rec_other,ticker,seen,base)
+        nx+=more[:limit-len(nx)]; title='Next and recent ex-dates'
+    return nx,title
 def unit_of(sn):
     s=sn.lower(); return 'unit' if re.search(r'per (?:trust |class [a-z] )?unit',s) else 'share'
 def freq(c):
@@ -142,7 +196,9 @@ def main():
     common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY),fresh_when=fresh_when())
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]; pending=[]
     seo.og_image(os.path.join(DIST,'og.png'),'Canadian dividend dates',['TSX ex-dates, pay dates, raises & cuts','checked against company filings'],'mapledividends.com · free · not advice')
+    allow=published_tickers('tsx')
     for t,c in sorted(data.items(),key=lambda kv:name_key(kv[1]['name'])):
+        if allow is not None and t.upper() not in allow: continue
         regs=c['regular']
         if not regs: continue
         s=slug(t); L=regs[0]; fq=freq(c); ch=change(regs,fq)
@@ -172,17 +228,13 @@ def main():
             allchg.append(row)  # every datable raise/cut (Leaky Maple falls back to the latest one if the window is empty)
             if fd>=TODAY-datetime.timedelta(weeks=12): changes.append(row)
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
-    # internal links: 'Same sector' + 'Next ex-dates' blocks, then render the deferred company pages
+    # internal links: 'Same sector' + 'Next ex-dates' (same-sector companies first), then render the deferred company pages
     latest={r['ticker']:r for r in companies}
     for s_,t_,p_,kw in pending:
-        nx=[dict(url=f"/dividends/{e['slug']}/",ticker=e['ticker'],ex_h=e['ex_h']) for e in upcoming if e['ticker']!=t_]
-        nx=list({x['ticker']:x for x in reversed(nx)}.values())[::-1][:8]
-        title_n='Next ex-dates'
-        if len(nx)<5:
-            more=[dict(url=f"/dividends/{e['slug']}/",ticker=e['ticker'],ex_h=e['ex_h']) for e in sorted(recent,key=lambda e:e['ex'],reverse=True) if e['ticker']!=t_ and e['ticker'] not in {x['ticker'] for x in nx}]
-            nx+=list({x['ticker']:x for x in reversed(more)}.values())[::-1][:8-len(nx)]; title_n='Next and recent ex-dates'
         sk=seo.sector_of(t_)
-        sl=[dict(url=f"/dividends/{latest[x]['slug']}/",ticker=x,ex_h=latest[x]['ex_h']) for x in (seo.SECTORS[sk]['tickers'] if sk else []) if x in latest and x!=t_]
+        peers=seo.SECTORS[sk]['tickers'] if sk else []
+        nx,title_n=next_ex_block(upcoming,recent,t_,'/dividends/',peers)
+        sl=[dict(url=f"/dividends/{latest[x]['slug']}/",ticker=x,ex_h=latest[x]['ex_h']) for x in peers if x in latest and x!=t_]
         write(p_,env.get_template('company.html').render(next_links=nx,next_title=title_n,sector_links=sl,sector_key=sk,sector_name=seo.SECTORS[sk]['name'] if sk else None,**kw))
     recent.sort(key=lambda e:(e['ex'],e['name']),reverse=True)
     rgroups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(recent,key=lambda e:e['ex'])]
@@ -192,7 +244,7 @@ def main():
     import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
     import power; pg_static,pg=power.build(sys.modules[__name__],common)  # Data Centre & AI Power Tracker
     import ask; ask.build(sys.modules[__name__])  # Ask MapleDividends chat data (dist/ask-data.json, read by functions/api/ask.js)
-    write('/',env.get_template('index.html').render(leaky=lm,power=pg,ld=seo.ld_home(SITE_URL),title=f"MapleDividends: Canadian dividend calendar {TODAY.year}, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))
+    write('/',env.get_template('index.html').render(leaky=lm,power=pg,ld=seo.ld_home(SITE_URL),title=f"MapleDividends: Canadian dividend calendar {TODAY.year}, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,us_upcoming=US_UPCOMING,changes=changes,n_companies=len(companies),**common))
     write('/calendar/',env.get_template('calendar.html').render(title=f"TSX ex-dividend calendar {TODAY.year}: upcoming Canadian ex-dates | MapleDividends",crumb="Ex-dividend calendar",description="Upcoming ex-dividend dates for TSX-listed Canadian dividend stocks, with amounts and pay dates, checked against company filings.",path='/calendar/',groups=groups,rgroups=rgroups,today_h=dh(TODAY),**common))
     write('/raises-and-cuts/',env.get_template('raises.html').render(title=f"Deadly / Not Deadly: Canadian dividend raises & cuts {TODAY.year} | MapleDividends",crumb="Raises & cuts",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
     write('/companies/',env.get_template('companies.html').render(title=f"TSX dividend stocks {TODAY.year}: list of Canadian dividend payers | MapleDividends",crumb="Companies",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
@@ -211,7 +263,7 @@ def main():
         write(f'/sectors/{k}/',env.get_template('hub.html').render(title=f"{sec['name']}: dividend dates {TODAY.year} (ex-date, pay date) | MapleDividends",description=f"{sec['intro']} Covers {', '.join(r['ticker'] for r in rows)}.",
               path=f'/sectors/{k}/',crumb=sec['short'],h1=f"{sec['name']}: dividend dates {TODAY.year}",intro=sec['intro'],rows=rows,upcoming=up,base='/dividends/',sectors=seo.SECTORS,here=k,
               missing=[x for x in sec['tickers'] if x not in latest],**common)); hub_static.append(f'/sectors/{k}/')
-    write('/sectors/',env.get_template('hub.html').render(title=f"Canadian dividend stocks by sector {TODAY.year} | MapleDividends",description="Canadian dividend payers grouped by sector: banks, pipelines, utilities and telecom, with ex-dates and pay dates from company filings.",
+    write('/sectors/',env.get_template('hub.html').render(title=f"Canadian dividend stocks by sector {TODAY.year} | MapleDividends",description="Canadian dividend payers grouped by sector: banks, pipelines, utilities, telecom, insurance and energy, with ex-dates and pay dates from company filings.",
           path='/sectors/',crumb='Sectors',h1='Canadian dividend stocks by sector',intro='Pick a sector to see each company\'s latest declared dividend, ex-date and pay date.',rows=[],upcoming=[],base='/dividends/',sectors=seo.SECTORS,here=None,missing=[],**common)); hub_static.append('/sectors/')
     usrows=[]
     for r in sorted(US_REGS or [],key=lambda r:r['name'].lower()):
@@ -253,7 +305,7 @@ PAGES={
 <li><strong>Ex-dates.</strong> Since Canada moved to T+1 settlement on May 27, 2024, the ex-dividend date for regular cash dividends is generally the same as the record date. Special or very large dividends can be different.</li>
 <li><strong>Currency.</strong> Many Canadian companies pay dividends in U.S. dollars. We show US$ or C$ when the filing says which (next to the amount, or in a general statement such as "all amounts are in U.S. dollars"), or when we've confirmed it by hand for that company. If we can't tell, we show a plain $ amount exactly as written.</li>
 <li><strong>DRIP.</strong> We only show DRIP details the company itself states in a filing. Otherwise the page says "check plan".</li></ol>
-<p>Limits: the history only goes back to the filings we've processed (since July 2025), and companies that don't file with the SEC aren't covered yet.</p>"""),
+<p>Limits: the history only goes back to the filings we've processed (since January 2022), and companies that don't file with the SEC aren't covered yet. A company can have a shorter table when its older filings don't state a record date and a pay date.</p>"""),
  '/disclaimer/':("Disclaimer: not financial advice","MapleDividends disclaimer.",f"""<h1>Disclaimer</h1>
 <p><strong>Not financial advice.</strong> Everything on MapleDividends is general information for educational purposes. It isn't investment, tax or legal advice, and it isn't a recommendation to buy or sell any security. We're not a registered dealer or adviser.</p>
 <p>Our data comes from public company filings and is processed automatically. It may contain errors, leave things out, or be out of date. Companies can change or cancel dividends at any time. Before you make any decision, check the company's own announcement, your broker, and if needed a qualified professional.</p>
