@@ -65,15 +65,15 @@
 <header class="top">
   <div class="wrap nav">
     <a class="brand" href="/">🍁 Maple<span>Dividends</span></a>
-    <nav>
-      <a href="/calendar/">Ex-dividend calendar</a>
-      <a href="/raises-and-cuts/">Raises &amp; cuts</a>
-      <a href="/companies/">Companies</a>
-      <a href="/stars-and-syrup/">Stars &amp; Syrup 🇺🇸</a>
-      <a href="/leaky-maple/">Leaky vs Golden 🍁🥞</a>
-      <a href="/power-grid/">AI Power ⚡</a>
-      <a href="/canada-strong-fund/">Canada Strong Fund 🇨🇦</a>
-      <a href="/tariff-hit-list/">Tariff Hit List 🚧</a>
+    <nav aria-label="Main">
+      <a href="/calendar/"{% if path and path.startswith('/calendar/') %} aria-current="page"{% endif %}>Ex-dividend calendar</a>
+      <a href="/raises-and-cuts/"{% if path and path.startswith('/raises-and-cuts/') %} aria-current="page"{% endif %}>Raises &amp; cuts</a>
+      <a href="/companies/"{% if path and path.startswith('/companies/') %} aria-current="page"{% endif %}>Companies</a>
+      <a href="/stars-and-syrup/"{% if path and path.startswith('/stars-and-syrup/') %} aria-current="page"{% endif %}>Stars &amp; Syrup 🇺🇸</a>
+      <a href="/leaky-maple/"{% if path and path.startswith('/leaky-maple/') %} aria-current="page"{% endif %}>Leaky vs Golden 🍁🥞</a>
+      <a href="/power-grid/"{% if path and path.startswith('/power-grid/') %} aria-current="page"{% endif %}>AI Power ⚡</a>
+      <a href="/canada-strong-fund/"{% if path and path.startswith('/canada-strong-fund/') %} aria-current="page"{% endif %}>Canada Strong Fund 🇨🇦</a>
+      <a href="/tariff-hit-list/"{% if path and path.startswith('/tariff-hit-list/') %} aria-current="page"{% endif %}>Tariff Hit List 🚧</a>
     </nav>
   </div>
 </header>

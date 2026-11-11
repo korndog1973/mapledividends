@@ -171,3 +171,14 @@ h1{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.2;margin:28px 0 8px}h2{font-
 .thl-flag{display:inline-block;font-size:.8rem;font-weight:700;padding:2px 8px;border-radius:999px}
 .thl-ok{background:#e8f5ec;color:#166534}.thl-red{background:#fde8ea;color:#9f1239}.thl-amber{background:#fff4d6;color:#8a5a00}.thl-grey{background:#eef0f3;color:#374151}
 .thl-count{margin:.75rem 0 .25rem}
+
+/* 0021: phone nav = one swipeable row instead of a 3-line wrap under the sticky header */
+nav a[aria-current="page"]{color:var(--red);font-weight:700}
+@media(max-width:760px){
+.nav{flex-wrap:nowrap;flex-direction:column;align-items:stretch;gap:4px;min-height:0;padding:8px 0 6px}
+.top nav{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0 4px;margin-right:-16px;padding-right:16px;
+  -webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a{flex:0 0 auto;margin:0;white-space:nowrap;font-size:.88rem;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:#fff}
+.top nav a[aria-current="page"]{border-color:var(--red);background:#fef2f2}
+}

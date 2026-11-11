@@ -197,7 +197,7 @@ def main():
     write('/raises-and-cuts/',env.get_template('raises.html').render(title=f"Deadly / Not Deadly: Canadian dividend raises & cuts {TODAY.year} | MapleDividends",crumb="Raises & cuts",description="Deadly or Not Deadly: weekly list of TSX dividend raises and cuts (increases and decreases), checked against company filings.",path='/raises-and-cuts/',weeks=weeks,**common))
     write('/companies/',env.get_template('companies.html').render(title=f"TSX dividend stocks {TODAY.year}: list of Canadian dividend payers | MapleDividends",crumb="Companies",description="Canadian TSX dividend stocks with verified latest dividend, frequency and ex-date.",path='/companies/',rows=companies,**common))
     ws=next((r for r in REFERRALS if r['name']=='Wealthsimple'),None)  # Canada Strong Fund Watch: one Wealthsimple referral line
-    write('/canada-strong-fund/',env.get_template('canada_fund.html').render(title="Canada Strong Fund: can I buy it yet? Launch date, TFSA, fees | MapleDividends",crumb="Canada Strong Fund Watch",description="Is the Canada Strong Fund open to Canadians yet? Launch date, TFSA eligibility, fees and how to buy, with sources. Updated as Ottawa announces details.",path='/canada-strong-fund/',updated_h=dh(CSF_UPDATED),ws=ws,src=CSF_SOURCES,**common))
+    write('/canada-strong-fund/',env.get_template('canada_fund.html').render(title="Canada Strong Fund & Notes: can I buy yet? Early 2027 | MapleDividends",crumb="Canada Strong Fund Watch",description="Not yet. Budget 2026 says Canadians can buy in through Canada Strong Notes, a principal protected note, targeted for early 2027. What's known on terms, TFSA and fees, with sources.",path='/canada-strong-fund/',updated_h=dh(CSF_UPDATED),ws=ws,src=CSF_SOURCES,**common))
     thl=json.load(open(os.path.join(ROOT,'data','tariff_hit_list.json')))  # Tariff Hit List: hand-checked rows, every one sourced
     thl_rows=sorted(thl['rows'],key=lambda r:r['date'],reverse=True)
     for r in thl_rows: r.setdefault('date_h',dh(r['date']))
@@ -237,8 +237,8 @@ def main():
     json.dump(stats,open(os.path.join(ROOT,'data','build_stats.json'),'w'),indent=1); print(stats)
 CONTACT="hello@mapledividends.com"
 CONTACT_TXT="hello [at] mapledividends.com"  # written out so Cloudflare email obfuscation doesn't create /cdn-cgi/ links Google reports as 4xx
-CSF_UPDATED=datetime.date(2026,10,26)  # bump when the Canada Strong Fund Watch facts change
-CSF_SOURCES=dict(cbc='https://www.cbc.ca/news/politics/sovereign-wealth-fund-update-9.7387449',budget='https://www.canada.ca/en/department-finance/news/2026/10/government-of-canada-to-release-budget-2026-on-november-5-2026.html')
+CSF_UPDATED=datetime.date(2026,11,12)  # bump when the Canada Strong Fund Watch facts change
+CSF_SOURCES=dict(cbc='https://www.cbc.ca/news/politics/sovereign-wealth-fund-update-9.7387449',backgrounder='https://budget.canada.ca/2026/report-rapport/pdf/backgrounder-canada-strong-fund.pdf',keymeasures='https://www.canada.ca/en/department-finance/news/2026/11/budget-2026-key-measures.html')
 PAGES={
  '/about/':("About MapleDividends","About MapleDividends, a free Canadian dividend tracker.",f"""<h1>About MapleDividends</h1>
 <p>MapleDividends is a free tracker of dividends paid by TSX-listed Canadian companies: upcoming ex-dividend dates, pay dates, raises, cuts and DRIP details.</p>
