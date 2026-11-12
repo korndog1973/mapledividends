@@ -16,6 +16,12 @@ Free stack: Python, Jinja2, SEC EDGAR (public domain), Cloudflare Pages (static)
 - Ex-date = record date (Canada T+1). Currency is shown only if the filing states it.
 - `pipeline/issuers_*.xlsx` (TSX issuer list) is copyrighted. It's for internal use only and is gitignored. `data/universe.json` (ticker, name, CIK) is what gets committed.
 - Set `SEC_UA` to a real, monitored contact email. SEC fair-access policy requires it.
+- Dividend history window: filings dated on or after `START` (default `2022-01-01`, was `2025-07-01`) through today. `MAXDOCS` (default 60, was 14, and the U.S. fetch used to force 24) is how many of the newest matching filings each company keeps. Both are environment variables. A shorter table means those older filings did not state a record date and a pay date we could check. Nothing is filled in by hand beyond `data/us_ir_manual.json`.
+
+## Publishing freeze (stock pages)
+`data/publish_allowlist.json` lists the TSX and U.S. tickers that already have stock pages and sets `"freeze": true`. While that is true, the scheduled build still fetches and parses the whole universe (existing pages keep getting new dividend dates) but does not create a `/dividends/<ticker>/` or `/us/<ticker>/` page for anyone else. Sector pages, including new ones, are not frozen.
+
+To publish new company pages again, set `"freeze"` to `false` (or delete the file). One build can ignore the freeze with `PUBLISH_FREEZE=0`. `PUBLISH_FREEZE=1` forces it on.
 
 ## Stars & Syrup (U.S. section)
 - Universe: `data/us_universe.json` (ticker, name, CIK list, exchange). Pages: `/stars-and-syrup/` and `/us/<ticker>/` (`site/syrup.py`, `site/templates/syrup.html`).

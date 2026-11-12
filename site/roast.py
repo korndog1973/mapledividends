@@ -39,7 +39,7 @@ DRY=["Not one {mkt} stock in our list closed lower. The bucket is bone dry and t
 DRY_SHORT=["No losers to roast. Bucket's dry! 🎉","Nothing fell. The chainsaw stays in the shed."]
 EMPTY=["No {mkt} gainers in our list at the last close (or prices weren't available). The pancakes are waiting."]
 EMPTY_SHORT=["No gainers. Pancakes waiting."]
-SUFFIX=re.compile(r'(,?\s+(Inc|Inc\.|Incorporated|Corp\.?|Corporation|Company|Co\.|Ltd\.?|Limited|plc|N\.V\.|S\.A\.|& Co\.?))+$',re.I)
+SUFFIX=re.compile(r'(,?\s+(Inc|Inc\.|Incorporated|Corp\.?|Corporation|Company|Co\.|Ltd\.?|Limited|plc|N\.V\.|S\.A\.|& Co\.?|& Company))+$',re.I)
 def short_name(n):
     n=re.sub(r'^The\s+|\s*\(The\)$','',n.strip()); m=SUFFIX.sub('',n).strip(' ,')
     return m or n

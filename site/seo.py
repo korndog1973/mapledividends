@@ -17,6 +17,10 @@ SECTORS={
               intro='Canadian utility dividend payers: latest declared dividends, ex-dates and pay dates.'),
  'telecom':dict(name='Canadian telecom stocks',short='Telecom',tickers=['BCE','T','RCI','QBR'],
               intro='Canadian telecom dividend payers: latest declared dividends, ex-dates and pay dates.'),
+ 'insurance':dict(name='Canadian insurance stocks',short='Insurance',tickers=['MFC','SLF','GWO','ELF'],
+              intro='Canadian insurance dividend payers: latest declared dividends, ex-dates and pay dates, from their own filings.'),
+ 'energy':dict(name='Canadian energy stocks',short='Energy',tickers=['CNQ','SU','CVE','OVV','IMO','BTE','VET'],
+              intro='Canadian energy producers and their latest declared dividends: ex-dates and pay dates, from their own filings.'),
 }
 def sector_of(t):
     for k,s in SECTORS.items():

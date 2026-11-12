@@ -6,13 +6,16 @@ US_CUR_NOTE="U.S.-listed company; amounts are in U.S. dollars"
 def build_us(B,common):
     """Writes the section; returns (static_paths, [(path, lastmod)]) for the sitemap. No data file = no section."""
     p=os.path.join(B.ROOT,'data','us_parsed.json')
-    if not os.path.exists(p): return [],[]
+    if not os.path.exists(p):
+        B.US_UPCOMING=[]; return [],[]
     data=json.load(open(p)); uni={u['ticker']:u for u in json.load(open(os.path.join(B.ROOT,'data','us_universe.json')))}
     D,dh,money,TODAY=B.D,B.dh,B.money,B.TODAY
     mp=os.path.join(B.ROOT,'data','us_ir_manual.json')
     manual={k:v for k,v in (json.load(open(mp)).items() if os.path.exists(mp) else []) if not k.startswith('_')}
-    rows=[]; upcoming=[]; changes=[]; urls=[]; gaps=[]
+    rows=[]; upcoming=[]; recent=[]; changes=[]; urls=[]; gaps=[]; pending=[]
+    allow=B.published_tickers('us')
     for t in sorted(uni,key=lambda t:uni[t]['name'].lower().removeprefix('the ')):
+        if allow is not None and t.upper() not in allow: continue
         c=data.get(t) or dict(ticker=t,name=uni[t]['name'],regular=[],special=[],ambiguous=[])
         regs=list(c['regular'])
         for m in manual.get(t,[]):  # person-checked IR announcements not yet in EDGAR; never override an EDGAR declaration
@@ -47,17 +50,23 @@ def build_us(B,common):
         name=c['name']; path=f"/us/{s}/"
         title=B.seo_title(name,t,TODAY.year)
         desc=B.seo_desc(name,t,Lh,fq,ex,L['record'],"U.S. dividend history, raises and cuts for Canadian investors, from SEC filings.")
-        B.write(path,B.env.get_template('company.html').render(title=title,description=desc,path=path,c=c,L=Lh,history=hist,drip=None,start_h=dh(B.START),
-                exchange=ex,list_url='/us/',list_name='U.S. dividend stocks 🇺🇸',us=True,stale_note=stale_note,**dict(common,**B.ticker_extras(dict(c,ticker=t),Lh,regs+c['special'],path,'US'))))
+        pending.append((t,path,dict(title=title,description=desc,path=path,c=c,L=Lh,history=hist,drip=None,start_h=dh(B.START),
+                exchange=ex,list_url='/us/',list_name='U.S. dividend stocks 🇺🇸',us=True,stale_note=stale_note,**dict(common,**B.ticker_extras(dict(c,ticker=t),Lh,regs+c['special'],path,'US')))))
         urls.append((path,L['file_date']))
         rows.append(dict(slug=s,ticker=t,name=name,exchange=ex,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h'],ch=ch,stale=stale,lag=lag))
         for r in regs+c['special']:
-            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
+            row=dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq)
+            if D(r['record'])>=TODAY: upcoming.append(row)
+            elif TODAY-datetime.timedelta(days=30)<=D(r['record']): recent.append(row)
         if ch['kind'] in ('raise','cut') and not ch['gap']:
             a,b=ch['decl'],ch['prev']
             changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),filed=ch['first_filed'],filed_h=dh(ch['first_filed']),pct=ch['pct']))
     upcoming.sort(key=lambda e:(e['ex'],e['name'])); changes.sort(key=lambda c:c['filed'],reverse=True)
+    B.US_UPCOMING=upcoming
     B.US_CHANGES=changes  # Leaky Maple / Golden Pour U.S. tab
+    for t,path,kw in pending:
+        nx,title_n=B.next_ex_block(upcoming,recent,t,'/us/',[])
+        B.write(path,B.env.get_template('company.html').render(next_links=nx,next_title=title_n,next_more='/us/',**kw))
     B.write(SECTION,B.env.get_template('syrup.html').render(
         title="Stars & Syrup: U.S. dividend stocks for Canadians (ex-dates, raises & cuts) | MapleDividends",
         description="U.S. dividend stocks popular with Canadian investors: upcoming ex-dividend dates, latest dividends in US$, raises and cuts, checked against SEC filings.",

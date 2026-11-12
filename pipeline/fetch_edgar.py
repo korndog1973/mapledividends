@@ -7,8 +7,15 @@ LOCK=threading.Lock()
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA=os.environ.get("SEC_UA","MapleDividends admin@mapledividends.com")
 CACHE=os.path.join(ROOT,'pipeline','cache'); os.makedirs(CACHE,exist_ok=True)
-START=os.environ.get("START","2025-07-01"); END=datetime.date.today().isoformat()
-MAXDOCS=int(os.environ.get("MAXDOCS","14"))
+# Filing dates searched. The old default (2025-07-01) is why dividend tables stopped around
+# there: EDGAR has the older 6-K/8-K/10-Q/10-K, we just were not asking for them. Several years,
+# and parse.py still drops anything that is not a real declaration. Override with START=YYYY-MM-DD.
+# Keep this default in sync with site/build.py (the "history since" note on each company page).
+START=os.environ.get("START","2022-01-01"); END=datetime.date.today().isoformat()
+# Newest matching filings kept per company. 14 (and MAXDOCS=24 on the old U.S. job) threw away
+# older hits once a company had that many recent matches, so a longer START alone would not
+# lengthen history. 60 covers several years of quarterly filings plus extra exhibits.
+MAXDOCS=int(os.environ.get("MAXDOCS","60"))
 # DATASET=us: the Stars & Syrup U.S. set (data/us_universe.json -> data/us_manifest.json, 8-K/10-Q/10-K). Default: TSX set.
 DATASET=os.environ.get("DATASET",""); PFX=DATASET+'_' if DATASET else ''
 FORMS='8-K,10-Q,10-K' if DATASET=='us' else '6-K,8-K'  # many U.S. issuers only state record/pay dates in 10-Q/10-K
@@ -29,8 +36,26 @@ def get(url,binary=False,ttl=None):
             time.sleep(2*(i+1))
     open(k,'wb').write(b); return b
 def search(cik,q):
-    u="https://efts.sec.gov/LATEST/search-index?"+urllib.parse.urlencode(dict(q=q,ciks=str(cik).zfill(10),dateRange='custom',startdt=START,enddt=END,forms=FORMS))
-    return json.loads(get(u,ttl=6*3600)).get('hits',{}).get('hits',[])
+    """Full-text hits for one CIK and query between START and END. The index pages at about 100 hits; follow them so a long window is not silently truncated to the first page."""
+    out=[]; seen=set(); frm=0
+    while True:
+        params=dict(q=q,ciks=str(cik).zfill(10),dateRange='custom',startdt=START,enddt=END,forms=FORMS)
+        if frm: params['from']=str(frm)
+        u="https://efts.sec.gov/LATEST/search-index?"+urllib.parse.urlencode(params)
+        try: data=json.loads(get(u,ttl=6*3600))
+        except Exception:
+            if out: break
+            raise
+        rows=(data.get('hits') or {}).get('hits') or []
+        total=((data.get('hits') or {}).get('total') or {}).get('value') or 0
+        added=0
+        for h in rows:
+            i=h.get('_id')
+            if not i or i in seen: continue
+            seen.add(i); out.append(h); added+=1
+        frm+=len(rows) if rows else 0
+        if not rows or added==0 or frm>=total or frm>=400: break
+    return out
 def main():
     uni=json.load(open(os.path.join(ROOT,'data',PFX+'universe.json')))
     manifest=[]
