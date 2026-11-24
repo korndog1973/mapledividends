@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/calculator.css?v={{ build_id }}">
+<script type="module" src="/calculator.mjs?v={{ build_id }}"></script>
+{% endblock %}
+{% block body %}
+<h1>Dividend income calculator</h1>
+<p class="lead">Work out the dividend income from an investment, what it could grow to with dividends reinvested (DRIP), and how much you'd need to invest for a target monthly income.</p>
+<noscript><p>The calculator requires JavaScript.</p></noscript>
+<form id="dividend-calculator" class="calc" hidden>
+  <div class="card calc-settings">
+    <label>Starting investment (CAD)
+      <input name="investment" type="number" min="0.01" max="1000000000" step="0.01" value="10000" inputmode="decimal" required>
+    </label>
+    <label>Annual dividend yield (%)
+      <input name="yield" type="number" min="0" max="100" step="0.01" value="4" inputmode="decimal" required>
+    </label>
+    <label>Annual dividend growth (%)
+      <input name="growth" type="number" min="-100" max="100" step="0.01" value="5" inputmode="decimal" required>
+    </label>
+    <label>Projection period
+      <select name="years"><option value="5">5 years</option><option value="10" selected>10 years</option><option value="20">20 years</option></select>
+    </label>
+    <label class="calc-reinvest"><input name="reinvest" type="checkbox" checked> Reinvest dividends (DRIP)</label>
+  </div>
+  <p><button class="calc-submit" type="submit">Calculate income</button></p>
+  <p id="calc-error" role="alert" hidden></p>
+</form>
+<section id="calc-results" aria-labelledby="calc-heading" hidden>
+  <h2 id="calc-heading" tabindex="-1">Projected results</h2>
+  <div class="grid2" id="calc-summary"></div>
+  <details class="card">
+    <summary>Year-by-year results</summary>
+    <table class="t calc-history">
+      <thead><tr><th scope="col">Year</th><th scope="col">Dividend income</th><th scope="col">Cumulative dividends</th><th scope="col">Ending value</th></tr></thead>
+      <tbody id="calc-years"></tbody>
+    </table>
+  </details>
+</section>
+<section class="card" id="calc-reverse" hidden>
+  <h2>How much do I need to invest?</h2>
+  <p class="muted">At the yield above, this is the investment needed for a target monthly income. It uses today's yield only — it doesn't include dividend growth or reinvestment.</p>
+  <label>Target monthly income (CAD)
+    <input id="calc-target" name="targetMonthly" type="number" min="0.01" max="1000000000" step="0.01" value="500" inputmode="decimal">
+  </label>
+  <p id="calc-required" aria-live="polite"></p>
+</section>
+<h2>How the projection works</h2>
+<p>Year one income is your investment times the yield. From year two, the dividend per share grows by the rate you enter. Reinvested dividends buy more shares at a flat $1 price, so your income compounds; with reinvesting off, dividends are kept as cash instead. Ending value is your shares (at $1) plus any cash kept.</p>
+<p>The projection excludes taxes, trading fees, share-price changes, dividend cuts and special payouts. A dividend yield and growth rate you type in are assumptions, not forecasts — companies can cut or stop paying at any time. This is maths, not advice.</p>
+<p>Want to compare two real companies instead? Try the <a href="/compare/">company vs company calculator</a>, which uses each company's latest declared dividend from its filings.</p>
+{% endblock %}

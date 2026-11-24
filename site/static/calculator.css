@@ -1,0 +1,55 @@
+.calc-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+.calc label { display: block; font-weight: 600; }
+.calc label + label { margin-top: .8rem; }
+.calc-settings label + label { margin-top: 0; }
+.calc input:not([type="checkbox"]), .calc select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: .25rem;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  box-sizing: border-box;
+}
+.calc-reinvest { min-height: 44px; align-content: center; }
+.calc-submit {
+  min-height: 44px;
+  padding: .55rem 1rem;
+  border: 0;
+  border-radius: .5rem;
+  background: var(--red);
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+#calc-error { color: var(--red); }
+#calc-summary dl { margin-bottom: 0; }
+#calc-summary dt { margin-top: .65rem; }
+#calc-summary dd { margin: .1rem 0 0; font-size: 1.2rem; font-weight: 700; }
+.calc-history { margin-top: .75rem; }
+.calc-history td, .calc-history th { white-space: normal; }
+#calc-reverse label { display: block; font-weight: 600; max-width: 20rem; }
+#calc-reverse input {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: .25rem;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  box-sizing: border-box;
+}
+#calc-required { font-size: 1.15rem; font-weight: 700; margin: .75rem 0 0; }
