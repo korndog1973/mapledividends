@@ -1,5 +1,5 @@
 """Static site generator: data/parsed.json -> dist/ . Pure Python + Jinja2."""
-import json, os, re, shutil, datetime, statistics, collections, sys
+import json, os, re, shutil, datetime, statistics, collections, sys, hashlib
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIST=os.path.join(ROOT,'dist'); SITE_URL=os.environ.get('SITE_URL','https://mapledividends.com')
@@ -99,20 +99,27 @@ def freq(c):
             if lo<=g<=hi: return lab
     return 'Not stated'
 GAP={'Monthly':31,'Quarterly':91,'Semi-annual':182,'Annual':365}
+def same_currency(a, b):
+    return a['currency'] in ('CAD', 'USD') and a['currency']==b['currency']
+
 def change(regs,fq=None):
     """Most recent change in the regular dividend: the FIRST declaration at the current rate vs the declaration before it.
     If the two are further apart than the payment frequency allows, a declaration is missing from our data, so we
     don't know when the change was announced (gap=True) and it is kept off the dated raises/cuts list."""
     if len(regs)<2: return dict(kind='none',label='No earlier dividend in our data',pct=None)
-    last=[r['amount'] for r in regs[:4]]
+    comparable=[]
+    for row in regs:
+        if not same_currency(regs[0], row): break
+        comparable.append(row)
+    if len(comparable)<2: return dict(kind='none',label='No comparable dividend in the same confirmed currency',pct=None)
+    last=[r['amount'] for r in comparable[:4]]
     steps=[b-a for a,b in zip(last[1:],last)]  # newer minus older
     if len(last)>=3 and len(set(last))==len(last) and any(x>0 for x in steps) and any(x<0 for x in steps):
         return dict(kind='none',label='Amount changes every period (variable dividend), so we don\'t count it as a raise or cut',pct=None)
     i=1
-    while i<len(regs) and abs(regs[i]['amount']-regs[0]['amount'])<1e-9: i+=1
-    if i==len(regs): return dict(kind='same',label=f"Unchanged since {dh(regs[-1]['record'])} (start of our data)",pct=0)
-    a,b=regs[i-1],regs[i]
-    if a['currency'] and b['currency'] and a['currency']!=b['currency']: return dict(kind='none',label='Not comparable (currency)',pct=None)
+    while i<len(comparable) and abs(comparable[i]['amount']-comparable[0]['amount'])<1e-9: i+=1
+    if i==len(comparable): return dict(kind='same',label=f"Unchanged since {dh(comparable[-1]['record'])} in {comparable[0]['currency']}",pct=0)
+    a,b=comparable[i-1],comparable[i]
     if b['amount']==0: return dict(kind='none',label='n/a',pct=None)
     p=(a['amount']-b['amount'])/b['amount']*100
     spacing=[(D(x['record'])-D(y['record'])).days for x,y in zip(regs,regs[1:])]
@@ -133,13 +140,16 @@ def write(path,html):
     p=os.path.join(DIST,path.strip('/'),'index.html') if not path.endswith('.html') else os.path.join(DIST,path.strip('/'))
     os.makedirs(os.path.dirname(p),exist_ok=True); open(p,'w').write(html)
 def main():
+    stylesheet=os.path.join(ROOT,'site','static','style.css')
+    with open(stylesheet,'rb') as css:
+        css_version=hashlib.sha256(css.read()).hexdigest()[:16]
     data=json.load(open(os.path.join(ROOT,'data','parsed.json')))
     for c in data.values(): c['name']=display_name(c['name'])
     if os.path.exists(DIST): shutil.rmtree(DIST)
     os.makedirs(DIST)
     for f in os.listdir(os.path.join(ROOT,'site','static')): shutil.copy(os.path.join(ROOT,'site','static',f),DIST)
     import roast  # Joke of the Day 🥞 (data/jokes.json), one per build date
-    common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY),fresh_when=fresh_when())
+    common=dict(year=TODAY.year,joke=roast.joke(ROOT,TODAY),beacon_token=BEACON_TOKEN,referrals=REFERRALS,site_url=SITE_URL,css_version=css_version,build_id=TODAY.strftime('%Y%m%d'),build_date_human=dh(TODAY),fresh_when=fresh_when())
     urls=[]; companies=[]; upcoming=[]; changes=[]; recent=[]; allchg=[]; pending=[]
     seo.og_image(os.path.join(DIST,'og.png'),'Canadian dividend dates',['TSX ex-dates, pay dates, raises & cuts','checked against company filings'],'mapledividends.com · free · not advice')
     for t,c in sorted(data.items(),key=lambda kv:name_key(kv[1]['name'])):
@@ -153,18 +163,18 @@ def main():
         hist+=[dict(record_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),type='Special',source=r['source'],rec=r['record']) for r in c['special']]
         hist.sort(key=lambda h:h['rec'],reverse=True)
         drip=None
-        for r in regs:
+        for r in regs+c['special']:
             if r.get('drip_kw'):
                 drip=dict(text=("The company's filing mentions a dividend reinvestment plan"+(f" with a {r['drip_disc']}% discount" if r.get('drip_disc') else "")+f" (filing dated {dh(r['file_date'])})."),source=r['source']); break
         name=c['name']
         title=seo_title(name,t,TODAY.year)
         desc=seo_desc(name,t,Lh,fq,'TSX',L['record'],"Dividend history, raises and cuts, and DRIP info from company filings.")
-        pending.append((s,t,f"/dividends/{s}/",dict(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**ticker_extras(c,Lh,regs+c['special'],f"/dividends/{s}/"),**common)))
+        pending.append((s,t,f"/dividends/{s}/",dict(title=title,description=desc,path=f"/dividends/{s}/",c=c,L=Lh,history=hist,drip=drip,start_h=dh(START),**ticker_extras(c,Lh,regs,f"/dividends/{s}/"),**common)))
         urls.append((f"/dividends/{s}/",L['file_date']))
         companies.append(dict(slug=s,ticker=t,name=name,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h']))
-        for r in regs+c['special']:
-            if TODAY-datetime.timedelta(days=30)<=D(r['record'])<TODAY: recent.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
-            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
+        for r in regs:
+            if TODAY-datetime.timedelta(days=30)<=D(r['record'])<TODAY: recent.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),freq=fq))
+            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),freq=fq))
         # dated by the filing that FIRST announced the new rate; changes whose timing we can't pin down (missing declaration) are left off
         if ch['kind'] in ('raise','cut') and not ch['gap']:
             fd=D(ch['first_filed']); wk=fd-datetime.timedelta(days=fd.weekday()); a,b=ch['decl'],ch['prev']
@@ -222,13 +232,13 @@ def main():
           rows=usrows,upcoming=usup,base='/us/',sectors=seo.SECTORS,here=None,missing=[],more_link=('/stars-and-syrup/','Stars & Syrup: U.S. raises and cuts'),**common)); hub_static.append('/us/')
     popular=[latest[x] for x in ['ENB','TD','BNS','BMO','CM','FTS','CNR','BCE','T','TRP','EMA','SU'] if x in latest]
     nf="<h1>Page not found</h1><p>That page doesn't exist (or moved). These might help:</p><div class='nf-grid'><a href='/calendar/'>📅 Ex-dividend calendar</a><a href='/companies/'>🍁 All TSX companies</a><a href='/sectors/'>🏦 Stocks by sector</a><a href='/us/'>🇺🇸 U.S. dividend stocks</a><a href='/raises-and-cuts/'>💀 Raises &amp; cuts</a><a href='/'>🏠 Home</a></div>"
-    nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{r['ticker']}</a> <span class='muted small'>{r['name']}</span></li>" for r in popular)+"</ul>"
+    nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{escape(r['ticker'])}</a> <span class='muted small'>{escape(r['name'])}</span></li>" for r in popular)+"</ul>"
     nf+="<p class='small muted'>Looking for a company we don't cover yet? Email "+CONTACT_TXT+".</p>"
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content=nf,**common))
     static=['/','/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/','/tariff-hit-list/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
-    sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]
+    sm+=[f"<url><loc>{SITE_URL}{u}</loc></url>" for u in static]
+    sm+=[f"<url><loc>{SITE_URL}{u}</loc></url>" for u,_ in urls]
     sm.append('</urlset>'); open(os.path.join(DIST,'sitemap.xml'),'w').write('\n'.join(sm))
     open(os.path.join(DIST,'robots.txt'),'w').write(f"User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: {SITE_URL}/sitemap.xml\n")
     open(os.path.join(DIST,'_headers'),'w').write("/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n/style.css\n  Cache-Control: public, max-age=31536000, immutable\n")

@@ -4,9 +4,8 @@ import json, os, datetime
 SECTION='/stars-and-syrup/'
 US_CUR_NOTE="U.S.-listed company; amounts are in U.S. dollars"
 def build_us(B,common):
-    """Writes the section; returns (static_paths, [(path, lastmod)]) for the sitemap. No data file = no section."""
+    """Writes the section; returns (static_paths, [(path, lastmod)]) for the sitemap."""
     p=os.path.join(B.ROOT,'data','us_parsed.json')
-    if not os.path.exists(p): return [],[]
     data=json.load(open(p)); uni={u['ticker']:u for u in json.load(open(os.path.join(B.ROOT,'data','us_universe.json')))}
     D,dh,money,TODAY=B.D,B.dh,B.money,B.TODAY
     mp=os.path.join(B.ROOT,'data','us_ir_manual.json')
@@ -22,7 +21,7 @@ def build_us(B,common):
         regs.sort(key=lambda r:(r['record'],r['file_date']),reverse=True); c=dict(c,regular=regs)
         if not regs: gaps.append(dict(ticker=t,name=uni[t]['name'])); continue
         for r in regs+c['special']:
-            if not r.get('currency'): r['currency'],r['currency_basis']='USD','us'  # U.S. issuers state plain "$"
+            if not r.get('currency') and r.get('currency_basis')!='conflict': r['currency'],r['currency_basis']='USD','us'  # U.S. issuers state plain "$"
         ex=uni[t].get('exchange') or 'NYSE'
         s=B.slug(t); L=regs[0]; fq=B.freq(c)
         if fq=='Not stated' and len(regs)>=3:  # U.S. quarterly payers often space record dates 75-105 days apart
@@ -48,11 +47,11 @@ def build_us(B,common):
         title=B.seo_title(name,t,TODAY.year)
         desc=B.seo_desc(name,t,Lh,fq,ex,L['record'],"U.S. dividend history, raises and cuts for Canadian investors, from SEC filings.")
         B.write(path,B.env.get_template('company.html').render(title=title,description=desc,path=path,c=c,L=Lh,history=hist,drip=None,start_h=dh(B.START),
-                exchange=ex,list_url='/us/',list_name='U.S. dividend stocks 🇺🇸',us=True,stale_note=stale_note,**dict(common,**B.ticker_extras(dict(c,ticker=t),Lh,regs+c['special'],path,'US'))))
+                exchange=ex,list_url='/us/',list_name='U.S. dividend stocks 🇺🇸',us=True,stale_note=stale_note,**dict(common,**B.ticker_extras(dict(c,ticker=t),Lh,regs,path,'US'))))
         urls.append((path,L['file_date']))
         rows.append(dict(slug=s,ticker=t,name=name,exchange=ex,amount_h=Lh['amount_h'],freq=fq,ex_h=Lh['ex_h'],ch=ch,stale=stale,lag=lag))
-        for r in regs+c['special']:
-            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency'])+(' (special)' if r in c['special'] else ''),freq=fq))
+        for r in regs:
+            if D(r['record'])>=TODAY: upcoming.append(dict(slug=s,ticker=t,name=name,ex=r['record'],ex_h=dh(r['record']),pay_h=dh(r['pay']),amount_h=money(r['amount'],r['currency']),freq=fq))
         if ch['kind'] in ('raise','cut') and not ch['gap']:
             a,b=ch['decl'],ch['prev']
             changes.append(dict(slug=s,ticker=t,name=name,kind=ch['kind'],kind_h='Deadly 💀' if ch['kind']=='raise' else 'Not Deadly 👎',pct_h=f"{ch['pct']:+.1f}%",prev_h=money(b['amount'],b['currency']),amount_h=money(a['amount'],a['currency']),ex_h=dh(a['record']),filed=ch['first_filed'],filed_h=dh(ch['first_filed']),pct=ch['pct']))

@@ -17,11 +17,11 @@ def get(url,binary=False,ttl=None):
     k=os.path.join(CACHE,hashlib.sha1(url.encode()).hexdigest())
     if os.path.exists(k) and (ttl is None or time.time()-os.path.getmtime(k)<ttl):
         return open(k,'rb').read()
-    with LOCK:
-        wait=0.13-(time.time()-last[0])
-        if wait>0: time.sleep(wait)
-        last[0]=time.time()
     for i in range(3):
+        with LOCK:
+            wait=0.13-(time.monotonic()-last[0])
+            if wait>0: time.sleep(wait)
+            last[0]=time.monotonic()
         try:
             b=urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":UA,"Accept-Encoding":"identity"}),timeout=40).read(); break
         except Exception as e:
@@ -30,10 +30,14 @@ def get(url,binary=False,ttl=None):
     open(k,'wb').write(b); return b
 def search(cik,q):
     u="https://efts.sec.gov/LATEST/search-index?"+urllib.parse.urlencode(dict(q=q,ciks=str(cik).zfill(10),dateRange='custom',startdt=START,enddt=END,forms=FORMS))
-    return json.loads(get(u,ttl=6*3600)).get('hits',{}).get('hits',[])
+    data=json.loads(get(u,ttl=6*3600))
+    if data.get('timed_out') or data.get('_shards', {}).get('failed'):
+        raise ValueError('EDGAR returned partial search results')
+    return data['hits']['hits']
 def main():
     uni=json.load(open(os.path.join(ROOT,'data',PFX+'universe.json')))
     manifest=[]
+    failures=[]
     def one(arg):
         n,c=arg
         hits={}
@@ -41,7 +45,9 @@ def main():
             for cik in c.get('ciks') or [c['cik']]:  # a company can have several CIKs (e.g. a new holding company)
               try:
                 for h in search(cik,q): hits[h['_id']]=h['_source']
-              except Exception as e: print("search fail",c['ticker'],e,file=sys.stderr)
+              except Exception as e:
+                failures.append(c['ticker'])
+                print("search fail",c['ticker'],e,file=sys.stderr)
         docs=sorted(hits.items(),key=lambda kv:kv[1].get('file_date',''),reverse=True)[:MAXDOCS]
         for _id,s in docs:
             adsh,fn=_id.split(':',1)
@@ -50,9 +56,14 @@ def main():
             try:
                 get(url)
                 manifest.append(dict(ticker=c['ticker'],cik=cik,url=url,file_date=s.get('file_date'),form=s.get('form') or (s.get('root_forms') or [''])[0],cache=hashlib.sha1(url.encode()).hexdigest()))
-            except Exception as e: print("doc fail",url,e,file=sys.stderr)
+            except Exception as e:
+                failures.append(c['ticker'])
+                print("doc fail",url,e,file=sys.stderr)
         if n%20==0: print(n,c['ticker'],len(docs),flush=True)
     with ThreadPoolExecutor(int(os.environ.get("WORKERS","12"))) as ex: list(ex.map(one,enumerate(uni)))
+    if failures or not manifest:
+        sys.exit(f'Incomplete EDGAR refresh: {len(failures)} failures, {len(manifest)} documents')
+    manifest.sort(key=lambda row: (row['ticker'], row['file_date'], row['url']))
     json.dump(manifest,open(os.path.join(ROOT,'data',PFX+'manifest.json'),'w'),indent=1)
     print("docs:",len(manifest))
 if __name__=='__main__': main()
