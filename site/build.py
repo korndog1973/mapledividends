@@ -189,6 +189,7 @@ def main():
     groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
     weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
     import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
+    import compare; compare_path=compare.build(sys.modules[__name__],common)
     import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
     import power; pg_static,pg=power.build(sys.modules[__name__],common)  # Data Centre & AI Power Tracker
     import ask; ask.build(sys.modules[__name__])  # Ask MapleDividends chat data (dist/ask-data.json, read by functions/api/ask.js)
@@ -225,7 +226,7 @@ def main():
     nf+="<h2>Popular dividend pages</h2><ul class='pills'>"+''.join(f"<li><a href='/dividends/{r['slug']}/'>{r['ticker']}</a> <span class='muted small'>{r['name']}</span></li>" for r in popular)+"</ul>"
     nf+="<p class='small muted'>Looking for a company we don't cover yet? Email "+CONTACT_TXT+".</p>"
     write('/404.html',env.get_template('page.html').render(title="Page not found | MapleDividends",description="Page not found.",path='/404.html',noindex=True,content=nf,**common))
-    static=['/','/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/','/tariff-hit-list/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
+    static=['/',compare_path,'/calendar/','/raises-and-cuts/','/companies/','/canada-strong-fund/','/tariff-hit-list/']+hub_static+lm_static+us_static+pg_static+list(PAGES); urls+=us_urls
     sm=['<?xml version="1.0" encoding="UTF-8"?>','<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{TODAY.isoformat()}</lastmod></url>" for u in static]
     sm+=[f"<url><loc>{SITE_URL}{u}</loc><lastmod>{lm}</lastmod></url>" for u,lm in urls]

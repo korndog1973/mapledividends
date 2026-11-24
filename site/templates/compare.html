@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/compare.css?v={{ build_id }}">
+<script type="module" src="/compare.mjs?v={{ build_id }}"></script>
+{% endblock %}
+{% macro company_fields(side, number) %}
+<fieldset class="card compare-company">
+  <legend>Company {{ number }}</legend>
+  <label>Company
+    <select name="{{ side }}" required>
+      {% for company in companies %}
+      <option value="{{ company.id }}"{% if company.id == ('TSX:TD' if side == 'a' else 'TSX:FTS') %} selected{% endif %}>{{ company.ticker }} ({{ company.market }}) · {{ company.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <p class="small" data-dividend="{{ side }}" aria-live="polite"></p>
+  <label>Starting share price (CAD)
+    <input name="{{ side }}Price" type="number" min="0.01" max="10000000" step="0.01" inputmode="decimal" required>
+  </label>
+  <label>Annual dividend growth (%)
+    <input name="{{ side }}DividendGrowth" type="number" min="-100" max="100" step="0.01" value="0" inputmode="decimal" required>
+  </label>
+  <label>Annual share-price growth (%)
+    <input name="{{ side }}PriceGrowth" type="number" min="-90" max="100" step="0.01" value="0" inputmode="decimal" required>
+  </label>
+</fieldset>
+{% endmacro %}
+{% block body %}
+<h1>Compare dividend stocks</h1>
+<p class="lead">See how the same investment in two companies could grow, with or without reinvested dividends.</p>
+<p class="muted">Enter each starting share price in Canadian dollars. For a U.S.-listed stock, convert its quote to CAD using the same exchange rate you enter below.</p>
+<noscript><p>The calculator requires JavaScript.</p></noscript>
+<form id="dividend-compare" class="compare" hidden>
+  <div class="card compare-settings">
+    <label>Starting investment per company (CAD)
+      <input name="investment" type="number" min="0.01" max="1000000000" step="0.01" value="10000" inputmode="decimal" required>
+    </label>
+    <label>Projection period
+      <select name="years"><option value="5">5 years</option><option value="10" selected>10 years</option><option value="20">20 years</option></select>
+    </label>
+    <label id="compare-fx" hidden>Exchange rate (CAD per US$1)
+      <input name="fx" type="number" min="0.0001" max="10" step="0.0001" inputmode="decimal" disabled>
+    </label>
+    <label class="compare-reinvest"><input name="reinvest" type="checkbox" checked> Reinvest dividends</label>
+  </div>
+  <div class="grid2">{{ company_fields('a', 1) }}{{ company_fields('b', 2) }}</div>
+  <p><button class="compare-submit" type="submit">Compare companies</button></p>
+  <p id="compare-error" role="alert" hidden></p>
+</form>
+<section id="compare-results" aria-labelledby="compare-heading" hidden>
+  <h2 id="compare-heading" tabindex="-1">Projected results</h2>
+  <div class="grid2" id="compare-summary"></div>
+  <details class="card">
+    <summary>Year-by-year results</summary>
+    <table class="t compare-history">
+      <thead><tr><th scope="col">Year</th><th scope="col">Company</th><th scope="col">Dividend income</th><th scope="col">Ending value</th></tr></thead>
+      <tbody id="compare-years"></tbody>
+    </table>
+  </details>
+</section>
+<h2>How the projection works</h2>
+<p>Year one starts with the latest regular dividend repeated at its usual frequency. Dividend growth applies from year two. Prices move at the rate you enter. The model uses evenly spaced payments, fractional shares, and a fixed exchange rate. For USD payouts, that rate converts every dividend into CAD.</p>
+<p>Ending value includes any dividends kept as cash. Cumulative dividends show all payouts earned, including reinvested ones. Scenarios exclude special payouts, taxes, trading fees, and currency changes. Companies need a known payout currency and frequency to appear in the calculator.</p>
+<script type="application/json" id="compare-companies">{{ companies|tojson }}</script>
+{% endblock %}
