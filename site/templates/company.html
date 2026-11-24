@@ -20,6 +20,7 @@
 {{ signup(compact=true, heading="Track " ~ c.ticker ~ "'s dividend for free", sub="The weekly email lists every " ~ ("U.S." if us else "TSX") ~ " dividend raise and cut we find in company filings, " ~ c.ticker ~ " included. Unsubscribe anytime.") }}
 {{ ref_line(c.ticker, "Want to own " ~ c.ticker ~ " before an ex-date? ") }}
 {% endif %}
+<p><a href="/compare/?a={{ (('US' if us else 'TSX') ~ ':' ~ c.ticker)|urlencode }}">Compare {{ c.ticker }} with another company →</a></p>
 <section class="card">
   <h2>DRIP (dividend reinvestment plan)</h2>
   {% if drip %}<p>{{ drip.text }} <a href="{{ drip.source }}" rel="nofollow noopener" target="_blank">Source</a>. Plan terms change, so check the plan before you enrol.</p>

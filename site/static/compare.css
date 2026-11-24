@@ -1,0 +1,41 @@
+.compare-settings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  align-items: end;
+}
+.compare-company { min-width: 0; }
+.compare label { display: block; font-weight: 600; }
+.compare label[hidden] { display: none; }
+.compare-company label + label { margin-top: .8rem; }
+.compare input:not([type="checkbox"]), .compare select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  margin-top: .25rem;
+  padding: .5rem;
+  border: 1px solid var(--line);
+  border-radius: .4rem;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  box-sizing: border-box;
+}
+.compare-reinvest { min-height: 44px; align-content: center; }
+.compare-submit {
+  min-height: 44px;
+  padding: .55rem 1rem;
+  border: 0;
+  border-radius: .5rem;
+  background: var(--red);
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+#compare-error { color: var(--red); }
+#compare-summary dl { margin-bottom: 0; }
+#compare-summary dt { margin-top: .65rem; }
+#compare-summary dd { margin: .1rem 0 0; font-size: 1.2rem; font-weight: 700; }
+.compare-history { margin-top: .75rem; }
+.compare-history td, .compare-history th { white-space: normal; }
