@@ -189,8 +189,8 @@ def main():
     groups=[dict(date_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(upcoming,key=lambda e:e['ex'])]
     weeks=[dict(week_h=dh(k),rows=list(v)) for k,v in __import__('itertools').groupby(changes,key=lambda c:c['week'])]
     import syrup; us_static,us_urls=syrup.build_us(sys.modules[__name__],common)  # Stars & Syrup (U.S. section)
-    import compare; compare_path=compare.build(sys.modules[__name__],common)
     import leaky; lm,lm_static=leaky.build(sys.modules[__name__],common,allchg,US_CHANGES,CA_REGS,US_REGS)  # Leaky Maple vs Golden Pour
+    import compare; compare_path=compare.build(sys.modules[__name__],common)
     import power; pg_static,pg=power.build(sys.modules[__name__],common)  # Data Centre & AI Power Tracker
     import ask; ask.build(sys.modules[__name__])  # Ask MapleDividends chat data (dist/ask-data.json, read by functions/api/ask.js)
     write('/',env.get_template('index.html').render(leaky=lm,power=pg,ld=seo.ld_home(SITE_URL),title=f"MapleDividends: Canadian dividend calendar {TODAY.year}, raises & cuts, DRIP info",description="Upcoming TSX ex-dividend dates, dividend raises and cuts, and DRIP info for Canadian dividend stocks, checked against company filings.",path='/',upcoming=upcoming,changes=changes,n_companies=len(companies),**common))

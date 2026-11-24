@@ -58,24 +58,94 @@ function setup(form) {
     control('fx').required = usesUSD;
   }
 
+  const manual = new Set();
+  let generation = 0;
+  function fillPrice(side, price, currency, stamp) {
+    if (manual.has(side + 'Price')) return;
+    const converted = currency === 'USD' ? price * number('fx') : currency === 'CAD' ? price : NaN;
+    if (!Number.isFinite(converted) || converted <= 0) return;
+    const value = converted.toFixed(2);
+    if (control(side + 'Price').value !== value) results.hidden = true;
+    control(side + 'Price').value = value;
+    form.querySelector('[data-price="' + side + '"]').textContent = 'Price as of ' + stamp;
+  }
+  async function refresh() {
+    const version = ++generation;
+    const params = new URLSearchParams(sides.map(side => [side, company(side).id]));
+    const cached = side => {
+      const c = company(side);
+      if (c.close) fillPrice(side, c.close, c.closeCurrency, c.closeDate + ' (saved close)');
+    };
+    for (const side of sides) if (!control(side + 'Price').value) cached(side);
+    autoCalculate();
+    try {
+      const response = await fetch('/api/compare-quotes?' + params);
+      if (!response.ok) return;
+      const quotes = await response.json();
+      if (version !== generation) return;
+      if (quotes.fx > 0 && !manual.has('fx')) {
+        if (number('fx') !== quotes.fx) results.hidden = true;
+        control('fx').value = quotes.fx;
+        document.getElementById('fx-date').textContent = quotes.fxDate || '';
+      }
+      for (const side of sides) {
+        if (!control(side + 'Price').value) cached(side);
+        const quote = quotes[company(side).id];
+        if (quote) fillPrice(side, quote.price, quote.currency, quote.asOf);
+      }
+      autoCalculate();
+    } catch { /* Saved close and manual entry remain available. */ }
+  }
+
   const query = new URLSearchParams(location.search);
   for (const side of sides) {
     if (byId.has(query.get(side))) control(side).value = query.get(side);
   }
   updateCompanies();
   form.hidden = false;
+  window.setInterval(refresh, 15 * 60 * 1000);
   form.addEventListener('input', event => {
-    const side = event.target.name;
+    let side = event.target.name;
+    if (event.target.dataset.search) {
+      side = event.target.dataset.search;
+      const term = event.target.value.trim().toUpperCase();
+      const matches = data.filter(c => c.ticker === term || c.id === term);
+      const found = matches.length ? matches : data.filter(c => term && c.name.toUpperCase().includes(term));
+      if (found.length !== 1) {
+        event.target.setCustomValidity(term ? 'Enter a unique ticker, including TSX: or US: if needed, or clear the search.' : '');
+        results.hidden = true;
+        return;
+      }
+      event.target.setCustomValidity('');
+      control(side).value = found[0].id;
+    }
+    if (side.endsWith('Price') || side === 'fx') manual.add(side);
+    if (side === 'fx') refresh();
     if (sides.includes(side)) {
+      const search = form.querySelector('[data-search="' + side + '"]');
+      if (event.target === control(side)) search.value = '';
+      search.setCustomValidity('');
+      manual.delete(side + 'Price');
       control(side + 'Price').value = '';
+      form.querySelector('[data-price="' + side + '"]').textContent = 'Enter a CAD price if a quote is unavailable.';
       updateCompanies();
+      refresh();
     }
     results.hidden = true;
     error.hidden = true;
+    autoCalculate();
   });
+
+  function autoCalculate() {
+    if (form.checkValidity() && company('a').id !== company('b').id) calculate(false);
+  }
 
   form.addEventListener('submit', event => {
     event.preventDefault();
+    calculate(true);
+  });
+
+  function calculate(focusResults) {
     if (company('a').id === company('b').id) {
       error.textContent = 'Choose two different companies.';
       error.hidden = false;
@@ -132,8 +202,9 @@ function setup(form) {
     }
     heading.textContent = `${years}-year projection in Canadian dollars`;
     results.hidden = false;
-    heading.focus();
-  });
+    if (focusResults) heading.focus();
+  }
+  refresh();
 }
 
 if (typeof document !== 'undefined') {
