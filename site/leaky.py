@@ -18,7 +18,7 @@ def history(B,items):
     for it in items or []:
         regs=it['regs']
         for k in range(len(regs)-1):
-            if k and abs(regs[k]['amount']-regs[k-1]['amount'])<1e-9: continue  # only the first declaration at each rate
+            if k and B.same_currency(regs[k], regs[k-1]) and abs(regs[k]['amount']-regs[k-1]['amount'])<1e-9: continue  # only the first declaration at each rate
             ch=B.change(regs[k:],it['fq'])
             if ch['kind'] not in ('raise','cut') or ch['gap'] or ch['decl'] is not regs[k]: continue
             a,b=ch['decl'],ch['prev']

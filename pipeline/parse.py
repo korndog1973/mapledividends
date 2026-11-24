@@ -157,11 +157,12 @@ def main():
     allrows=[]
     for m in man:
         p=os.path.join(CACHE,m['cache'])
-        if not os.path.exists(p): continue
+        if not os.path.isfile(p) or os.path.getsize(p)==0:
+            raise ValueError(f"Missing or empty EDGAR document: {m['url']}")
         fd=datetime.date.fromisoformat(m['file_date'])
         if m['url'].lower().endswith('.pdf'):
-            try: txt=subprocess.run(['pdftotext',p,'-'],capture_output=True,timeout=60).stdout.decode('utf-8','ignore'); txt=re.sub(r'\s+',' ',txt)
-            except Exception: continue
+            extracted=subprocess.run(['pdftotext',p,'-'],capture_output=True,timeout=60,check=True)
+            txt=re.sub(r'\s+',' ',extracted.stdout.decode('utf-8','ignore'))
         else: txt=to_text(open(p,'rb').read())
         if US: txt=us_normalize(txt,fd)
         dcur=doc_currency(txt)

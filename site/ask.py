@@ -10,12 +10,12 @@ def _payers(B,data,market):
         regs=c.get('regular') or []
         if not regs: continue
         L=regs[0]; fq=B.freq(c); ch=B.change(regs,fq)
-        up=sorted([r for r in regs+c.get('special',[]) if r.get('record') and B.D(r['record'])>=B.TODAY],key=lambda r:r['record'])
+        up=sorted([r for r in regs if r.get('record') and B.D(r['record'])>=B.TODAY],key=lambda r:r['record'])
         s=B.slug(t); url=(f"/dividends/{s}/" if market=='TSX' else f"/us/{s}/")
-        txt=(f"{c['name']} ({market}: {t}). Latest regular dividend {B.money(L['amount'],L['currency'] or ('USD' if market=='US' else None))} per share, "
+        txt=(f"{c['name']} ({market}: {t}). Latest regular dividend {B.money(L['amount'],L['currency'])} per share, "
              f"record/ex-date {B.dh(L['record'])}, paid {B.dh(L['pay'])}, frequency {fq}. Source filing dated {B.dh(L['file_date'])}.")
-        if up: txt+=f" Next ex-date on file: {B.dh(up[0]['record'])} ({B.money(up[0]['amount'],up[0]['currency'] or ('USD' if market=='US' else None))}, paid {B.dh(up[0]['pay'])})."
-        if ch.get('kind') in ('raise','cut') and ch.get('pct') is not None: txt+=f" Latest change: {'raise' if ch['kind']=='raise' else 'cut'} of {ch['pct']:+.1f}% (first filed {B.dh(ch['first_filed'])})."
+        if up: txt+=f" Next ex-date on file: {B.dh(up[0]['record'])} ({B.money(up[0]['amount'],up[0]['currency'])}, paid {B.dh(up[0]['pay'])})."
+        if ch.get('kind') in ('raise','cut') and not ch.get('gap'): txt+=f" Latest change: {'raise' if ch['kind']=='raise' else 'cut'} of {ch['pct']:+.1f}% (first filed {B.dh(ch['first_filed'])})."
         elif ch.get('kind')=='same': txt+=" Latest dividend unchanged from the previous one."
         tags=['dividend',market.lower()]+(['upcoming'] if up else [])+([ch['kind']] if ch.get('kind') in ('raise','cut') else [])
         out.append(dict(t=t,k=words(c['name']),g=tags,u=url,x=txt,ex=up[0]['record'] if up else None))
@@ -23,8 +23,7 @@ def _payers(B,data,market):
 def build(B):
     rows=[]
     rows+=_payers(B,{t:dict(c,name=B.display_name(c['name'])) for t,c in json.load(open(os.path.join(B.ROOT,'data','parsed.json'))).items()},'TSX')
-    try: rows+=_payers(B,json.load(open(os.path.join(B.ROOT,'data','us_parsed.json'))),'US')
-    except (OSError,ValueError): pass
+    rows+=_payers(B,{row['ticker']:dict(name=row['name'],regular=row['regs']) for row in B.US_REGS or []},'US')
     try: mv=json.load(open(os.path.join(B.ROOT,'data','movers.json')))
     except (OSError,ValueError): mv={}
     for mkt,lst in mv.items():

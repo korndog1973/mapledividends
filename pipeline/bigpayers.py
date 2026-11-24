@@ -20,7 +20,7 @@ def text_of(url):
     b=fetch_edgar.get(url)
     if url.lower().endswith('.pdf'):
         p=os.path.join(fetch_edgar.CACHE,hashlib.sha1(url.encode()).hexdigest())
-        return re.sub(r'\s+',' ',subprocess.run(['pdftotext',p,'-'],capture_output=True,timeout=60).stdout.decode('utf-8','ignore'))
+        return re.sub(r'\s+',' ',subprocess.run(['pdftotext',p,'-'],capture_output=True,timeout=60,check=True).stdout.decode('utf-8','ignore'))
     return re.sub(r'\s+',' ',parse.to_text(b))
 def main():
     man=json.load(open(os.path.join(ROOT,'data','manifest.json')))
@@ -35,11 +35,10 @@ def main():
                 for h in fetch_edgar.search(uni[t]['cik'],q):
                     s=h['_source']; adsh,fn=h['_id'].split(':',1)
                     docs.setdefault(f"https://www.sec.gov/Archives/edgar/data/{uni[t]['cik']}/{adsh.replace('-','')}/{fn}",(s.get('file_date'),s.get('form') or (s.get('root_forms') or [''])[0]))
-            except Exception as e: print('search fail',t,e,file=sys.stderr)
+            except Exception as e: raise RuntimeError(f'Extra EDGAR search failed for {t}') from e
         rows={}
         for url,(fd,form) in sorted(docs.items(),key=lambda kv:kv[1][0]):
-            try: txt=text_of(url)
-            except Exception as e: print('doc fail',url,e,file=sys.stderr); continue
+            txt=text_of(url)
             fdd=datetime.date.fromisoformat(fd)
             for m in re.finditer(pat,txt,re.I):
                 rec,pay=parse.pdate(m.group('rec')),parse.pdate(m.group('pay')); amt=float(m.group('amt'))

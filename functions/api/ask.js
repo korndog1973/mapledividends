@@ -1,10 +1,10 @@
 // Ask MapleDividends: POST /api/ask {q} -> {answer, as_of, links, left} . Cloudflare Pages Function, Workers AI FREE plan only.
 // Answers ONLY from /ask-data.json (built by site/ask.py). Safeguards: 300-char question, 300-token answer,
 // 400 questions/day site-wide, 10/day per visitor, identical questions cached for the UTC day (cost 0 neurons).
-// Counters use KV (binding ASK_KV) when bound; otherwise a best-effort per-data-centre counter in the Cache API.
-// Either way the Workers AI Free plan hard-stops at 10,000 neurons/day, so this can never bill.
+// Counters are best effort. KV is eventually consistent; Cache API counters are local to a data centre.
+// Cloudflare account plan limits are independent of these application counters.
 const MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8-fast';
-const GLOBAL_CAP = 400, VISITOR_CAP = 10, MAX_Q = 300, MAX_TOKENS = 300, MAX_ROWS = 20;
+const GLOBAL_CAP = 400, VISITOR_CAP = 10, MAX_Q = 300, MAX_BODY = 4096, MAX_TOKENS = 300, MAX_ROWS = 20;
 const NOTE = 'General info, not advice.';
 const ADVICE_MSG = "I can only share facts from MapleDividends data, not advice, picks or predictions. Try asking about a company's ex-date, payout or recent raise.";
 // Personalized-advice, pick and prediction questions are refused before the model runs (0 neurons, never counted).
@@ -71,15 +71,35 @@ async function setCount(env, key, n) {
 }
 
 export async function onRequestPost({ request, env, waitUntil }) {
-  let body; try { body = await request.json(); } catch { return json({ error: 'Send JSON: {"q": "your question"}' }, 400); }
-  const q = String(body && body.q || '').replace(/\s+/g, ' ').trim();
+  let body;
+  try {
+    if (!request.body) throw new Error('missing body');
+    const reader = request.body.getReader();
+    const decoder = new TextDecoder();
+    let bytes = 0, content = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > MAX_BODY) {
+        await reader.cancel();
+        return json({ error: 'Request body is too large.' }, 413);
+      }
+      content += decoder.decode(value, { stream: true });
+    }
+    body = JSON.parse(content + decoder.decode());
+  } catch {
+    return json({ error: 'Send JSON: {"q": "your question"}' }, 400);
+  }
+  const q = (typeof body?.q === 'string' ? body.q : '').replace(/\s+/g, ' ').trim();
   if (!q) return json({ error: 'Type a question first.' }, 400);
   if (q.length > MAX_Q) return json({ error: `Keep it under ${MAX_Q} characters, please.` }, 400);
   if (!env.AI) return json({ error: 'The Q&A box is switched off right now.', capped: true }, 503);
   const d = day();
-  const data = await loadData(env, request);
-  const norm = q.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
-  const cacheKey = new Request(`https://ask-cache.internal/${d}/${data.as_of}/${await sha(norm)}`);
+  let data;
+  try { data = await loadData(env, request); }
+  catch { return json({ error: 'Dividend data is temporarily unavailable.' }, 503); }
+  const cacheKey = new Request(`https://ask-cache.internal/${d}/${data.as_of}/${await sha(q)}`);
   const ip = request.headers.get('cf-connecting-ip') || 'anon';
   const vKey = `ask:v:${d}:${await sha(ip + '|' + d)}`, gKey = `ask:g:${d}`;
   const [vN, gN] = await Promise.all([getCount(env, vKey), getCount(env, gKey)]);
@@ -95,7 +115,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!rows.length) {
     answer = "I don't know. That isn't in our data yet. Try a TSX ticker or company name (like BCE or Bank of Montreal), or check the ex-dividend calendar.";
   } else {
-    // count before calling the model so parallel bursts can't blow past the cap
+    // Reserve a best-effort count before calling the model.
     await Promise.all([setCount(env, vKey, vN + 1), setCount(env, gKey, gN + 1)]);
     const ctx = rows.map((r, i) => `${i + 1}. ${r.x}`).join('\n');
     try {
