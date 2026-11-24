@@ -6,6 +6,9 @@
 {% macro company_fields(side, number) %}
 <fieldset class="card compare-company">
   <legend>Company {{ number }}</legend>
+  <label>Find a ticker or company
+    <input type="search" data-search="{{ side }}" placeholder="e.g. CHE.UN" autocomplete="off">
+  </label>
   <label>Company
     <select name="{{ side }}" required>
       {% for company in companies %}
@@ -14,6 +17,7 @@
     </select>
   </label>
   <p class="small" data-dividend="{{ side }}" aria-live="polite"></p>
+  <p class="small" data-price="{{ side }}"></p>
   <label>Starting share price (CAD)
     <input name="{{ side }}Price" type="number" min="0.01" max="10000000" step="0.01" inputmode="decimal" required>
   </label>
@@ -28,7 +32,7 @@
 {% block body %}
 <h1>Compare dividend stocks</h1>
 <p class="lead">See how the same investment in two companies could grow, with or without reinvested dividends.</p>
-<p class="muted">Enter each starting share price in Canadian dollars. For a U.S.-listed stock, convert its quote to CAD using the same exchange rate you enter below.</p>
+<p class="muted">Choose two tickers to load available prices and payouts. Adjust any assumptions to try another scenario.</p>
 <noscript><p>The calculator requires JavaScript.</p></noscript>
 <form id="dividend-compare" class="compare" hidden>
   <div class="card compare-settings">
@@ -38,7 +42,7 @@
     <label>Projection period
       <select name="years"><option value="5">5 years</option><option value="10" selected>10 years</option><option value="20">20 years</option></select>
     </label>
-    <label id="compare-fx" hidden>Exchange rate (CAD per US$1)
+    <label id="compare-fx" hidden>Exchange rate (CAD per US$1) <small id="fx-date"></small>
       <input name="fx" type="number" min="0.0001" max="10" step="0.0001" inputmode="decimal" disabled>
     </label>
     <label class="compare-reinvest"><input name="reinvest" type="checkbox" checked> Reinvest dividends</label>
