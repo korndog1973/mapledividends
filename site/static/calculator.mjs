@@ -64,6 +64,7 @@ function setup(form) {
   form.hidden = false;
   reverse.hidden = false;
   updateReverse();
+  target.addEventListener('input', updateReverse);
 
   form.addEventListener('input', () => {
     results.hidden = true;
